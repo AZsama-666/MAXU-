@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>MAXU v2.4 终极高保真白板全景图 (32页定稿版)</title>
+  <style>
+    :root { 
+        --bg: #F4F5F7; 
+        --ink: #1C1C1E; 
+        --line: #E5E5EA; 
+        --muted: #8E8E93; 
+        --primary: #7C4DFF;
+        --primary-light: #F0E6FF;
+        --blue: #007AFF;
+        --cyber-dark: #12121A;
+        --cyber-panel: #161622;
+        --cyber-accent: #00F0FF;
+        --gold: #FFD700;
+        --danger: #FF3B30;
+    }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { margin:0; padding: 40px; background:var(--bg); color: var(--ink); display: flex; flex-direction: column; align-items: center; }
+    
+    .header-box { text-align: center; margin-bottom: 50px; max-width: 1200px; background: #fff; padding: 40px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 100%;}
+    .header-box h1 { font-size: 32px; font-weight: 800; margin-bottom: 16px; color: var(--ink); letter-spacing: 1px;}
+    .header-box p { color: var(--muted); font-size: 16px; line-height: 1.6; }
+
+    .zone { 
+        width: 100%; max-width: 1800px; margin-bottom: 60px; 
+        background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: 40px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+    }
+    .zone-title { font-size: 26px; font-weight: 800; color: var(--ink); margin-bottom: 30px; display: flex; align-items: center; gap: 16px; border-bottom: 3px solid var(--primary-light); padding-bottom: 16px;}
+    .zone-badge { background: var(--primary-light); color: var(--primary); padding: 6px 16px; border-radius: 16px; font-size: 15px; font-weight: 600;}
+
+    .flow-row { display: flex; flex-direction: row; flex-wrap: nowrap; align-items: flex-start; justify-content: flex-start; gap: 20px; overflow-x: auto; padding-bottom: 20px;}
+    
+    /* Flow Connectors */
+    .flow-col { display: flex; flex-direction: column; align-items: center; gap: 20px; position: relative;}
+    .connector-down { font-size: 24px; color: var(--primary); font-weight: bold; }
+    .connector-right { font-size: 28px; color: var(--muted); margin-top: 150px; }
+
+    /* Phone Scaling Magic */
+    .node { display: flex; flex-direction: column; align-items: center; width: 225px; } /* 375 * 0.6 */
+    .node-label { margin-bottom: 16px; font-size: 13px; font-weight: 700; color: #333; text-align: center; background: #F4F5F7; padding: 8px 12px; border-radius: 12px; width: 100%; border: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center;}
+    .node-label.main-tab { background: var(--primary); color: white; border-color: var(--primary);}
+    .node-label.sub-page { background: #fff; border: 1px dashed #ccc; color: #666; font-weight: 600;}
+    .node-idx { font-family: monospace; font-size: 11px; opacity: 0.8;}
+
+    .phone-wrapper { 
+        width: 225px; height: 487px; /* 812 * 0.6 = 487.2 */
+        position: relative; 
+    }
+    .phone {
+        width: 375px; height: 812px; background-color: #F7F8FA;
+        border: 14px solid #111; border-radius: 50px;
+        position: absolute; top: 0; left: 0; overflow: hidden;
+        box-shadow: inset 0 0 0 2px #333, 0 10px 20px rgba(0,0,0,0.1);
+        transform: scale(0.6); transform-origin: top left;
+        color: #111; 
+    }
+    .phone.dark { background-color: var(--cyber-dark); color: white; border-color: #000; box-shadow: inset 0 0 0 2px #444, 0 10px 20px rgba(0,0,0,0.2);}
+    .notch {
+        position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+        width: 160px; height: 30px; background: #111;
+        border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+        z-index: 100;
+    }
+    .dark .notch { background: #000; }
+
+    /* High-Fidelity UI Components */
+    .app-header { padding: 60px 24px 20px; background: #fff; }
+    .app-title { font-size: 28px; font-weight: 700; margin: 0; line-height: 1.2; }
+    .btn-primary { background: var(--primary); color: #fff; border: none; border-radius: 28px; padding: 16px; font-size: 17px; font-weight: 600; width: 85%; text-align: center; margin: 20px auto; display:block;}
+    .btn-danger { background: #FFF5F5; color: var(--danger); border: 1px solid #FFD4D4; border-radius: 28px; padding: 16px; font-size: 17px; font-weight: 600; width: 85%; text-align: center; margin: 12px auto; display:block;}
+
+    /* Zone 3: 盲盒消息列与聊天室 (高保真) */
+    .msg-item { display: flex; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--line); background: #fff; }
+    .msg-avatar { width: 50px; height: 50px; border-radius: 25px; background: #E5E5EA; margin-right: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; position: relative; }
+    .msg-avatar.blind { background: linear-gradient(135deg, #1A1A24, #2A2A35); color: #fff; border: 1px solid var(--primary); }
+    .msg-dot { position: absolute; top: 0; right: 0; width: 12px; height: 12px; background: var(--danger); border-radius: 6px; border: 2px solid #fff; }
+    .msg-content { flex: 1; }
+    .msg-name { font-size: 16px; font-weight: 600; margin-bottom: 4px; display: flex; justify-content: space-between; }
+    .msg-time { font-size: 12px; color: var(--muted); font-weight: normal; }
+    .msg-desc { font-size: 14px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
+    .tag-ai { background: #E6DFFE; color: var(--primary); padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-right: 6px; font-weight: 600; }
+    .tag-human { background: #E5F0FF; color: var(--blue); padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-right: 6px; font-weight: 600; }
+    .tag-countdown { background: #FFF4E5; color: #D97706; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700; margin-left: 8px;}
+
+    .chat-header { background: #fff; padding: 50px 16px 12px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; color:#111;}
+    .chat-countdown-bar { background: #FFF4E5; color: #D97706; padding: 8px; text-align: center; font-size: 13px; font-weight: 600; }
+    .chat-body { padding: 20px; flex: 1; background: #F7F8FA; display: flex; flex-direction: column; gap: 20px; }
+    .dark .chat-body { background: var(--cyber-dark); }
+    .bubble-left { display: flex; align-items: flex-start; }
+    .bubble-right { display: flex; align-items: flex-start; flex-direction: row-reverse; }
+    .bubble-avatar { width: 36px; height: 36px; border-radius: 18px; background: #E5E5EA; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .bubble-text { max-width: 70%; padding: 12px 16px; border-radius: 20px; font-size: 15px; line-height: 1.4; position: relative; }
+    .bubble-left .bubble-text { background: #fff; margin-left: 12px; border-top-left-radius: 4px; border: 1px solid var(--line); color:#111;}
+    .dark .bubble-left .bubble-text { background: var(--cyber-panel); border-color: #333; color:white;}
+    .bubble-right .bubble-text { background: var(--primary); color: #fff; margin-right: 12px; border-top-right-radius: 4px; }
+    .chat-input-bar { padding: 15px 20px; border-top: 1px solid var(--line); background: #fff; display: flex; align-items: center; gap: 12px; position: absolute; bottom:0; left:0; right:0;}
+    .chat-input { flex: 1; background: #F4F5F7; border: none; border-radius: 20px; padding: 12px 16px; font-size: 15px; outline:none; }
+    
+    .modal-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 200; backdrop-filter: blur(5px); }
+    .modal-card { width: 300px; background: #fff; border-radius: 24px; padding: 30px 24px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+
+    /* Zone 4: 双生舱与探险版图 (高保真) */
+    .twin-header { height: 260px; background: linear-gradient(180deg, var(--cyber-dark) 0%, #2A2A35 100%); position: relative; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 40px;}
+    .twin-avatar-ring { width: 120px; height: 120px; border-radius: 60px; border: 2px dashed var(--cyber-accent); display: flex; align-items: center; justify-content: center; position: absolute; top: 70px; }
+    .twin-avatar-inner { width: 100px; height: 100px; border-radius: 50px; background: #1A1A24; display: flex; align-items: center; justify-content: center; position: absolute; top: 80px; z-index: 2; box-shadow: 0 0 30px rgba(0,240,255,0.2); font-size:40px;}
+    .twin-status-box { position: absolute; bottom: 15px; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); padding: 10px 20px; border-radius: 16px; text-align: center; border: 1px solid rgba(255,255,255,0.1); width: 85%;}
+    
+    .map-entry-card { margin: -20px 24px 20px; background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="50" fill="%232C3E50"/><path d="M0,25 Q25,5 50,25 T100,25" fill="none" stroke="%2334495E" stroke-width="2"/><circle cx="30" cy="20" r="2" fill="%23FFD700"/><circle cx="70" cy="30" r="2" fill="%23FFD700"/></svg>'); background-size: cover; height: 90px; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.1); z-index: 10; border: 2px solid #fff;}
+    .map-entry-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 100%); padding: 15px; display: flex; flex-direction: column; justify-content: center; }
+
+    .sync-ring-container { display: flex; flex-direction: column; align-items: center; margin-top: 40px; position: relative; }
+    .sync-ring { width: 160px; height: 160px; border-radius: 50%; border: 8px solid rgba(0, 240, 255, 0.1); border-top-color: var(--cyber-accent); border-right-color: var(--cyber-accent); transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0,240,255,0.2); }
+    .sync-value-box { position: absolute; top: 50px; text-align: center; }
+    .sync-value { font-size: 48px; font-weight: 800; color: white; text-shadow: 0 0 10px var(--cyber-accent); font-family: monospace; }
+    
+    .radar-mock { width: 100%; height: 140px; background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg"><polygon points="100,10 180,50 150,130 50,130 20,50" fill="none" stroke="%23333" stroke-width="1"/><polygon points="100,20 160,60 140,120 60,110 30,40" fill="rgba(0,240,255,0.2)" stroke="%2300F0FF" stroke-width="2"/><polygon points="100,40 140,70 120,100 80,100 50,60" fill="rgba(181,40,255,0.2)" stroke="%23B528FF" stroke-width="2" stroke-dasharray="4,4"/></svg>') no-repeat center center; background-size: contain; position: relative; margin-top:20px; }
+
+    /* Zone 2: 羁绊与专属回忆录 (高保真) */
+    .timeline-wrap { padding: 100px 20px 0; height: 100%; position: relative; }
+    .timeline-line { position: absolute; left: 40px; top: 0; bottom: 0; width: 2px; background: rgba(255,215,0,0.3); }
+    .timeline-item { position: relative; margin-bottom: 40px; padding-left: 50px; }
+    .timeline-dot { position: absolute; left: 16px; top: 5px; width: 12px; height: 12px; border-radius: 6px; }
+    .timeline-date { font-size: 14px; margin-bottom: 8px; font-weight:bold; }
+    .timeline-card { background: rgba(255,255,255,0.1); border-left: 4px solid; padding: 16px; color:#fff; }
+
+    /* Utility */
+    .mock-box { background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 16px; border: 1px solid #eee; font-size: 16px;}
+    .dark .mock-box { background: var(--cyber-panel); border-color: rgba(255,255,255,0.05); }
+    .bottom-tab { position: absolute; bottom: 0; left: 0; right: 0; height: 84px; background: rgba(255,255,255,0.95); border-top: 1px solid var(--line); display: flex; justify-content: space-around; padding: 10px 20px 0; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; z-index: 50; backdrop-filter: blur(10px);}
+    .dark .bottom-tab { background: rgba(18,18,26,0.95); border-color: #333;}
+    .tab-item { color: var(--muted); font-size: 11px; font-weight: 500; text-align:center;}
+    .tab-item.active { color: var(--primary); font-weight: 700; }
+
+    @media print {
+        body { padding: 0; background: #F4F5F7; zoom: 0.8;}
+        .header-box { box-shadow: none; border: 1px solid #ddd; margin-bottom: 30px;}
+        .zone { box-shadow: none; border: 2px solid #ddd; page-break-inside: avoid; margin-bottom: 40px; }
+        .flow-row { flex-wrap: wrap; }
+        @page { size: A1 landscape; margin: 10mm; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-box">
+      <h1>MAXU v2.4 终极高保真白板全景图 (32页纯净定稿)</h1>
+      <p><b>最终定稿版：</b>包含所有 32 个核心页与二级页面，剥离了研发文字约束。<br>
+      <b>UI 保真度升级：</b>融入了高保真的聊天室、控制舱、地图与雷达图设计，兼顾全局视野与 UI 质感，适合产品评审与汇报演示。<br>
+      顺序遵循：<b>注册入世 ➔ Tab1(首页) ➔ Tab2(羁绊) ➔ Tab3(消息) ➔ Tab4(双生)</b>。</p>
+  </div>
+
+  <!-- ZONE 0: 账号注册与入世流 -->
+  <div class="zone">
+      <div class="zone-title">Zone 0: 账号入世与唤醒 <span class="zone-badge">Onboarding Flow</span></div>
+      <div class="flow-row">
+          <div class="node">
+              <div class="node-label main-tab"><span class="node-idx">01</span>登录/注册</div>
+              <div class="phone-wrapper"><div class="phone"><div class="notch"></div><div style="padding: 150px 30px; text-align: center;"><div style="font-size: 50px; font-weight: 800; margin-bottom: 60px;">MAXU</div><div class="mock-box">输入手机号</div><div class="btn-primary">获取验证码</div></div></div></div>
+          </div><div class="connector-right">➔</div>
+          
+          <div class="node">
+              <div class="node-label sub-page"><span class="node-idx">02</span>OTP 验证码</div>
+              <div class="phone-wrapper"><div class="phone"><div class="notch"></div><div style="padding: 150px 30px;"><div style="font-size: 30px; font-weight: 700; margin-bottom: 40px;">输入验证码</div><div style="display:flex; justify-content:space-between; margin-bottom: 40px;"><div style="width:60px; height:80px; border-bottom: 4px solid #000;"></div><div style="width:60px; height:80px; border-bottom: 4px solid #ddd;"></div><div style="width:60px; height:80px; border-bottom: 4px solid #ddd;"></div><div style="width:60px; height:80px; border-bottom: 4px solid #ddd;"></div></div></div></div></div>
+          </div><div class="connector-right">➔</div>
+          
+          <div class="node">
+              <div class="node-label main-tab"><span class="node-idx">03</span>初始偏好采集</div>
+              <div class="phone-wrapper"><div class="phone"><div class="notch"></div><div style="padding: 100px 30px;"><div style="font-size: 30px; font-weight: 700; margin-bottom: 40px;">想遇见谁？</div><div class="mock-box" style="border-color: var(--primary); color: var(--primary); font-weight: bold; text-align:center;">倾向异性</div><div class="mock-box" style="text-align:center;">倾向同性</div><div class="mock-box" style="text-align:center;">双性倾向</div><div class="mock-box" style="text-align:center;">保密 (仅公海)</div></div></div></div>
+          </div><div class="connector-right">➔</div>
+          
+          <div class="node">
+              <div class="node-label sub-page"><span class="node-idx">04</span>人格测试引导</div>
+              <div class="phone-wrapper"><div class="phone dark"><div class="notch"></div><div style="padding: 200px 30px; text-align: center;"><div style="font-size: 50px; margin-bottom: 20px;">🔮</div><div style="font-size: 24px; font-weight: bold; margin-bottom: 20px;">唤醒赛博分身</div><div style="color: var(--muted); margin-bottom: 40px;">完成 8 道命运残卷<br>复刻你的灵魂</div><div class="btn-primary">开始共鸣</div></div></div></div>
+          </div><div class="connector-right">➔</div>
+          
+          <div class="node">
+              <div class="node-label main-tab"><span class="node-idx">05</span>人格问答 (1-8)</div>
+              <div class="phone-wrapper"><div class="phone dark"><div class="notch"></div><div style="padding: 150px 30px; text-align: center;"><div style="color: var(--muted); margin-bottom: 20px;">1 / 8</div><div style="font-size: 28px; font-weight: 700; margin-bottom: 60px; line-height:1.4;">周末无安排，你会？</div><div class="mock-box" style="border:1px solid rgba(255,255,255,0.2);">在家躺平打机</div><div class="mock-box">去新开的店打卡</div></div></div></div>
+          </div><div class="connector-right">➔</div>
+
+          <div class="node">
+              <div class="node-label main-tab"><span class="node-idx">06</span>声纹与照片(可跳过)</div>
+              <div class="phone-wrapper"><div class="phone dark"><div class="notch"></div><div style="padding: 100px 30px; text-align: center;"><div style="font-size: 24px; font-weight: bold; margin-bottom: 30px;">赋予分身血肉</div><div style="width: 150px; height: 150px; border-radius: 75px; background: #222; margin: 0 auto 30px; display:flex; align-items:center; justify-content:center; color:#888;">+ 上传照片</div><div class="mock-box" style="display:flex; align-items:center; justify-content:center;">🎤 按住录入声纹</div><div class="btn-primary" style="margin-bottom: 10px;">完成塑造</div><div style="color: var(--muted); font-size: 14px; text-decoration: underline;">以后再说 (跳过)</div></div></div></div>
+          </div><div class="connector-right">➔</div>
+
+          <div class="flow-col">
+              <div class="node">
+                  <div class="node-label sub-page"><span class="node-idx">07</span>抽取加载页</div>
+                  <div class="phone-wrapper"><div class="phone dark"><div class="notch"></div><div style="padding: 250px 30px; text-align: center;"><div style="width: 120px; height: 120px; border-radius: 60px; border: 4px dashed var(--cyber-accent); margin: 0 auto 40px; font-size: 50px; display:flex; align-items:center; justify-content:center;">🌌</div><div style="font-size: 24px; font-weight: bold; color:var(--cyber-accent);">解析人格数据...</div></div></div></div>
+              </div>
+              <div class="connector-down">↓</div>
+              <div class="node">
+                  <div class="node-label main-tab"><span class="node-idx">08</span>分身确立与命名</div>
+                  <div class="phone-wrapper"><div class="phone dark"><div class="notch"></div><div style="padding: 150px 30px; text-align: center;"><div style="font-size: 30px; font-weight: bold; margin-bottom: 40px;">你的分身已苏醒</div><div style="width: 120px; height: 120px; border-radius: 60px; background: var(--primary); margin: 0 auto 40px;"></div><div class="mock-box" style="text-align:center; font-size: 20px; color:var(--cyber-accent); border-color:var(--cyber-accent); background:transparent;">代号: Zero</div><div class="btn-primary">进入宇宙</div></div></div></div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- ZONE 1: Tab 1 首页与日常 -->
+  <div class="zone">
+      <div class="zone-title">Zone 1: 首页与广场流 <span class="zone-badge">Tab 1: Home</span></div>
+      <div class="flow-row">
+          <div class="flow-col">
+              <div class="node">
+                  <div class="node-label main-tab"><span class="node-idx">09</span>开屏: 三态驱动</div>
+                  <div class="phone-wrapper"><div class="phone"><div class="notch"></div><div style="padding: 150px 30px; text-align: center;"><div style="font-size: 60px; margin-bottom: 20px;">📜</div><div style="font-size: 28px; font-weight: 800; margin-bottom: 20px;">今日任务</div><div style="background:#F9FAFB; padding:20px; border-radius:16px; text-align:left; line-height:2;"><div style="font-weight:bold; color:var(--primary);">• 设定挂机去向 (必做)</div><div>• 完善照片 (奖10碎片)</div><div>• 追认一个盲盒</div></div><div class="btn-primary" style="margin-top:40px;">去完成</div></div></div></div>
+              </div>
+              <div class="connector-down" style="color: var(--muted); font-size:14px;">或 (流失用户回归)</div>
+              <div class="node">
+                  <div class="node-label sub-page"><span class="node-idx">10</span>打捞召回开屏</div>
+                  <div class="phone-wrapper"><div class="phone dark"><div class="notch"></div><div style="padding: 150px 30px; text-align: center;"><div style="font-size: 60px; margin-bottom: 20px;">⏳</div><div style="font-size: 24px; font-weight: 800; margin-bottom: 20px; color:var(--gold);">时空回溯打捞</div><div style="color: #aaa; margin-bottom: 40px;">你不在的7天，<br>错过了3个高契合灵魂。</div><div class="btn-primary" style="background:var(--gold); color:#000;">复活一段宿命</div></div></div></div>
+              </div>
+          </div>
+          <div class="connector-right">➔</div>
+
+          <div class="node">
+              <div class="node-label main-tab"><span class="node-idx">11</span>首页: 命运推荐</div>
+              <div class="phone-wrapper"><div class="phone"><div class="notch"></div>
+                  <div class="app-header" style="padding-bottom:10px;"><div style="display:flex; justify-content:space-between; align-items:center;"><h2 class="app-title">玛薯</h2><div style="background:#F0E6FF; color:var(--primary); padding:6px 16px; border-radius:20px; font-weight:bold; font-size:14px;">手帐地图 ➔</div></div></div>
+                  <div style="padding: 20px;">
+                      <div style="text-align:center; padding: 40px 20px; background: #fff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--line);">
+                          <div style="width: 120px; height: 120px; border-radius: 60px; background: var(--primary); margin: 0 auto 20px; position:relative;"><div style="position:absolute; bottom:0; right:10px; width:24px; height:24px; background:#34C759; border-radius:12px; border:3px solid #fff;"></div></div>
+                          <div style="font-size: 24px; font-weight: 800;">[游离] K</div>
+                          <div style="color: var(--muted); margin-top: 10px; font-size:14px;">契合度 95% · 都在找赛博朋克</div>
+                          <div class="btn-primary" style="margin-top: 40px;">发起盲盒破冰</div>
+                      </div>
+                  </div>
+                  <div class="bottom-tab"><div class="tab-item active">首页</div><div class="tab-item">羁绊</div><div class="tab-item">消息</div><div class="tab-item">双生</div></div>
+              </div></div>
+          </div>
+          <div class="connector-right">➔</div>
+
+          <div class="node">
+              <div class="node-label sub-page"><span class="node-idx">12</span>首页: 动态广场</div>
+              <div class="phone-wrapper"><div class="phone"><div class="notch"></div><div style="padding: 60px 20px 0;"><div style="display:flex; justify-content:space-around; font-size: 20px; font-weight:bold; margin-bottom: 20px;"><span style="color:var(--muted);">推荐</span> <span style="border-bottom:3px solid var(--primary); padding-bottom:8px;">动态</span></div><div class="mock-box" style="padding:16px;"><div style="display:flex; align-items:center; gap:10px; margin-bottom: 12px;"><div style="width:40px; height:40px; border-radius:20px; background:#333;"></div><b style="font-size:16px;">Zoe</b></div><div style="height: 180px; background:#f0f0f0; border-radius: 12px; margin-bottom: 12px;"></div><div style="font-size:14px;">今天在机车部看到了好酷的车！</div></div></div><div class="bottom-tab"><div class="tab-item active">首页</div><div class="tab-item">羁绊</div><div class="tab-item">消息</div><div class="tab-item">双生</div></div></div></div>
+          </div>
+          <div class="connector-right">➔</div>
+
+          <div class="flow-col">
+              <div class="node">
+                  <div class="node-label sub-page"><span class="node-idx">13</span>发布动态页</div>
+                  <div class="phone-wrapper"><div class="phone"><div class="notch"></div><div style="padding: 80px 20px 0;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;"><span style="font-size: 20px;">取消</span><b style="font-size:18px;">发布瞬间</b><span style="color:var(--primary); font-weight:bold;">发布</span></div><textarea style="width:100%; height:200px; border:none; background:#f7f7f7; border-radius:12px; padding:16px; font-size:16px;" placeholder="记录玛薯宇宙的日常..."></textarea><div style="display:flex; gap:10px; margin-top:20px;"><div style="width:80px; height:80px; background:#eee; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:30px; color:#aaa;">+</div></div></div></div></div>
+              </div>
+              <div class="connector-down">↓</div>
+              <div class="node">
+                  <div class="node-label sub-page"><span class="node-idx">14</span>动态详情与评论</div>
+                  <div class="phone-wrapper"><div class="phone"><div class="notch"></div><div style="padding: 80px 20px 0;"><div style="margin-bottom: 20px; font-size:24px;">&lt;</div><div class="mock-box" style="border:none; padding:0;"><div style="display:flex; align-items:center; gap:10px; margin-bottom: 10px;"><div style="width:40px; height:40px; border-radius:20px; background:#333;"></div><b>Zoe</b></div><div>今天在机车部看到了好酷的车！</div><div style="height: 200px; background:#f0f0f0; border-radius: 12px; margin-top: 15px;"></div></div><div style="border-top:1px solid #eee; padding-top:20px;"><b>评论 (12)</b><div class="mock-box" style="margin-top:10px; background:#f9f9f9;">太酷了吧！求带~</div></div></div></div></div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- ZONE 2: Tab 2 羁绊与组团 -->
+  <div class="zone">
+      <div class="zone-title">Zone 2: 羁绊沉淀流 <span class="zone-badge">Tab 2: CRM & Bonds</span></div>
+      <div class="flow-row">
+          <div class="node">
+              <div class="node-label main-tab"><span class="node-idx">15</span>羁绊关系簿主页</div>
+              <div class="phone-wrapper"><div class="phone"><div class="notch"></div>
+                  <div class="app-header" style="padding-bottom:10px;"><div style="display: flex; justify-content: space-between; align-items: center;"><h2 class="app-title">羁绊簿</h2><div style="color: var(--primary); font-weight: 600; font-size: 18px;">+ 组团</div></div></div>
+                  <div style="padding: 20px;"><div class="mock-box" style="display: flex; align-items: center; gap: 16px; padding: 16px;"><div style="width: 60px; height: 60px; border-radius: 30px; background: var(--primary);"></div><div style="flex:1;"><div style="font-size: 18px; font-weight: bold; display:flex; justify-content:space-between;">Zoe <span style="color:#aaa;">&gt;</span></div><div style="margin-top: 8px;"><span style="background: rgba(124,77,255,0.1); color: var(--primary); padding: 4px 8px; border-radius: 8px; font-size: 12px;">赛博同好</span></div></div></div></div>
+                  <div class="bottom-tab"><div class="tab-item">首页</div><div class="tab-item active">羁绊</div><div class="tab-item">消息</div><div class="tab-item">双生</div></div>
+              </div></div>
+          </div><div class="connector-right">➔</div>
+
+          <div class="flow-col">
+              <div class="node">
+                  <div class="node-label sub-page"><span class="node-idx">16</span>好友档案与权限</div>
+                  <div class="phone-wrapper"><div class="phone"><div class="notch"></div><div style="padding: 80px 20px 0; text-align: center;"><div style="width: 100px; height: 100px; border-radius: 50px; background: var(--primary); margin: 0 auto 20px;"></div><div style="font-size: 24px; font-weight: bold; margin-bottom: 40px;">Zoe</div><div class="mock-box" style="text-align: left;"><div style="font-weight: bold; margin-bottom: 20px; font-size: 18px;">羁绊权限控制</div><div style="display: flex; justify-content: space-between; align-items: center; font-size: 16px;"><span>允许分身自动应答</span><div style="width: 50px; height: 30px; background: #34C759; border-radius: 15px; position:relative;"><div style="width:26px; height:26px; background:#fff; border-radius:13px; position:absolute; right:2px; top:2px;"></div></div></div></div><div class="btn-primary" style="background: #111; width: 100%;">查看专属回忆录 ➔</div></div></div></div>
+              </div>
+              <div class="connector-down">↓</div>
+              <div class="node">
+                  <div class="node-label sub-page"><span class="node-idx">17</span>专属回忆录 (时间轴)</div>
+                  <div class="phone-wrapper"><div class="phone dark"><div class="notch"></div>
+                      <div class="timeline-wrap">
+                          <div class="timeline-line"></div>
+                          <div class="timeline-item">
+                              <div class="timeline-dot" style="background: var(--gold); border: 2px solid #fff; box-shadow: 0 0 10px var(--gold);"></div>
+                              <div class="timeline-date" style="color: var(--gold);">2024-05-12 创世相遇</div>
+                              <div class="timeline-card" style="border-color: var(--gold);">你们在雪山初次相遇，分身开启破冰。</div>
+                          </div>
+                          <div class="timeline-item">
+                              <div class="timeline-dot" style="background: var(--blue); border: 2px solid #fff;"></div>
+                              <div class="timeline-date" style="color: var(--blue);">2024-05-15 互赠门卡</div>
+                              <div class="timeline-card" style="border-color: var(--blue);">获赠【机车部实体卡】</div>
+                          </div>
+                      </div>
+                  </div></div>
+              </div>
+          </div>
+          <div class="connector-right">➔</div>
+
+          <div class="flow-col">
+              <div class="node">
+                  <div class="node-label sub-page"><span class="node-idx">18</span>组团发生器发起</div>
+                  <div class="phone-wrapper"><div class="phone"><div class="notch"></div><div style="padding: 100px 20px 0;"><div style="font-size: 28px; font-weight: 800; margin-bottom: 40px;">发起组团</div><div style="font-weight: bold; margin-bottom: 15px; font-size: 18px;">选择元宇宙场景</div><div class="mock-box" style="display: flex; justify-content: space-between;"><span>机车部 (需门卡)</span> <span>&gt;</span></div><div style="font-weight: bold; margin-bottom: 15px; margin-top:30px; font-size: 18px;">邀请羁绊好友</div><div style="display: flex; gap: 15px; margin-bottom: 40px;"><div style="width: 60px; height: 60px; border-radius: 30px; background: var(--primary);"></div><div style="width: 60px; height: 60px; border-radius: 30px; background: #eee; display: flex; align-items: center; justify-content: center; font-size:24px;">+</div></div><div class="btn-primary" style="width: 100%;">生成邀请函</div></div></div></div>
+              </div>
+              <div class="connector-down">↓</div>
+              <div class="node">
+                  <div class="node-label sub-page"><span class="node-idx">19</span>组团集结状态页</div>
+                  <div class="phone-wrapper"><div class="phone dark"><div class="notch"></div><div style="padding: 100px 20px 0; text-align:center;"><div style="font-size: 24px; font-weight: 800; margin-bottom: 20px;">等待集结中...</div><div style="font-size: 60px; margin-bottom: 40px;">🏍️</div><div class="mock-box" style="background:#222; border-color:#444; display:flex; justify-content:space-around; padding:20px;"><div style="display:flex; flex-direction:column; align-items:center; gap:10px;"><div style="width: 50px; height: 50px; border-radius: 25px; background: var(--primary);"></div><span>你</span></div><div style="display:flex; flex-direction:column; align-items:center; gap:10px; opacity:0.5;"><div style="width: 50px; height: 50px; border-radius: 25px; background: #fff;"></div><span>Zoe</span></div></div><div class="btn-primary" style="background:#444; color:#aaa; margin-top:40px;">人数未齐，无法发车</div></div></div></div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- ZONE 3: Tab 3 消息与宿命 -->
+  <div class="zone">
+      <div class="zone-title">Zone 3: 盲盒相遇与宿命法则 <span class="zone-badge">Tab 3: Messages</span></div>
+      <div class="flow-row">
+          <div class="node">
+              <div class="node-label main-tab"><span class="node-idx">20</span>混合消息列表</div>
+              <div class="phone-wrapper"><div class="phone"><div class="notch"></div>
+                  <div class="app-header" style="padding-bottom:10px;"><h2 class="app-title">消息</h2></div>
+                  
+                  <div class="msg-item">
+                      <div class="msg-avatar blind">🕵️<div class="msg-dot"></div></div>
+                      <div class="msg-content">
+                          <div class="msg-name"><span style="color:var(--cyber-accent);">[来自雪山的匿名者]</span><span class="msg-time">刚刚</span></div>
+                          <div style="display: flex; align-items: center;"><span class="tag-ai">[分身AI]</span><span class="msg-desc" style="color: var(--ink);">在雪山避难所，他与你聊了整夜的机车...</span></div>
+                          <div style="margin-top: 6px;"><span class="tag-countdown">⏳ 71:55:03 待追认</span></div>
+                      </div>
+                  </div>
+
+                  <div class="msg-item">
+                      <div class="msg-avatar">👩</div>
+                      <div class="msg-content">
+                          <div class="msg-name"><span>Zoe</span><span class="msg-time">昨天</span></div>
+                          <div style="display: flex; align-items: center;"><span class="tag-human">[本人]</span><span class="msg-desc">周末我们去机车部吧！</span></div>
+                      </div>
+                  </div>
+                  
+                  <div class="bottom-tab"><div class="tab-item">首页</div><div class="tab-item">羁绊</div><div class="tab-item active">消息</div><div class="tab-item">双生</div></div>
+              </div></div>
+          </div><div class="connector-right">➔</div>
+
+          <div class="flow-col">
+              <div class="node">
+                  <div class="node-label sub-page"><span class="node-idx">21</span>盲盒聊天室 (强隔离)</div>
+                  <div class="phone-wrapper"><div class="phone dark"><div class="notch"></div>
+                      <div class="chat-header dark" style="background:#1A1A24; border-bottom:1px solid #333; color:white;">
+                          <div style="font-size: 24px;">&lt;</div>
+                          <div style="font-size: 16px; font-weight: 700; text-align: center; color:var(--cyber-accent);">来自雪山的匿名者<div style="font-size: 12px; color: var(--muted); font-weight: normal;">离线，分身代管中</div></div>
+                          <div style="font-size: 24px;">···</div>
+                      </div>
+                      <div class="chat-countdown-bar" style="background:#3A2A1A;">⏳ 距离永远失去仅剩 71:55:03</div>
+
+                      <div class="chat-body">
+                          <div style="text-align: center; font-size: 12px; color: #888;">纯净隔离服：仅支持文字</div>
+                          <div class="bubble-left">
+                              <div class="bubble-avatar blind" style="background: #2A2A35; color: #fff;">🕵️</div>
+                              <div><div style="font-size: 11px; color: var(--muted); margin-left: 12px; margin-bottom: 4px;">分身AI</div><div class="bubble-text">在雪山篝火旁，我们的分身聊了整晚的复古机车。你昨天提到的那个悬挂改装方案，我回去推演了一下，似乎真的很可行！</div></div>
+                          </div>
+                      </div>
+
+                      <!-- 置顶追认按钮 -->
+                      <div style="position: absolute; bottom: 90px; left: 24px; right: 24px; padding: 14px; background: var(--cyber-accent); color: #000; text-align: center; border-radius: 16px; font-weight: 800;">结束游离态，正式揭面</div>
+                      <div class="chat-input-bar" style="background:#1A1A24; border-color:#333;"><div style="font-size: 28px; color: #666;">+</div><input type="text" class="chat-input" style="background:#2A2A35; color:white;" placeholder="打字接管..."></div>
+                  </div></div>
+              </div>
+              <div class="connector-down">↓</div>
+              <div class="node">
+                  <div class="node-label sub-page"><span class="node-idx">22</span>宿命结算弹窗</div>
+                  <div class="phone-wrapper"><div class="phone"><div class="notch"></div>
+                      <div style="width: 100%; height: 100%; background: url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 100 100\" xmlns=\"http://www.w3.org/2000/svg\"><rect width=\"100\" height=\"100\" fill=\"%23F7F8FA\"/></svg>');"></div>
+                      <div class="modal-overlay">
+                          <div class="modal-card">
+                              <div style="font-size: 50px; margin-bottom: 16px;">🎭</div>
+                              <div style="font-size: 22px; font-weight: 800; margin-bottom: 12px;">宿命的抉择</div>
+                              <div style="font-size: 14px; color: var(--muted); margin-bottom: 30px; line-height: 1.6;">确认揭面后产生羁绊。<br><span style="color: var(--danger); font-weight: 600;">警告：拒绝将被彻底抹除。</span></div>
+                              <div class="btn-primary" style="margin:0 auto 12px; width:100%;">正式追认 · 揭面</div>
+                              <div class="btn-danger" style="margin:0 auto; width:100%;">拒绝并永久销毁</div>
+                          </div>
+                      </div>
+                  </div></div>
+              </div>
+          </div>
+          <div class="connector-right">➔</div>
+
+          <div class="flow-col">
+              <div class="node">
+                  <div class="node-label sub-page"><span class="node-idx">23</span>正式聊天室 (全功能)</div>
+                  <div class="phone-wrapper"><div class="phone"><div class="notch"></div>
+                      <div class="chat-header"><div style="font-size: 24px;">&lt;</div><div style="font-size: 18px; font-weight: 700;">Zoe</div><div style="font-size: 24px;">···</div></div>
+                      <div class="chat-body" style="background:#F7F8FA;">
+                          <div class="bubble-left"><div class="bubble-avatar">👩</div><div><div class="bubble-text" style="background:#fff; color:#111;">周末来机车部吗？发张门卡给你！</div></div></div>
+                          <div class="bubble-left"><div class="bubble-avatar">👩</div><div>
+                              <div class="mock-box" style="margin:12px; width:200px; padding:16px;">
+                                  <div style="font-size:24px; margin-bottom:8px;">🎫</div>
+                                  <div style="font-weight:bold; font-size:14px;">66号公路通行证</div>
+                                  <div style="font-size:12px; color:var(--primary); font-weight:bold; margin-top:10px;">点击收下</div>
+                              </div>
+                          </div></div>
+                      </div>
+                      <div class="chat-input-bar"><div style="font-size: 28px; color: #888;">+</div><input type="text" class="chat-input" placeholder="输入..."></div>
+                  </div></div>
+              </div>
+              <div class="connector-down">↓</div>
+              <div class="node">
+                  <div class="node-label sub-page"><span class="node-idx">24</span>系统通知列表</div>
+                  <div class="phone-wrapper"><div class="phone"><div class="notch"></div><div style="padding: 80px 20px 0;"><div style="font-size: 24px; font-weight: 800; margin-bottom: 30px;">系统通知</div><div class="mock-box" style="display:flex; gap:15px; align-items:flex-start;"><div style="font-size:30px;">🔔</div><div><div style="font-weight:bold; font-size:16px; margin-bottom:5px;">资产到账提醒</div><div style="font-size:14px; color:#666;">你已成功接收机车部门卡，地图迷雾已驱散。</div></div></div></div></div></div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- ZONE 4: Tab 4 双生与探险 -->
+  <div class="zone" style="margin-bottom:0;">
+      <div class="zone-title">Zone 4: 双生大本营流 <span class="zone-badge">Tab 4: Cyber Hub</span></div>
+      <div class="flow-row">
+          <div class="node">
+              <div class="node-label main-tab"><span class="node-idx">25</span>双生控制舱主页</div>
+              <div class="phone-wrapper"><div class="phone dark"><div class="notch"></div>
+                  <div class="twin-header">
+                      <div style="position: absolute; top: 60px; right: 24px; font-size: 24px;">⚙️</div>
+                      <div class="twin-avatar-ring"></div><div class="twin-avatar-inner">🌌</div>
+                      <div class="twin-status-box">
+                          <div style="font-size: 15px; color: var(--cyber-accent); font-weight: 600; margin-bottom: 4px;">分身正驻扎在 玛薯雪山</div>
+                          <div style="font-size: 12px; color: rgba(255,255,255,0.7);">今日触达 12 人 · 活跃度 85%</div>
+                      </div>
+                  </div>
+                  
+                  <div class="map-entry-card">
+                      <div class="map-entry-overlay">
+                          <div style="color: white; font-size: 18px; font-weight: 800;">玛薯探险手帐</div>
+                          <div style="color: var(--gold); font-size: 13px; font-weight: 600; margin-top: 4px;">规划今晚去向 ➔</div>
+                      </div>
+                  </div>
+                  
+                  <div style="padding: 0 24px;">
+                      <div class="mock-box" style="display:flex; justify-content:space-between; align-items:center; padding:16px;"><span>神经链接度</span> <span style="color:var(--cyber-accent); font-weight:bold;">87% &gt;</span></div>
+                      <div class="mock-box" style="display:flex; justify-content:space-between; align-items:center; padding:16px;"><span>数字资产包</span> <span>1 张门卡 &gt;</span></div>
+                  </div>
+                  
+                  <div class="bottom-tab"><div class="tab-item">首页</div><div class="tab-item">羁绊</div><div class="tab-item">消息</div><div class="tab-item active">双生</div></div>
+              </div></div>
+          </div><div class="connector-right">➔</div>
+
+          <div class="flow-col">
+              <div class="node">
+                  <div class="node-label sub-page"><span class="node-idx">26</span>全屏探险版图</div>
+                  <div class="phone-wrapper"><div class="phone dark"><div class="notch"></div><div style="height: 100%; background: #1C2833; position: relative;"><div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.1; background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;"></div><div style="position: absolute; top: 150px; left: 40px; text-align: center;"><div style="width: 60px; height: 60px; border-radius: 30px; background: rgba(0,240,255,0.2); border: 3px solid var(--cyber-accent); margin: 0 auto; box-shadow: 0 0 20px rgba(0,240,255,0.4);"></div><div style="font-size: 14px; margin-top: 8px; color: var(--cyber-accent); font-weight:bold;">全域流浪</div></div><div style="position: absolute; top: 350px; right: 40px; text-align: center; opacity: 0.5;"><div style="width: 60px; height: 60px; border-radius: 30px; border: 3px dashed #888; margin: 0 auto;"></div><div style="font-size: 14px; margin-top: 8px;">66号公路 (需解锁)</div></div></div></div></div>
+              </div>
+              <div class="connector-down">↓</div>
+              <div class="node">
+                  <div class="node-label sub-page"><span class="node-idx">27</span>发令与场景抽屉</div>
+                  <div class="phone-wrapper"><div class="phone dark"><div class="notch"></div><div style="height: 100%; background: #1C2833; position: relative;"><div style="position: absolute; bottom: 0; left: 0; right: 0; background: #fff; color: #000; padding: 30px; border-top-left-radius: 30px; border-top-right-radius: 30px; box-shadow: 0 -10px 30px rgba(0,0,0,0.5);"><div style="font-size: 28px; font-weight: bold; margin-bottom: 15px;">全域流浪</div><div style="color: #444; font-size: 15px; margin-bottom: 30px; line-height:1.6; background:#F7F8FA; padding:16px; border-radius:12px;">分身在公海漫游，极高概率触发随机事件，无需特殊门卡。</div><div class="btn-primary" style="margin: 0; width: 100%;">派遣分身前往</div></div></div></div></div>
+              </div>
+          </div><div class="connector-right">➔</div>
+
+          <div class="flow-col">
+              <div class="node">
+                  <div class="node-label sub-page"><span class="node-idx">28</span>神经链接对齐度</div>
+                  <div class="phone-wrapper"><div class="phone dark"><div class="notch"></div>
+                      <div style="padding: 80px 24px 0;">
+                          <div style="font-size: 20px; font-weight: bold; margin-bottom: 20px; text-align:center;">神经链接状态</div>
+                          <div class="sync-ring-container">
+                              <div class="sync-ring"></div>
+                              <div class="sync-value-box">
+                                  <div class="sync-value">87<span style="font-size: 24px;">%</span></div>
+                              </div>
+                          </div>
+                          <div class="radar-mock"></div>
+                          <div class="btn-primary" style="background: linear-gradient(90deg, #B528FF, var(--primary)); width: 100%; margin-top:30px;">深度调教喂养</div>
+                      </div>
+                  </div></div>
+              </div>
+              <div class="connector-down">↓</div>
+              <div class="node">
+                  <div class="node-label sub-page"><span class="node-idx">29</span>深度调教问答页</div>
+                  <div class="phone-wrapper"><div class="phone dark"><div class="notch"></div><div style="padding: 100px 20px 0; text-align: center;"><div style="font-size: 20px; font-weight: bold; margin-bottom: 40px;">AI 喂养训练</div><div style="font-size: 24px; font-weight: 700; margin-bottom: 40px; line-height:1.5;">如果朋友借钱不还，你的第一反应是？</div><div class="mock-box" style="text-align:left;">A: 直接挑明要钱</div><div class="mock-box" style="text-align:left;">B: 旁敲侧击提醒</div></div></div></div>
+              </div>
+          </div><div class="connector-right">➔</div>
+
+          <div class="flow-col">
+              <div class="node">
+                  <div class="node-label sub-page"><span class="node-idx">30</span>数字资产包</div>
+                  <div class="phone-wrapper"><div class="phone"><div class="notch"></div><div style="padding: 100px 20px 0;"><div style="font-size: 28px; font-weight: bold; margin-bottom: 30px;">数字资产</div><div style="font-weight:bold; font-size:18px; margin-bottom:15px;">实体门卡 (1)</div><div class="mock-box" style="background:#111; color:var(--gold); border:none; text-align:center;">🎫 66号公路通行证</div><div style="font-weight:bold; font-size:18px; margin-top:30px; margin-bottom:15px;">玛薯碎片</div><div class="mock-box" style="font-size:24px; font-weight:bold; color:var(--primary);">✨ 1,200</div></div></div></div>
+              </div>
+              <div class="connector-down">↓</div>
+              <div class="node">
+                  <div class="node-label sub-page"><span class="node-idx">31</span>边界设定(敏感词)</div>
+                  <div class="phone-wrapper"><div class="phone"><div class="notch"></div><div style="padding: 100px 20px 0;"><div style="font-size: 28px; font-weight: bold; margin-bottom: 30px;">敏感词边界</div><div style="color:#666; margin-bottom:20px; font-size:14px; line-height:1.5;">当分身遇到以下词汇时，将主动回避或转移话题。</div><div style="display:flex; gap:10px; flex-wrap:wrap;"><span style="background:var(--primary-light); color:var(--primary); padding:8px 16px; border-radius:16px; font-weight:bold;">爆照 x</span><span style="background:var(--primary-light); color:var(--primary); padding:8px 16px; border-radius:16px; font-weight:bold;">查户口 x</span><span style="background:#eee; padding:8px 16px; border-radius:16px;">+ 新增词条</span></div></div></div></div>
+              </div>
+              <div class="connector-down">↓</div>
+              <div class="node">
+                  <div class="node-label sub-page"><span class="node-idx">32</span>基础系统设置</div>
+                  <div class="phone-wrapper"><div class="phone"><div class="notch"></div><div style="padding: 100px 20px 0;"><div style="font-size: 28px; font-weight: bold; margin-bottom: 30px;">设置</div><div class="mock-box" style="display:flex; justify-content:space-between;"><span>隐私与安全</span><span>&gt;</span></div><div class="mock-box" style="display:flex; justify-content:space-between;"><span>关于 MAXU</span><span>&gt;</span></div><div class="btn-danger" style="margin-top:40px;">退出登录</div></div></div></div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+</body>
+</html>
