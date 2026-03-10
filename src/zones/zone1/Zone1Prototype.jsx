@@ -48,6 +48,9 @@ export function Zone1Prototype() {
             ))}
           </ul>
         </div>
+        <div className="sidebar-card sidebar-build-id">
+          部署版本: {typeof __BUILD_ID__ !== "undefined" ? __BUILD_ID__ : "—"}
+        </div>
       </aside>
 
       <main className="prototype-stage">
