@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 
 const navItems = [
-  { id: "home", label: "首页", to: "/zone1/home-life" },
-  { id: "bonds", label: "羁绊", to: "/zone2/list" },
+  { id: "home", label: "首页", to: "/zone1/home" },
+  { id: "relations", label: "关系", to: "/zone2/list" },
   { id: "messages", label: "消息", to: "/zone3/inbox" },
-  { id: "twin", label: "双生", to: "/zone4/hub" }
+  { id: "mine", label: "我的", to: "/zone4/hub" }
 ];
 
 export function GlobalBottomNav({ activeTab, dark = false }) {

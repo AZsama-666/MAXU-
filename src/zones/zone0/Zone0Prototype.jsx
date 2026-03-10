@@ -11,6 +11,7 @@ import {
 import { AppShell } from "../../components/AppShell";
 import { PhoneFrame } from "../../components/PhoneFrame";
 import {
+  aiDialogue,
   completionNotes,
   personaQuestions,
   preferenceOptions,
@@ -197,7 +198,17 @@ export function Zone0Prototype() {
                   answers={answers}
                   setAnswers={setAnswers}
                   onBackToIntro={() => navigate("/zone0/persona-intro")}
-                  onComplete={() => navigate("/zone0/media")}
+                  onComplete={() => navigate("/zone0/ai-dialog")}
+                />
+              }
+            />
+            <Route
+              path="ai-dialog"
+              element={
+                <AiDialogPage
+                  onBack={() => gotoQuestion(personaQuestions.length)}
+                  onNext={() => navigate("/zone0/media")}
+                  onSkip={() => navigate("/zone0/media")}
                 />
               }
             />
@@ -209,7 +220,7 @@ export function Zone0Prototype() {
                   voiceUploaded={voiceUploaded}
                   showSkipConfirm={showSkipConfirm}
                   setShowSkipConfirm={setShowSkipConfirm}
-                  onBack={() => gotoQuestion(personaQuestions.length)}
+                  onBack={() => navigate("/zone0/ai-dialog")}
                   onTogglePhoto={() => setPhotoUploaded((value) => !value)}
                   onToggleVoice={() => setVoiceUploaded((value) => !value)}
                   onNext={() => navigate("/zone0/loading")}
@@ -543,6 +554,32 @@ function MediaPage({
           </div>
         </div>
       ) : null}
+    </AppShell>
+  );
+}
+
+function AiDialogPage({ onBack, onNext, onSkip }) {
+  return (
+    <AppShell
+      title="与 AI 的自我对话"
+      subtitle="这一步可跳过，只是让你的分身苏醒得更自然。"
+      onBack={onBack}
+      dark
+      primaryAction={{ label: "继续补充形象", onClick: onNext }}
+      secondaryAction={{ label: "跳过", onClick: onSkip }}
+      footerTone="dark"
+    >
+      <div className="zoneX-chat-list zone3-chat-list">
+        {aiDialogue.map((item, index) => (
+          <div
+            key={`${item.role}-${index}`}
+            className={item.role === "你" ? "zoneX-chat-bubble zoneX-chat-self" : "zoneX-chat-bubble"}
+          >
+            <strong>{item.role}</strong>
+            <p>{item.text}</p>
+          </div>
+        ))}
+      </div>
     </AppShell>
   );
 }

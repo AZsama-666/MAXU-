@@ -2,23 +2,9 @@ import { useMemo } from "react";
 import { Link, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { AppShell } from "../../components/AppShell";
 import { PhoneFrame } from "../../components/PhoneFrame";
-import {
-  blindboxDialogue,
-  bondedDialogue,
-  messageThreads,
-  transitionSummary,
-  unmaskingState,
-  zone3CompletionNotes,
-  zone3FlowLinks
-} from "./data";
+import { basicChat, messageThreads, revealState, zone3CompletionNotes, zone3FlowLinks } from "./data";
 
 function matchFlowLink(pathname) {
-  if (pathname.startsWith("/zone3/blindbox/")) {
-    return zone3FlowLinks.find((item) => item.path.startsWith("/zone3/blindbox/"));
-  }
-  if (pathname.startsWith("/zone3/bonded/")) {
-    return zone3FlowLinks.find((item) => item.path.startsWith("/zone3/bonded/"));
-  }
   return zone3FlowLinks.find((item) => pathname.startsWith(item.path)) || zone3FlowLinks[0];
 }
 
@@ -33,7 +19,7 @@ export function Zone3Prototype() {
         <div className="sidebar-card">
           <span className="sidebar-eyebrow">MAXU Prototype</span>
           <h1>Zone3 消息</h1>
-          <p>消息承接的是沟通，不是世界本体。它必须把用户重新送回关系推进和场景主线。</p>
+          <p>消息先做最基础的承接：看到谁、基础揭面、开始聊天。</p>
         </div>
 
         <div className="sidebar-card">
@@ -55,7 +41,7 @@ export function Zone3Prototype() {
         </div>
 
         <div className="sidebar-card">
-          <div className="sidebar-section-title">本轮重构重点</div>
+          <div className="sidebar-section-title">本轮收敛重点</div>
           <ul className="completion-list">
             {zone3CompletionNotes.map((item) => (
               <li key={item}>{item}</li>
@@ -67,11 +53,11 @@ export function Zone3Prototype() {
       <main className="prototype-stage">
         <div className="stage-head">
           <div>
-            <span className="sidebar-eyebrow">Tab 3: Messages</span>
-            <h2>Zone3: 沟通承接层</h2>
-            <p>这里承接接管后真正发生的对话，但不取代关系页、场景页和世界主线。</p>
+            <span className="sidebar-eyebrow">Tab 3: Message</span>
+            <h2>Zone3: 消息</h2>
+            <p>先保留最小路径，让命定之人和熟人关系都能被快速接住。</p>
           </div>
-          <div className="stage-badge zone-badge zone-badge-messages">Message Flow</div>
+          <div className="stage-badge zone-badge zone-badge-messages">Message</div>
         </div>
 
         <PhoneFrame>
@@ -81,46 +67,27 @@ export function Zone3Prototype() {
               path="inbox"
               element={
                 <InboxPage
-                  onBack={() => navigate("/zone2/list")}
-                  onOpenBlindbox={() => navigate("/zone3/blindbox/echo-k")}
-                  onOpenBonded={() => navigate("/zone3/bonded/zoe")}
+                  onBack={() => navigate("/zone1/home")}
+                  onOpenReveal={() => navigate("/zone3/reveal")}
+                  onOpenChat={() => navigate("/zone3/chat")}
                 />
               }
             />
             <Route
-              path="blindbox/:threadId"
+              path="reveal"
               element={
-                <BlindboxPage
+                <RevealPage
                   onBack={() => navigate("/zone3/inbox")}
-                  onNext={() => navigate("/zone3/unmask")}
+                  onNext={() => navigate("/zone3/chat")}
                 />
               }
             />
             <Route
-              path="unmask"
+              path="chat"
               element={
-                <UnmaskPage
-                  onBack={() => navigate("/zone3/blindbox/echo-k")}
-                  onNext={() => navigate("/zone3/transition")}
-                />
-              }
-            />
-            <Route
-              path="bonded/:threadId"
-              element={
-                <BondedChatPage
+                <ChatPage
                   onBack={() => navigate("/zone3/inbox")}
-                  onNext={() => navigate("/zone3/transition")}
-                />
-              }
-            />
-            <Route
-              path="transition"
-              element={
-                <TransitionPage
-                  onBack={() => navigate("/zone3/inbox")}
-                  onGoZone2={() => navigate("/zone2/detail/zoe")}
-                  onGoZone5={() => navigate("/zone5/scene/motor-club")}
+                  onGoRelation={() => navigate("/zone2/detail/zoe")}
                 />
               }
             />
@@ -132,16 +99,14 @@ export function Zone3Prototype() {
   );
 }
 
-function InboxPage({ onBack, onOpenBlindbox, onOpenBonded }) {
+function InboxPage({ onBack, onOpenReveal, onOpenChat }) {
   return (
     <AppShell
-      title="混合消息列表"
-      subtitle="这里同时承接游离态试探和羁绊态沟通，但它们不应被做成同一种普通聊天。"
+      title="消息列表"
+      subtitle="先知道谁在等你，再决定要不要继续。"
       onBack={onBack}
-      progress="33 / 37"
+      progress="15 / 17"
       bottomNav={{ activeTab: "messages" }}
-      primaryAction={{ label: "打开游离态盲盒聊天室", onClick: onOpenBlindbox }}
-      secondaryAction={{ label: "打开羁绊态正式聊天", onClick: onOpenBonded }}
     >
       <div className="zoneX-card-grid">
         {messageThreads.map((item) => (
@@ -149,7 +114,7 @@ function InboxPage({ onBack, onOpenBlindbox, onOpenBonded }) {
             key={item.id}
             type="button"
             className="home-card zoneX-button-card zone3-thread-card"
-            onClick={item.type === "游离态" ? onOpenBlindbox : onOpenBonded}
+            onClick={item.type === "命定之人" ? onOpenReveal : onOpenChat}
           >
             <span className="home-card-badge">{item.type}</span>
             <h4>{item.title}</h4>
@@ -165,74 +130,49 @@ function InboxPage({ onBack, onOpenBlindbox, onOpenBonded }) {
   );
 }
 
-function BlindboxPage({ onBack, onNext }) {
+function RevealPage({ onBack, onNext }) {
   return (
     <AppShell
-      title="游离态盲盒聊天室"
-      subtitle="游离态沟通的重点不是聊得久，而是保留试探、克制和世界线重叠感。"
+      title="基础揭面"
+      subtitle="先保留基本反馈，关系深化以后再长。"
       onBack={onBack}
-      dark
-      progress="34 / 37"
+      progress="16 / 17"
       bottomNav={{ activeTab: "messages" }}
-      footerTone="dark"
-      primaryAction={{ label: "去 72 小时揭面中心", onClick: onNext }}
-    >
-      <div className="zoneX-chat-list zone3-chat-list">
-        {blindboxDialogue.map((item, index) => (
-          <div
-            key={`${item.role}-${index}`}
-            className={item.role === "你" ? "zoneX-chat-bubble zoneX-chat-self" : "zoneX-chat-bubble"}
-          >
-            <strong>{item.role}</strong>
-            <p>{item.text}</p>
-          </div>
-        ))}
-      </div>
-    </AppShell>
-  );
-}
-
-function UnmaskPage({ onBack, onNext }) {
-  return (
-    <AppShell
-      title="72 小时揭面中心"
-      subtitle="揭面不是为了结束神秘，而是为了把一条仍在发生中的世界线推进进正式关系层。"
-      onBack={onBack}
-      progress="35 / 37"
-      bottomNav={{ activeTab: "messages" }}
-      primaryAction={{ label: "继续到关系切换提示", onClick: onNext }}
+      primaryAction={{ label: "开始聊天", onClick: onNext }}
+      secondaryAction={{ label: "返回消息", onClick: onBack }}
     >
       <div className="home-card zone3-unmask-card">
-        <span className="home-card-badge">陌生关系高光</span>
-        <h4>{unmaskingState.title}</h4>
-        <p>{unmaskingState.desc}</p>
+        <span className="home-card-badge">命定之人</span>
+        <h4>{revealState.title}</h4>
+        <p>{revealState.desc}</p>
       </div>
 
       <div className="status-card">
         <strong>剩余时间</strong>
-        <p>{unmaskingState.countdown}</p>
+        <p>{revealState.countdown}</p>
       </div>
 
       <div className="field-card">
-        <strong>触发条件</strong>
-        <p className="zone1-copy-muted">{unmaskingState.trigger}</p>
+        <strong>当前结果</strong>
+        <p className="zone1-copy-muted">{revealState.result}</p>
       </div>
     </AppShell>
   );
 }
 
-function BondedChatPage({ onBack, onNext }) {
+function ChatPage({ onBack, onGoRelation }) {
   return (
     <AppShell
-      title="羁绊态正式聊天室"
-      subtitle="一旦关系进入羁绊层，消息就不再只是试探，而会反过来改变后续主线。"
+      title="基础聊天"
+      subtitle="MVP 先证明你已经能接住这段关系。"
       onBack={onBack}
-      progress="36 / 37"
+      progress="17 / 17"
       bottomNav={{ activeTab: "messages" }}
-      primaryAction={{ label: "看这段关系如何回流主线", onClick: onNext }}
+      primaryAction={{ label: "回到关系页", onClick: onGoRelation }}
+      secondaryAction={{ label: "返回消息", onClick: onBack }}
     >
       <div className="zoneX-chat-list zone3-chat-list">
-        {bondedDialogue.map((item, index) => (
+        {basicChat.map((item, index) => (
           <div
             key={`${item.role}-${index}`}
             className={item.role === "你" ? "zoneX-chat-bubble zoneX-chat-self" : "zoneX-chat-bubble"}
@@ -241,37 +181,6 @@ function BondedChatPage({ onBack, onNext }) {
             <p>{item.text}</p>
           </div>
         ))}
-      </div>
-    </AppShell>
-  );
-}
-
-function TransitionPage({ onBack, onGoZone2, onGoZone5 }) {
-  return (
-    <AppShell
-      title="关系切换提示"
-      subtitle="消息最终的职责，是把用户重新送回关系页和场景页，而不是自己变成终点。"
-      onBack={onBack}
-      dark
-      progress="37 / 37"
-      bottomNav={{ activeTab: "messages" }}
-      footerTone="dark"
-      primaryAction={{ label: "回到羁绊主页", onClick: onGoZone2 }}
-      secondaryAction={{ label: "去场景里继续推进", onClick: onGoZone5 }}
-    >
-      <div className="cosmic-panel zone3-transition-panel">
-        <span className="dark-badge">沟通承接已完成</span>
-        <h3>{transitionSummary.title}</h3>
-        <p>{transitionSummary.desc}</p>
-      </div>
-
-      <div className="zone1-quick-nav-grid">
-        <button type="button" className="ghost-button ghost-button-dark" onClick={onGoZone2}>
-          回关系主页
-        </button>
-        <button type="button" className="ghost-button ghost-button-dark" onClick={onGoZone5}>
-          去场景继续推进
-        </button>
       </div>
     </AppShell>
   );

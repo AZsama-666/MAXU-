@@ -54,15 +54,23 @@ export const quickFlowLinks = [
   { path: "/zone0/preference", label: "03 初始偏好采集", type: "主流程" },
   { path: "/zone0/persona-intro", label: "04 人格测试引导", type: "主流程" },
   { path: "/zone0/questions/1", label: "05 人格问答", type: "主流程" },
-  { path: "/zone0/media", label: "06 声纹与照片", type: "主流程" },
-  { path: "/zone0/loading", label: "07 抽取加载页", type: "主流程" },
-  { path: "/zone0/identity", label: "08 分身确立与命名", type: "主流程" },
-  { path: "/zone1/opening", label: "09 跳转 Zone1 开屏", type: "衔接页" }
+  { path: "/zone0/ai-dialog", label: "06 AI 自我对话", type: "可跳过" },
+  { path: "/zone0/media", label: "07 声纹与照片", type: "主流程" },
+  { path: "/zone0/loading", label: "08 抽取加载页", type: "主流程" },
+  { path: "/zone0/identity", label: "09 分身确立与命名", type: "主流程" },
+  { path: "/zone1/opening", label: "10 跳转 Zone1 开屏", type: "衔接页" }
 ];
 
 export const completionNotes = [
   "补充验证码发送失败、重发和返回改手机号。",
   "补充人格问答 1-8 的进度与上一题/下一题。",
+  "在性格测试后加入可跳过的 AI 自我对话，降低首次进入割裂感。",
   "补充照片/声纹跳过确认及稍后补全说明。",
   "补充进入宇宙后的 Zone1 开屏衔接，验证首页主线已打通。"
+];
+
+export const aiDialogue = [
+  { role: "AI", text: "我已经大概看见你的行动偏好了。你更像会先感受，再决定是否靠近。" },
+  { role: "你", text: "所以你会怎么开始我的分身人生？" },
+  { role: "AI", text: "先不替你决定。我只会先替你把那道门打开，真正接管还是交给你自己。" }
 ];
