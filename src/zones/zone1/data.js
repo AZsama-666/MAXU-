@@ -1,8 +1,7 @@
 export const zone1FlowLinks = [
   { path: "/zone1/opening", label: "09 接管开屏", type: "入口页" },
-  { path: "/zone1/home", label: "10 首页接管", type: "主页面" },
-  { path: "/zone1/fate", label: "11 命定之人", type: "主页面" },
-  { path: "/zone1/plaza", label: "12 广场浏览", type: "主页面" }
+  { path: "/zone1/home", label: "10 首页广场", type: "主页面" },
+  { path: "/zone1/fate", label: "11 命定之人", type: "主页面" }
 ];
 
 export const zone1CompletionNotes = [
@@ -58,7 +57,8 @@ export const plazaFeed = [
     scene: "雪山营地",
     time: "4 分钟前",
     title: "今晚有人把篝火边界重新点亮了",
-    content: "广场会告诉你世界还在继续发生，但它不该抢走你第一眼的接管决定。"
+    content: "广场会告诉你世界还在继续发生，但它不该抢走你第一眼的接管决定。",
+    imageLabel: "雪山篝火"
   },
   {
     id: "feed-2",
@@ -66,7 +66,8 @@ export const plazaFeed = [
     scene: "机车部",
     time: "9 分钟前",
     title: "机车部门口的人越来越多",
-    content: "Zero 刚刚停过的那个入口，现在已经热起来了。"
+    content: "Zero 刚刚停过的那个入口，现在已经热起来了。",
+    imageLabel: "机车部夜景"
   },
   {
     id: "feed-3",
@@ -74,7 +75,8 @@ export const plazaFeed = [
     scene: "午夜公路",
     time: "16 分钟前",
     title: "有人在夜路上放慢了速度",
-    content: "不是所有人都在赶路，有些人只是等另一个人上线。"
+    content: "不是所有人都在赶路，有些人只是等另一个人上线。",
+    imageLabel: "夜路"
   }
 ];
 
@@ -82,19 +84,28 @@ export const quickSceneryPresets = [
   {
     id: "maldives",
     scene: "马尔代夫",
+    imageLabel: "马尔代夫海边",
     title: "分身在马尔代夫的海边晒太阳",
     content: "Zero 把今天的自己丢在了马尔代夫的海边，水和天空刚好都是同一个颜色。"
   },
   {
     id: "paris",
     scene: "巴黎",
+    imageLabel: "巴黎街角",
     title: "分身在巴黎的街角散步",
     content: "Zero 走在巴黎的街角，路灯刚亮起，他决定把这一刻留在玛薯宇宙里。"
   },
   {
     id: "safari",
     scene: "非洲草原",
+    imageLabel: "动物大迁徙",
     title: "分身在看动物大迁徙",
     content: "Zero 坐在非洲草原的车顶，看着动物大迁徙缓慢经过，觉得今晚不用再刷信息流了。"
   }
 ];
+
+export const openingPopup = {
+  countdown: "命定之人本窗口剩余 5:12",
+  fateSummary: "本周期有一位命定之人 K，可揭面。",
+  reportSummary: "离线期间 2 人 · 5 条 · 3 处，可查看全部。"
+};

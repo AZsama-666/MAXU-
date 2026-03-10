@@ -5,6 +5,7 @@ import { PhoneFrame } from "../../components/PhoneFrame";
 import {
   fateState,
   homeSnapshot,
+  openingPopup,
   plazaFeed,
   quickSceneryPresets,
   twinReport,
@@ -22,17 +23,15 @@ export function Zone1Prototype() {
   const currentLink = useMemo(() => matchFlowLink(location.pathname), [location.pathname]);
   const [posts, setPosts] = useState(plazaFeed);
 
-  const publishQuickScenery = () => {
-    const preset =
-      quickSceneryPresets[Math.floor(Math.random() * quickSceneryPresets.length)] ||
-      quickSceneryPresets[0];
+  const confirmPublish = (preset, caption) => {
     const nextPost = {
-      id: `quick-${Date.now().toString(36)}`,
+      id: `post-${Date.now().toString(36)}`,
       author: "你的分身",
       scene: preset.scene,
       time: "刚刚",
       title: preset.title,
-      content: preset.content
+      content: caption || preset.content,
+      imageLabel: preset.imageLabel || preset.scene
     };
     setPosts((current) => [nextPost, ...current]);
   };
@@ -106,8 +105,17 @@ export function Zone1Prototype() {
                   onBack={() => navigate("/zone0/identity")}
                   onOpenFate={() => navigate("/zone1/fate")}
                   onGoToReports={() => navigate("/zone4/reports")}
+                  onOpenPublish={() => navigate("/zone1/publish")}
                   posts={posts}
-                  onQuickPublish={publishQuickScenery}
+                />
+              }
+            />
+            <Route
+              path="publish"
+              element={
+                <PublishFlowPage
+                  onBack={() => navigate("/zone1/home")}
+                  onConfirm={confirmPublish}
                 />
               }
             />
@@ -120,10 +128,7 @@ export function Zone1Prototype() {
                 />
               }
             />
-            <Route
-              path="plaza"
-              element={<PlazaPage onBack={() => navigate("/zone1/home")} />}
-            />
+            <Route path="plaza" element={<Navigate to="/zone1/home" replace />} />
             <Route path="*" element={<Navigate to="/zone1/opening" replace />} />
           </Routes>
         </PhoneFrame>
@@ -133,16 +138,43 @@ export function Zone1Prototype() {
 }
 
 function OpeningPage({ onBack, onNext }) {
+  const [popupOpen, setPopupOpen] = useState(true);
   return (
     <AppShell
       title="你的分身已经重新上线"
       subtitle="先接住此刻，再决定今晚要往哪里走。"
       onBack={onBack}
       dark
-      progress="09 / 12"
+      progress="09 / 11"
       footerTone="dark"
       primaryAction={{ label: "进入首页", onClick: onNext }}
     >
+      {popupOpen && (
+        <div className="zone1-opening-popup-overlay" role="dialog" aria-modal="true">
+          <div className="zone1-opening-popup">
+            <button
+              type="button"
+              className="zone1-opening-popup-close"
+              onClick={() => setPopupOpen(false)}
+              aria-label="关闭"
+            >
+              ×
+            </button>
+            <div className="zone1-opening-popup-countdown">{openingPopup.countdown}</div>
+            <p className="zone1-opening-popup-line">{openingPopup.fateSummary}</p>
+            <p className="zone1-opening-popup-line zone1-opening-popup-muted">
+              {openingPopup.reportSummary}
+            </p>
+            <button
+              type="button"
+              className="zone1-opening-popup-dismiss"
+              onClick={() => setPopupOpen(false)}
+            >
+              知道了
+            </button>
+          </div>
+        </div>
+      )}
       <div className="cosmic-panel zone1-panel-glow">
         <div className="zone1-hero-icon">◎</div>
         <span className="dark-badge">上线 = 接管分身</span>
@@ -153,13 +185,13 @@ function OpeningPage({ onBack, onNext }) {
   );
 }
 
-function HomePage({ onBack, onOpenFate, onGoToReports, posts, onQuickPublish }) {
+function HomePage({ onBack, onOpenFate, onGoToReports, onOpenPublish, posts }) {
   return (
     <AppShell
       title="广场"
       subtitle="世界还在发生。"
       onBack={onBack}
-      progress="10 / 12"
+      progress="10 / 11"
       bottomNav={{ activeTab: "home" }}
     >
       <div className="zone1-report-strip">
@@ -174,30 +206,109 @@ function HomePage({ onBack, onOpenFate, onGoToReports, posts, onQuickPublish }) 
       </div>
 
       <div className="zone1-quick-post-row">
-        <button
-          type="button"
-          className="ghost-button"
-          onClick={onQuickPublish}
-        >
-          一键发布分身动态
+        <button type="button" className="zone1-publish-entry-btn" onClick={onOpenPublish}>
+          发布分身动态
         </button>
       </div>
 
-      <div className="zone1-feed-list">
+      <div className="zone1-feed-list zone1-feed-list-horizontal">
         {posts.map((post) => (
-          <div key={post.id} className="zone1-feed-card zone1-feed-card-muted">
-            <div className="zone1-feed-head">
-              <div className="zone1-feed-avatar">{post.author.slice(0, 1)}</div>
-              <div className="zone1-feed-meta">
-                <strong>{post.author}</strong>
-                <span>
-                  {post.scene} · {post.time}
-                </span>
+          <div key={post.id} className="zone1-feed-card zone1-feed-card-h">
+            <div
+              className="zone1-feed-thumb"
+              aria-hidden
+              style={{ ["--thumb-label"]: `"${(post.imageLabel || post.scene).slice(0, 4)}"` }}
+            />
+            <div className="zone1-feed-body">
+              <div className="zone1-feed-head">
+                <div className="zone1-feed-avatar">{post.author.slice(0, 1)}</div>
+                <div className="zone1-feed-meta">
+                  <strong>{post.author}</strong>
+                  <span>
+                    {post.scene} · {post.time}
+                  </span>
+                </div>
               </div>
+              <h4>{post.title}</h4>
+              <p>{post.content}</p>
             </div>
-            <h4>{post.title}</h4>
-            <p>{post.content}</p>
           </div>
+        ))}
+      </div>
+    </AppShell>
+  );
+}
+
+function PublishFlowPage({ onBack, onConfirm }) {
+  const [step, setStep] = useState("select");
+  const [selected, setSelected] = useState(null);
+  const [caption, setCaption] = useState("");
+
+  const handleSelect = (preset) => {
+    setSelected(preset);
+    setCaption(preset.content);
+    setStep("confirm");
+  };
+
+  const handlePublish = () => {
+    if (selected) {
+      onConfirm(selected, caption);
+      onBack();
+    }
+  };
+
+  if (step === "confirm" && selected) {
+    return (
+      <AppShell
+        title="确认发布"
+        subtitle="配图与配文由你最终确认后发布。"
+        onBack={() => setStep("select")}
+        progress="发布"
+        primaryAction={{ label: "确认发布", onClick: handlePublish }}
+        secondaryAction={{ label: "返回", onClick: () => setStep("select") }}
+      >
+        <div className="zone1-publish-confirm">
+          <div
+            className="zone1-feed-thumb zone1-publish-preview-thumb"
+            style={{ ["--thumb-label"]: `"${(selected.imageLabel || selected.scene).slice(0, 4)}"` }}
+          />
+          <label className="zone1-publish-label">配文（可编辑）</label>
+          <textarea
+            className="zone1-textarea zone1-publish-textarea"
+            value={caption}
+            onChange={(e) => setCaption(e.target.value)}
+            placeholder="写下这一刻的文案"
+            rows={4}
+          />
+        </div>
+      </AppShell>
+    );
+  }
+
+  return (
+    <AppShell
+      title="发布分身动态"
+      subtitle="选择场景与配图，配文可下一步编辑并确认。"
+      onBack={onBack}
+      progress="配图+配文"
+    >
+      <div className="zone1-preset-grid">
+        {quickSceneryPresets.map((preset) => (
+          <button
+            key={preset.id}
+            type="button"
+            className="zone1-preset-card"
+            onClick={() => handleSelect(preset)}
+          >
+            <div
+              className="zone1-feed-thumb zone1-preset-thumb"
+              style={{ ["--thumb-label"]: `"${(preset.imageLabel || preset.scene).slice(0, 4)}"` }}
+            />
+            <div className="zone1-preset-text">
+              <span className="zone1-preset-scene">{preset.scene}</span>
+              <p className="zone1-preset-title">{preset.title}</p>
+            </div>
+          </button>
         ))}
       </div>
     </AppShell>
@@ -211,7 +322,7 @@ function FatePage({ onBack, onOpenMessages }) {
       subtitle="单条呈现，不做列表堆叠。"
       onBack={onBack}
       dark
-      progress="11 / 12"
+      progress="11 / 11"
       bottomNav={{ activeTab: "home" }}
       footerTone="dark"
       primaryAction={
@@ -245,33 +356,3 @@ function FatePage({ onBack, onOpenMessages }) {
   );
 }
 
-function PlazaPage({ onBack }) {
-  return (
-    <AppShell
-      title="广场"
-      subtitle="只保留浏览，用来证明世界还在发生。"
-      onBack={onBack}
-      progress="12 / 12"
-      bottomNav={{ activeTab: "home" }}
-      primaryAction={{ label: "返回首页", onClick: onBack }}
-    >
-      <div className="zone1-feed-list">
-        {plazaFeed.map((post) => (
-          <div key={post.id} className="zone1-feed-card zone1-feed-card-muted">
-            <div className="zone1-feed-head">
-              <div className="zone1-feed-avatar">{post.author.slice(0, 1)}</div>
-              <div className="zone1-feed-meta">
-                <strong>{post.author}</strong>
-                <span>
-                  {post.scene} · {post.time}
-                </span>
-              </div>
-            </div>
-            <h4>{post.title}</h4>
-            <p>{post.content}</p>
-          </div>
-        ))}
-      </div>
-    </AppShell>
-  );
-}
