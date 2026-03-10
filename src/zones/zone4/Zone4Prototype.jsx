@@ -143,6 +143,8 @@ export function Zone4Prototype() {
                   instruction={currentInstruction}
                   autonomousMode={autonomousMode}
                   onBack={() => navigate("/zone4/assets")}
+                  onEditInstruction={() => navigate("/zone4/instruction")}
+                  onEditBoundaries={() => navigate("/zone4/boundaries")}
                   onGoZone1={() => navigate("/zone1/home-life")}
                   onGoZone5={() => navigate("/zone5/map")}
                 />
@@ -336,11 +338,24 @@ function AssetsPage({ instruction, onBack, onNext }) {
   );
 }
 
-function ReleasePage({ instruction, autonomousMode, onBack, onGoZone1, onGoZone5 }) {
+function ReleasePage({
+  instruction,
+  autonomousMode,
+  onBack,
+  onEditInstruction,
+  onEditBoundaries,
+  onGoZone1,
+  onGoZone5
+}) {
+  const handleEdit = (editTarget) => {
+    if (editTarget === "instruction") onEditInstruction();
+    else if (editTarget === "boundaries") onEditBoundaries();
+  };
+
   return (
     <AppShell
       title="下线前确认"
-      subtitle="最后确认你是把这段人生交还给自由意志，还是交还给一条明确的离线方向。"
+      subtitle="点击任意一项可返回修改，确认无误后再交还。"
       onBack={onBack}
       dark
       progress="26 / 26"
@@ -359,14 +374,19 @@ function ReleasePage({ instruction, autonomousMode, onBack, onGoZone1, onGoZone5
         </p>
       </div>
 
-      <div className="selection-list">
+      <div className="selection-list release-checklist-editable">
         {releaseChecklist.map((item) => (
-          <div key={item} className="selection-item selection-item-dark">
+          <button
+            key={item.label}
+            type="button"
+            className="selection-item selection-item-dark release-checklist-item"
+            onClick={() => handleEdit(item.editTarget)}
+          >
             <div>
-              <strong>{item}</strong>
+              <strong>{item.label}</strong>
             </div>
-            <span className="zone1-inline-tag">已确认</span>
-          </div>
+            <span className="zone1-inline-tag release-edit-hint">{item.hint}</span>
+          </button>
         ))}
       </div>
     </AppShell>

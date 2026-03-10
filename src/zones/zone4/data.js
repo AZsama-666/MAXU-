@@ -116,8 +116,24 @@ export const twinAssets = [
 ];
 
 export const releaseChecklist = [
-  "确认今晚是否继续沿当前场景推进",
-  "确认分身是否按自由意志继续生活，还是按指令方向前进",
-  "确认边界配置是否允许当前关系继续升温",
-  "确认世界热点是否要被纳入分身下线后的漫游范围"
+  {
+    label: "确认今晚是否继续沿当前场景推进",
+    editTarget: "instruction",
+    hint: "去离线指令修改"
+  },
+  {
+    label: "确认分身是否按自由意志继续生活，还是按指令方向前进",
+    editTarget: "instruction",
+    hint: "去离线指令修改"
+  },
+  {
+    label: "确认边界配置是否允许当前关系继续升温",
+    editTarget: "boundaries",
+    hint: "去边界配置修改"
+  },
+  {
+    label: "确认世界热点是否要被纳入分身下线后的漫游范围",
+    editTarget: "boundaries",
+    hint: "去边界配置修改"
+  }
 ];
