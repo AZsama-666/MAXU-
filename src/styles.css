@@ -1645,6 +1645,64 @@ a {
   margin-top: 4px;
 }
 
+.zone1-report-card {
+  margin-top: 14px;
+}
+
+.zone1-report-period {
+  margin: 6px 0 10px;
+  font-size: 0.9em;
+  color: var(--card-muted);
+}
+
+.zone1-report-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  margin-bottom: 10px;
+}
+
+.zone1-report-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.zone1-report-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--card-accent, var(--accent));
+}
+
+.zone1-report-label {
+  font-size: 0.85rem;
+  color: var(--card-muted);
+}
+
+.zone1-report-hint {
+  margin-top: 0;
+  font-size: 0.88em;
+}
+
+.zone1-fate-countdown {
+  margin-top: 12px;
+}
+
+.zone1-fate-miss {
+  margin: 8px 0 6px;
+  font-weight: 600;
+  color: var(--danger, #e85d4c);
+}
+
+.zone1-fate-push-note {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.88em;
+  opacity: 0.92;
+}
+
 .zone1-card-head {
   justify-content: space-between;
   margin-bottom: 8px;
@@ -1732,6 +1790,48 @@ a {
 .zoneX-card-grid {
   display: grid;
   gap: 12px;
+}
+
+.zone2-list-single {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.zone2-storyline {
+  margin-top: 18px;
+  padding: 16px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+}
+
+.zone2-storyline-title {
+  display: block;
+  margin-bottom: 14px;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.zone2-storyline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.zone2-storyline-node {
+  padding-left: 14px;
+  border-left: 3px solid var(--accent);
+}
+
+.zone2-storyline-time {
+  font-size: 0.8rem;
+  color: var(--card-muted);
+}
+
+.zone2-storyline-node h5 {
+  margin: 4px 0 6px;
+  font-size: 1rem;
 }
 
 .zone1-quick-nav-grid {

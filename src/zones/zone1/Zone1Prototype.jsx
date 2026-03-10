@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Link, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { AppShell } from "../../components/AppShell";
 import { PhoneFrame } from "../../components/PhoneFrame";
-import { fateState, homeSnapshot, plazaFeed, zone1CompletionNotes, zone1FlowLinks } from "./data";
+import { fateState, homeSnapshot, plazaFeed, twinReport, zone1CompletionNotes, zone1FlowLinks } from "./data";
 
 function matchFlowLink(pathname) {
   return zone1FlowLinks.find((item) => pathname.startsWith(item.path)) || zone1FlowLinks[0];
@@ -79,8 +79,6 @@ export function Zone1Prototype() {
                   onBack={() => navigate("/zone0/identity")}
                   onOpenFate={() => navigate("/zone1/fate")}
                   onOpenPlaza={() => navigate("/zone1/plaza")}
-                  onOpenRelations={() => navigate("/zone2/list")}
-                  onOpenMessages={() => navigate("/zone3/inbox")}
                   onOpenMine={() => navigate("/zone4/hub")}
                 />
               }
@@ -127,21 +125,13 @@ function OpeningPage({ onBack, onNext }) {
   );
 }
 
-function HomePage({
-  onBack,
-  onOpenFate,
-  onOpenPlaza,
-  onOpenRelations,
-  onOpenMessages,
-  onOpenMine
-}) {
+function HomePage({ onBack, onOpenFate, onOpenPlaza, onOpenMine }) {
   return (
     <AppShell
       title="首页"
       subtitle="一句状态，一个决定。"
       onBack={onBack}
       progress="10 / 12"
-      bottomNav={{ activeTab: "home" }}
     >
       <div className="home-card zone1-life-card-soft">
         <span className="home-card-badge">分身此刻</span>
@@ -151,6 +141,20 @@ function HomePage({
           <span>{homeSnapshot.scene}</span>
           <span>{homeSnapshot.mood}</span>
         </div>
+      </div>
+
+      <div className="home-card zone1-report-card">
+        <span className="home-card-badge">{twinReport.title}</span>
+        <p className="zone1-report-period">{twinReport.period}</p>
+        <div className="zone1-report-stats">
+          {twinReport.items.map((item) => (
+            <div key={item.label} className="zone1-report-stat">
+              <span className="zone1-report-value">{item.value}{item.unit}</span>
+              <span className="zone1-report-label">{item.label}</span>
+            </div>
+          ))}
+        </div>
+        <p className="zone1-copy-muted zone1-report-hint">{twinReport.hint}</p>
       </div>
 
       <div className="status-card">
@@ -168,22 +172,6 @@ function HomePage({
         <button type="button" className="ghost-button" onClick={onOpenMine}>
           下线前去向
         </button>
-      </div>
-
-      <div className="field-card">
-        <strong>保留的 4 Tab</strong>
-        <p className="zone1-copy-muted">{homeSnapshot.note}</p>
-        <div className="zone1-quick-nav-grid">
-          <button type="button" className="ghost-button" onClick={onOpenRelations}>
-            去关系
-          </button>
-          <button type="button" className="ghost-button" onClick={onOpenMessages}>
-            去消息
-          </button>
-          <button type="button" className="ghost-button" onClick={onOpenMine}>
-            去我的
-          </button>
-        </div>
       </div>
     </AppShell>
   );
@@ -213,9 +201,11 @@ function FatePage({ onBack, onOpenMessages }) {
               <p>{fateState.card.title}</p>
             </div>
           </div>
-          <div className="field-card field-card-dark">
+          <div className="field-card field-card-dark zone1-fate-countdown">
             <strong>{fateState.card.countdown}</strong>
+            <p className="zone1-fate-miss">{fateState.missHint}</p>
             <p className="zone1-copy-muted">{fateState.card.story}</p>
+            <p className="zone1-fate-push-note">{fateState.pushCycleNote}</p>
           </div>
         </>
       ) : (

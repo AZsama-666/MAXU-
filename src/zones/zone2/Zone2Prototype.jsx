@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Link, Navigate, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AppShell } from "../../components/AppShell";
 import { PhoneFrame } from "../../components/PhoneFrame";
-import { bondHighlights, bondSummaries, zone2CompletionNotes, zone2FlowLinks } from "./data";
+import { bondHighlights, bondSummaries, bondStorylines, zone2CompletionNotes, zone2FlowLinks } from "./data";
 
 function matchFlowLink(pathname) {
   if (pathname.startsWith("/zone2/detail/")) {
@@ -106,7 +106,7 @@ function BondListPage({ onBack, onOpenBond }) {
       progress="13 / 17"
       bottomNav={{ activeTab: "relations" }}
     >
-      <div className="zoneX-card-grid">
+      <div className="zone2-list-single">
         {bondSummaries.map((item) => (
           <button
             key={item.id}
@@ -131,11 +131,12 @@ function BondListPage({ onBack, onOpenBond }) {
 function BondDetailPage({ onBack, onGoMessages }) {
   const bond = useBond();
   const content = bondHighlights[bond.id];
+  const storyline = bondStorylines[bond.id] || [];
 
   return (
     <AppShell
       title="关系详情"
-      subtitle="只保留最关键的关系解释，不再展开完整经营链路。"
+      subtitle="双方通过 AIGC 产生的小故事，会在这里连成一条故事线。"
       onBack={onBack}
       progress="14 / 17"
       bottomNav={{ activeTab: "relations" }}
@@ -146,6 +147,19 @@ function BondDetailPage({ onBack, onGoMessages }) {
         <span className="home-card-badge">{bond.status}</span>
         <h4>{bond.name}</h4>
         <p>{bond.lastSignal}</p>
+      </div>
+
+      <div className="zone2-storyline">
+        <strong className="zone2-storyline-title">我们的小故事 · AIGC 故事线</strong>
+        <div className="zone2-storyline-list">
+          {storyline.map((node, index) => (
+            <div key={index} className="zone2-storyline-node">
+              <span className="zone2-storyline-time">{node.time}</span>
+              <h5>{node.title}</h5>
+              <p className="zone1-copy-muted">{node.snippet}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="status-card">

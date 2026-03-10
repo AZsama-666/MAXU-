@@ -21,13 +21,27 @@ export const homeSnapshot = {
   note: "上线第一眼不解释世界，只回答：分身现在在做什么。"
 };
 
+export const twinReport = {
+  title: "分身战报",
+  period: "过去这段离线期间",
+  items: [
+    { label: "新认识的人", value: 2, unit: "位" },
+    { label: "留下的留言", value: 5, unit: "条" },
+    { label: "经过的场景", value: 3, unit: "处" }
+  ],
+  hint: "下线时分身按自己的认知在玛薯宇宙里继续活动，这些是 ta 留下的痕迹。"
+};
+
 export const fateState = {
   available: true,
-  emptyTitle: "这 8 小时没有新的命定之人",
-  emptyDesc: "今晚先去逛广场，或者让 Zero 自己玩也可以。",
+  emptyTitle: "本周期没有新的命定之人",
+  emptyDesc: "注定相遇的窗口已过，今晚先去逛广场，或让 Zero 自己玩。",
+  pushCycleNote:
+    "命定之人按周期推送，当前为 8 小时一推；错过本窗口即本周期不再出现，旨在强化「注定相遇」与「错过即永别」的怅然感。可讨论：8h / 12h / 24h 等节奏。",
+  missHint: "本窗口错过即不再出现，本周期不会再次推送。",
   card: {
     name: "K",
-    tag: "8 小时命定之人",
+    tag: "本周期命定之人",
     countdown: "本轮剩余 5 小时 12 分",
     title: "他把你们共用的夜路写成了一段未完成的故事",
     story:
