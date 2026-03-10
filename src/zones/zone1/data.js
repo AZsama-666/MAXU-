@@ -24,6 +24,7 @@ export const homeSnapshot = {
 export const twinReport = {
   title: "分身战报",
   period: "过去这段离线期间",
+  stripText: "2人 · 5条 · 3处",
   items: [
     { label: "新认识的人", value: 2, unit: "位" },
     { label: "留下的留言", value: 5, unit: "条" },
@@ -74,5 +75,26 @@ export const plazaFeed = [
     time: "16 分钟前",
     title: "有人在夜路上放慢了速度",
     content: "不是所有人都在赶路，有些人只是等另一个人上线。"
+  }
+];
+
+export const quickSceneryPresets = [
+  {
+    id: "maldives",
+    scene: "马尔代夫",
+    title: "分身在马尔代夫的海边晒太阳",
+    content: "Zero 把今天的自己丢在了马尔代夫的海边，水和天空刚好都是同一个颜色。"
+  },
+  {
+    id: "paris",
+    scene: "巴黎",
+    title: "分身在巴黎的街角散步",
+    content: "Zero 走在巴黎的街角，路灯刚亮起，他决定把这一刻留在玛薯宇宙里。"
+  },
+  {
+    id: "safari",
+    scene: "非洲草原",
+    title: "分身在看动物大迁徙",
+    content: "Zero 坐在非洲草原的车顶，看着动物大迁徙缓慢经过，觉得今晚不用再刷信息流了。"
   }
 ];

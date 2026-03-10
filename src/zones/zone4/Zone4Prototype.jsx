@@ -2,7 +2,14 @@ import { useMemo, useState } from "react";
 import { Link, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { AppShell } from "../../components/AppShell";
 import { PhoneFrame } from "../../components/PhoneFrame";
-import { mineSnapshot, signoffOptions, zone4CompletionNotes, zone4FlowLinks } from "./data";
+import {
+  alignTools,
+  mineSnapshot,
+  reportHistory,
+  signoffOptions,
+  zone4CompletionNotes,
+  zone4FlowLinks
+} from "./data";
 
 function matchFlowLink(pathname) {
   return zone4FlowLinks.find((item) => pathname.startsWith(item.path)) || zone4FlowLinks[0];
@@ -71,7 +78,27 @@ export function Zone4Prototype() {
                 <MinePage
                   onBack={() => navigate("/zone1/home")}
                   onGoSignoff={() => navigate("/zone4/signoff")}
+                  onGoReports={() => navigate("/zone4/reports")}
+                  onGoAlign={() => navigate("/zone4/align")}
                   currentOption={currentOption}
+                />
+              }
+            />
+            <Route
+              path="reports"
+              element={
+                <ReportsPage
+                  onBack={() => navigate("/zone4/hub")}
+                  reports={reportHistory}
+                />
+              }
+            />
+            <Route
+              path="align"
+              element={
+                <AlignPage
+                  onBack={() => navigate("/zone4/hub")}
+                  tools={alignTools}
                 />
               }
             />
@@ -94,13 +121,13 @@ export function Zone4Prototype() {
   );
 }
 
-function MinePage({ onBack, onGoSignoff, currentOption }) {
+function MinePage({ onBack, onGoSignoff, onGoReports, onGoAlign, currentOption }) {
   return (
     <AppShell
       title="我的"
-      subtitle="先看分身状态，再决定下线后怎么继续。"
+      subtitle="分身状态、战报收纳与对齐调教。"
       onBack={onBack}
-      progress="18 / 19"
+      progress="18 / 21"
       bottomNav={{ activeTab: "mine" }}
       primaryAction={{ label: "设置下线倾向", onClick: onGoSignoff }}
     >
@@ -110,19 +137,64 @@ function MinePage({ onBack, onGoSignoff, currentOption }) {
         <p>{mineSnapshot.currentStatus}</p>
       </div>
 
-      <div className="status-card">
-        <strong>当前场景</strong>
-        <p>{mineSnapshot.currentScene}</p>
+      <div className="zone4-mine-entries">
+        <button type="button" className="zone4-entry-card" onClick={onGoReports}>
+          <span className="zone4-entry-title">每日战报</span>
+          <p className="zone1-copy-muted">收纳往期离线战报，查看分身在玛薯宇宙留下的痕迹。</p>
+        </button>
+        <button type="button" className="zone4-entry-card" onClick={onGoAlign}>
+          <span className="zone4-entry-title">与分身对齐</span>
+          <p className="zone1-copy-muted">通过对话、选择类测试调教分身，让 ta 更贴近你。</p>
+        </button>
       </div>
 
       <div className="status-card">
         <strong>当前下线倾向</strong>
         <p>{currentOption.title}</p>
       </div>
+    </AppShell>
+  );
+}
 
-      <div className="field-card">
-        <strong>为什么先这样收敛</strong>
-        <p className="zone1-copy-muted">{mineSnapshot.note}</p>
+function ReportsPage({ onBack, reports }) {
+  return (
+    <AppShell
+      title="每日战报"
+      subtitle="战报收纳在“我的”内，这里可查看往期。"
+      onBack={onBack}
+      progress="19 / 21"
+      bottomNav={{ activeTab: "mine" }}
+    >
+      <div className="zone4-report-list">
+        {reports.map((r) => (
+          <div key={r.id} className="zone4-report-item">
+            <span className="zone4-report-date">{r.date}</span>
+            <span className="zone4-report-summary">{r.summary}</span>
+            <p className="zone1-copy-muted">{r.period}</p>
+          </div>
+        ))}
+      </div>
+    </AppShell>
+  );
+}
+
+function AlignPage({ onBack, tools }) {
+  return (
+    <AppShell
+      title="与分身对齐"
+      subtitle="通过对话、选择类测试让分身更贴近你。"
+      onBack={onBack}
+      progress="20 / 21"
+      bottomNav={{ activeTab: "mine" }}
+    >
+      <div className="zone4-align-list">
+        {tools.map((t) => (
+          <div key={t.id} className="zone4-align-item">
+            <strong>{t.title}</strong>
+            <p className="zone1-copy-muted">{t.desc}</p>
+            <span className="zone1-inline-tag">{t.status}</span>
+          </div>
+        ))}
       </div>
     </AppShell>
   );

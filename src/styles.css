@@ -1685,6 +1685,63 @@ a {
   font-size: 0.88em;
 }
 
+.zone1-report-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding: 0 2px;
+}
+
+.zone1-report-strip-inner {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.zone1-report-strip-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.zone1-report-strip-values {
+  font-weight: 600;
+  color: var(--card-accent, var(--accent));
+}
+
+.zone1-report-strip-more {
+  margin-left: auto;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.zone1-report-strip-fate {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
+  font: inherit;
+  font-size: 0.9rem;
+  color: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.zone1-quick-post-row {
+  margin: 8px 0 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .zone1-fate-countdown {
   margin-top: 12px;
 }
@@ -1832,6 +1889,72 @@ a {
 .zone2-storyline-node h5 {
   margin: 4px 0 6px;
   font-size: 1rem;
+}
+
+.zone4-mine-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.zone4-entry-card {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  text-align: left;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.zone4-entry-title {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.zone4-report-list,
+.zone4-align-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.zone4-report-item {
+  padding: 12px 14px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+}
+
+.zone4-report-date {
+  font-weight: 600;
+  margin-right: 10px;
+}
+
+.zone4-report-summary {
+  color: var(--card-accent, var(--accent));
+  font-size: 0.95rem;
+}
+
+.zone4-report-item p {
+  margin: 6px 0 0;
+  font-size: 0.88rem;
+}
+
+.zone4-align-item {
+  padding: 14px 16px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+}
+
+.zone4-align-item p {
+  margin: 6px 0 8px;
 }
 
 .zone1-quick-nav-grid {

@@ -1,8 +1,16 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { AppShell } from "../../components/AppShell";
 import { PhoneFrame } from "../../components/PhoneFrame";
-import { fateState, homeSnapshot, plazaFeed, twinReport, zone1CompletionNotes, zone1FlowLinks } from "./data";
+import {
+  fateState,
+  homeSnapshot,
+  plazaFeed,
+  quickSceneryPresets,
+  twinReport,
+  zone1CompletionNotes,
+  zone1FlowLinks
+} from "./data";
 
 function matchFlowLink(pathname) {
   return zone1FlowLinks.find((item) => pathname.startsWith(item.path)) || zone1FlowLinks[0];
@@ -12,6 +20,22 @@ export function Zone1Prototype() {
   const navigate = useNavigate();
   const location = useLocation();
   const currentLink = useMemo(() => matchFlowLink(location.pathname), [location.pathname]);
+  const [posts, setPosts] = useState(plazaFeed);
+
+  const publishQuickScenery = () => {
+    const preset =
+      quickSceneryPresets[Math.floor(Math.random() * quickSceneryPresets.length)] ||
+      quickSceneryPresets[0];
+    const nextPost = {
+      id: `quick-${Date.now().toString(36)}`,
+      author: "你的分身",
+      scene: preset.scene,
+      time: "刚刚",
+      title: preset.title,
+      content: preset.content
+    };
+    setPosts((current) => [nextPost, ...current]);
+  };
 
   return (
     <div className="prototype-layout">
@@ -81,8 +105,9 @@ export function Zone1Prototype() {
                 <HomePage
                   onBack={() => navigate("/zone0/identity")}
                   onOpenFate={() => navigate("/zone1/fate")}
-                  onOpenPlaza={() => navigate("/zone1/plaza")}
-                  onOpenMine={() => navigate("/zone4/hub")}
+                  onGoToReports={() => navigate("/zone4/reports")}
+                  posts={posts}
+                  onQuickPublish={publishQuickScenery}
                 />
               }
             />
@@ -128,53 +153,52 @@ function OpeningPage({ onBack, onNext }) {
   );
 }
 
-function HomePage({ onBack, onOpenFate, onOpenPlaza, onOpenMine }) {
+function HomePage({ onBack, onOpenFate, onGoToReports, posts, onQuickPublish }) {
   return (
     <AppShell
-      title="首页"
-      subtitle="一句状态，一个决定。"
+      title="广场"
+      subtitle="世界还在发生。"
       onBack={onBack}
       progress="10 / 12"
+      bottomNav={{ activeTab: "home" }}
     >
-      <div className="home-card zone1-life-card-soft">
-        <span className="home-card-badge">分身此刻</span>
-        <h4>{homeSnapshot.twinName}</h4>
-        <p>{homeSnapshot.sentence}</p>
-        <div className="zone1-inline-meta">
-          <span>{homeSnapshot.scene}</span>
-          <span>{homeSnapshot.mood}</span>
-        </div>
+      <div className="zone1-report-strip">
+        <button type="button" className="zone1-report-strip-inner" onClick={onGoToReports}>
+          <span className="zone1-report-strip-label">离线</span>
+          <span className="zone1-report-strip-values">{twinReport.stripText}</span>
+          <span className="zone1-report-strip-more">查看全部</span>
+        </button>
+        <button type="button" className="zone1-report-strip-fate" onClick={onOpenFate}>
+          命定之人
+        </button>
       </div>
 
-      <div className="home-card zone1-report-card">
-        <span className="home-card-badge">{twinReport.title}</span>
-        <p className="zone1-report-period">{twinReport.period}</p>
-        <div className="zone1-report-stats">
-          {twinReport.items.map((item) => (
-            <div key={item.label} className="zone1-report-stat">
-              <span className="zone1-report-value">{item.value}{item.unit}</span>
-              <span className="zone1-report-label">{item.label}</span>
+      <div className="zone1-quick-post-row">
+        <button
+          type="button"
+          className="ghost-button"
+          onClick={onQuickPublish}
+        >
+          一键发布分身动态
+        </button>
+      </div>
+
+      <div className="zone1-feed-list">
+        {posts.map((post) => (
+          <div key={post.id} className="zone1-feed-card zone1-feed-card-muted">
+            <div className="zone1-feed-head">
+              <div className="zone1-feed-avatar">{post.author.slice(0, 1)}</div>
+              <div className="zone1-feed-meta">
+                <strong>{post.author}</strong>
+                <span>
+                  {post.scene} · {post.time}
+                </span>
+              </div>
             </div>
-          ))}
-        </div>
-        <p className="zone1-copy-muted zone1-report-hint">{twinReport.hint}</p>
-      </div>
-
-      <div className="status-card">
-        <strong>当前状态</strong>
-        <p>{homeSnapshot.status}</p>
-      </div>
-
-      <div className="zone1-quick-nav-grid">
-        <button type="button" className="ghost-button" onClick={onOpenFate}>
-          见命定之人
-        </button>
-        <button type="button" className="ghost-button" onClick={onOpenPlaza}>
-          逛广场
-        </button>
-        <button type="button" className="ghost-button" onClick={onOpenMine}>
-          下线前去向
-        </button>
+            <h4>{post.title}</h4>
+            <p>{post.content}</p>
+          </div>
+        ))}
       </div>
     </AppShell>
   );

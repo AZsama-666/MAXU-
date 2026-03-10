@@ -1,12 +1,25 @@
 export const zone4FlowLinks = [
   { path: "/zone4/hub", label: "18 我的主页", type: "主页面" },
-  { path: "/zone4/signoff", label: "19 下线倾向", type: "主页面" }
+  { path: "/zone4/reports", label: "19 每日战报", type: "收纳" },
+  { path: "/zone4/align", label: "20 与分身对齐", type: "调教" },
+  { path: "/zone4/signoff", label: "21 下线倾向", type: "主页面" }
 ];
 
 export const zone4CompletionNotes = [
   "Tab 改成“我的”，降低理解成本，不再叫双生控制舱。",
-  "只保留当前状态与 3 个下线倾向，不再展开复杂指令配置。",
-  "跳过选择时，默认让分身按自己的认知继续活动。"
+  "每日战报收纳在“我的”内，首页只做极简战报条提醒。",
+  "“我的”提供与分身对齐/调教入口：对话、选择类测试。"
+];
+
+export const reportHistory = [
+  { id: "r1", date: "今天", summary: "2人 · 5条 · 3处", period: "过去这段离线期间" },
+  { id: "r2", date: "昨天", summary: "1人 · 3条 · 2处", period: "昨日离线期间" },
+  { id: "r3", date: "3月8日", summary: "0人 · 2条 · 4处", period: "当日离线期间" }
+];
+
+export const alignTools = [
+  { id: "chat", title: "通过对话对齐", desc: "和分身聊天，校准 ta 的回应方式与边界。", status: "MVP 占位" },
+  { id: "test", title: "选择类测试", desc: "用选择题让分身更贴近你的偏好与价值观。", status: "MVP 占位" }
 ];
 
 export const mineSnapshot = {
