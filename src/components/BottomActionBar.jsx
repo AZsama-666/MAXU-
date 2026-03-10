@@ -4,10 +4,15 @@ export function BottomActionBar({
   primaryDisabled = false,
   secondaryLabel,
   onSecondary,
-  tone = "light"
+  tone = "light",
+  withBottomNav = false
 }) {
   return (
-    <div className={`bottom-action-bar bottom-action-bar-${tone}`}>
+    <div
+      className={`bottom-action-bar bottom-action-bar-${tone} ${
+        withBottomNav ? "bottom-action-bar-with-nav" : ""
+      }`}
+    >
       {secondaryLabel ? (
         <button type="button" className="secondary-button" onClick={onSecondary}>
           {secondaryLabel}

@@ -1,4 +1,5 @@
 import { BottomActionBar } from "./BottomActionBar";
+import { GlobalBottomNav } from "./GlobalBottomNav";
 import { PageHeader } from "./PageHeader";
 
 export function AppShell({
@@ -10,8 +11,12 @@ export function AppShell({
   primaryAction,
   secondaryAction,
   footerTone,
-  progress
+  progress,
+  bottomNav
 }) {
+  const hasActions = Boolean(primaryAction || secondaryAction);
+  const hasBottomNav = Boolean(bottomNav?.activeTab);
+
   return (
     <section className={`app-shell ${dark ? "app-shell-dark" : ""}`}>
       <PageHeader
@@ -27,16 +32,28 @@ export function AppShell({
           ) : null
         }
       />
-      <div className="app-shell-body">{children}</div>
-      {(primaryAction || secondaryAction) && (
-        <BottomActionBar
-          primaryLabel={primaryAction?.label}
-          onPrimary={primaryAction?.onClick}
-          primaryDisabled={primaryAction?.disabled}
-          secondaryLabel={secondaryAction?.label}
-          onSecondary={secondaryAction?.onClick}
-          tone={footerTone || (dark ? "dark" : "light")}
-        />
+      <div
+        className={`app-shell-body ${hasActions ? "app-shell-body-with-actions" : ""} ${
+          hasBottomNav ? "app-shell-body-with-nav" : ""
+        }`}
+      >
+        {children}
+      </div>
+      {(hasActions || hasBottomNav) && (
+        <div className="app-shell-footer-stack">
+          {hasActions ? (
+            <BottomActionBar
+              primaryLabel={primaryAction?.label}
+              onPrimary={primaryAction?.onClick}
+              primaryDisabled={primaryAction?.disabled}
+              secondaryLabel={secondaryAction?.label}
+              onSecondary={secondaryAction?.onClick}
+              tone={footerTone || (dark ? "dark" : "light")}
+              withBottomNav={hasBottomNav}
+            />
+          ) : null}
+          {hasBottomNav ? <GlobalBottomNav activeTab={bottomNav.activeTab} dark={dark} /> : null}
+        </div>
       )}
     </section>
   );
