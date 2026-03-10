@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAXU 本地测试</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", "PingFang SC", sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0c1020 0%, #1a1a2e 100%);
+      color: #f7f8ff;
+      padding: 24px;
+    }
+    .card {
+      max-width: 420px;
+      padding: 32px;
+      background: rgba(16, 22, 42, 0.9);
+      border: 1px solid rgba(140, 158, 255, 0.2);
+      border-radius: 24px;
+      text-align: center;
+    }
+    h1 { margin: 0 0 8px; font-size: 24px; }
+    p { margin: 0 0 24px; color: #98a2c6; font-size: 14px; line-height: 1.6; }
+    .btn {
+      display: inline-block;
+      padding: 14px 28px;
+      background: #7c5cff;
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(124, 92, 255, 0.4);
+    }
+    .steps {
+      text-align: left;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 13px;
+      color: #98a2c6;
+    }
+    .steps code { background: rgba(0,0,0,0.3); padding: 2px 8px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>MAXU 本地测试页</h1>
+    <p>点击下方按钮打开原型（需先启动开发服务器）</p>
+    <a class="btn" href="http://localhost:5173/" target="_blank">打开原型 →</a>
+    <div class="steps">
+      <p><strong>步骤：</strong></p>
+      <p>1. 在项目目录执行 <code>npm run dev</code></p>
+      <p>2. 点击上方按钮或访问 <code>http://localhost:5173</code></p>
+    </div>
+  </div>
+</body>
+</html>

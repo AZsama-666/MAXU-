@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import { ThemeSwitcher } from "./components/ThemeSwitcher";
 import { Zone0Prototype } from "./zones/zone0/Zone0Prototype";
 import { Zone1Prototype } from "./zones/zone1/Zone1Prototype";
 import { Zone2Prototype } from "./zones/zone2/Zone2Prototype";
@@ -8,7 +9,9 @@ import { Zone5Prototype } from "./zones/zone5/Zone5Prototype";
 
 export default function App() {
   return (
-    <Routes>
+    <>
+      <ThemeSwitcher />
+      <Routes>
       <Route path="/" element={<Navigate to="/zone0/login" replace />} />
       <Route path="/zone0/*" element={<Zone0Prototype />} />
       <Route path="/zone1/*" element={<Zone1Prototype />} />
@@ -18,5 +21,6 @@ export default function App() {
       <Route path="/zone5/*" element={<Zone5Prototype />} />
       <Route path="*" element={<Navigate to="/zone0/login" replace />} />
     </Routes>
+    </>
   );
 }
