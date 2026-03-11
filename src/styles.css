@@ -2583,6 +2583,330 @@ a {
   cursor: pointer;
 }
 
+/* ── Zone4 我的主页 ─────────────────────────── */
+.zone4-mine-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.zone4-mine-banner {
+  flex-shrink: 0;
+  position: relative;
+  height: 200px;
+  background: linear-gradient(160deg, #1a0e2e 0%, #2d1a4e 55%, #1a2e3e 100%);
+  transition: height 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.zone4-mine-banner.zone4-mine-banner-expanded {
+  height: 440px;
+}
+
+.zone4-mine-banner-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 24px 20px 8px;
+  color: #fff;
+}
+
+.zone4-mine-robot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.zone4-mine-robot-icon {
+  font-size: 2.8rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(124, 92, 255, 0.35), transparent 70%);
+  border: 1.5px solid rgba(124, 92, 255, 0.5);
+}
+
+.zone4-mine-banner-expand-hint {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0;
+}
+
+.zone4-mine-banner-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+
+.zone4-mine-banner-sub {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0;
+}
+
+.zone4-mine-banner-handle {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 8px 8px;
+  background: rgba(0, 0, 0, 0.25);
+  border: none;
+  cursor: pointer;
+  gap: 3px;
+}
+
+.zone4-mine-handle-bar {
+  display: block;
+  width: 36px;
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.zone4-mine-handle-label {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.04em;
+}
+
+/* 个人资料可滚动区域 */
+.zone4-mine-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 12px;
+}
+
+.zone4-profile-actions {
+  display: flex;
+  gap: 10px;
+  padding: 16px 16px 0;
+}
+
+.zone4-profile-btn {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 22px;
+  border: 1.5px solid var(--panel-border);
+  background: var(--panel);
+  color: var(--text-main);
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: border-color 0.18s;
+}
+
+.zone4-profile-btn:hover {
+  border-color: var(--accent);
+}
+
+.zone4-profile-info {
+  padding: 16px 16px 8px;
+}
+
+.zone4-profile-name {
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0 0 5px;
+}
+
+.zone4-profile-bio {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin: 0 0 12px;
+}
+
+.zone4-profile-stats {
+  display: flex;
+  gap: 22px;
+  margin-bottom: 10px;
+}
+
+.zone4-profile-stats span {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.zone4-profile-stats strong {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.zone4-profile-stats em {
+  font-style: normal;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.zone4-profile-id {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* 动态区 */
+.zone4-posts-section {
+  border-top: 1px solid var(--panel-border);
+  margin-top: 8px;
+}
+
+.zone4-posts-tab-bar {
+  display: flex;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.zone4-posts-tab {
+  padding: 12px 18px;
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  position: relative;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+
+.zone4-posts-tab.zone4-posts-tab-active {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.zone4-posts-tab.zone4-posts-tab-active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px 2px 0 0;
+}
+
+.zone4-posts-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 16px 24px;
+  gap: 16px;
+}
+
+.zone4-posts-empty-text {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.zone4-posts-cta {
+  padding: 10px 28px;
+  border: 1.5px solid var(--panel-border);
+  border-radius: 22px;
+  background: var(--panel);
+  color: var(--text-main);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.18s;
+}
+
+.zone4-posts-cta:hover {
+  border-color: var(--accent);
+}
+
+/* ── AI 分身调教中心 ─────────────────────────── */
+.zone4-ai-hub-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.zone4-ai-hub-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.18s, box-shadow 0.18s;
+  font: inherit;
+  color: inherit;
+}
+
+.zone4-ai-hub-item:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 16px rgba(124, 92, 255, 0.1);
+}
+
+.zone4-ai-hub-icon {
+  font-size: 1.4rem;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(124, 92, 255, 0.1);
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.zone4-ai-hub-text {
+  flex: 1;
+}
+
+.zone4-ai-hub-text strong {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.zone4-ai-hub-text p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.zone4-ai-hub-arrow {
+  font-size: 1.3rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* 旧样式保留兼容 */
 .zone4-mine-entries {
   display: flex;
   flex-direction: column;

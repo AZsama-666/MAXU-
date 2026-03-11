@@ -1,9 +1,19 @@
 export const zone4FlowLinks = [
   { path: "/zone4/hub", label: "18 我的主页", type: "主页面" },
-  { path: "/zone4/reports", label: "19 每日战报", type: "收纳" },
-  { path: "/zone4/align", label: "20 与分身对齐", type: "调教" },
-  { path: "/zone4/signoff", label: "21 下线倾向", type: "主页面" }
+  { path: "/zone4/ai-hub", label: "19 AI分身调教", type: "AI入口" },
+  { path: "/zone4/reports", label: "20 每日战报", type: "收纳" },
+  { path: "/zone4/align", label: "21 与分身对齐", type: "调教" },
+  { path: "/zone4/signoff", label: "22 离线挂机指令", type: "主页面" }
 ];
+
+export const userProfile = {
+  name: "Zero",
+  bio: "暂无简介",
+  following: 2,
+  followers: 1,
+  posts: 0,
+  handle: "JefferyW"
+};
 
 export const zone4CompletionNotes = [
   "Tab 改成“我的”，降低理解成本，不再叫双生控制舱。",
