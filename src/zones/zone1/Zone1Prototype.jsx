@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AppShell } from "../../components/AppShell";
 import { PhoneFrame } from "../../components/PhoneFrame";
 import {
@@ -308,9 +308,12 @@ function FeedCard({ item }) {
 }
 
 function PublishFlowPage({ onBack, onConfirm }) {
-  const [step, setStep] = useState("select");
+  const location = useLocation();
+  const quotedStory = location.state?.quotedStory || null;
+
+  const [step, setStep] = useState(quotedStory ? "confirm" : "select");
   const [selected, setSelected] = useState(null);
-  const [caption, setCaption] = useState("");
+  const [caption, setCaption] = useState(quotedStory ? quotedStory.snippet : "");
 
   const handleSelect = (preset) => {
     setSelected(preset);
@@ -319,27 +322,53 @@ function PublishFlowPage({ onBack, onConfirm }) {
   };
 
   const handlePublish = () => {
+    if (quotedStory) {
+      onConfirm(
+        { imageLabel: quotedStory.imageLabel, scene: quotedStory.title },
+        caption
+      );
+      onBack();
+      return;
+    }
     if (selected) {
       onConfirm(selected, caption);
       onBack();
     }
   };
 
-  if (step === "confirm" && selected) {
+  /* ── 确认发布步骤 ── */
+  if (step === "confirm" && (selected || quotedStory)) {
     return (
       <AppShell
         title="确认发布"
         subtitle="配图与配文由你最终确认后发布。"
-        onBack={() => setStep("select")}
+        onBack={() => (quotedStory ? onBack() : setStep("select"))}
         progress="发布"
         primaryAction={{ label: "确认发布", onClick: handlePublish }}
-        secondaryAction={{ label: "返回", onClick: () => setStep("select") }}
+        secondaryAction={{ label: "返回", onClick: () => (quotedStory ? onBack() : setStep("select")) }}
       >
         <div className="zone1-publish-confirm">
-          <div
-            className="zone1-feed-thumb zone1-publish-preview-thumb"
-            style={{ ["--thumb-label"]: `"${(selected.imageLabel || selected.scene).slice(0, 4)}"` }}
-          />
+          {/* 故事引用嵌入卡片 */}
+          {quotedStory ? (
+            <div className="zone1-story-quote-card">
+              <div
+                className="zone1-story-quote-thumb"
+                style={{ ["--thumb-label"]: `"${(quotedStory.imageLabel || "故事").slice(0, 4)}"` }}
+              />
+              <div className="zone1-story-quote-info">
+                <span className="zone1-story-quote-tag">引用故事</span>
+                <strong className="zone1-story-quote-title">{quotedStory.title}</strong>
+                <p className="zone1-story-quote-snippet">{quotedStory.snippet}</p>
+                <span className="zone1-story-quote-time">{quotedStory.time}</span>
+              </div>
+            </div>
+          ) : (
+            <div
+              className="zone1-feed-thumb zone1-publish-preview-thumb"
+              style={{ ["--thumb-label"]: `"${(selected.imageLabel || selected.scene).slice(0, 4)}"` }}
+            />
+          )}
+
           <label className="zone1-publish-label">配文（可编辑）</label>
           <textarea
             className="zone1-textarea zone1-publish-textarea"
@@ -353,6 +382,7 @@ function PublishFlowPage({ onBack, onConfirm }) {
     );
   }
 
+  /* ── 选择步骤 ── */
   return (
     <AppShell
       title="发布分身动态"

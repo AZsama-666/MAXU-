@@ -1,6 +1,7 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { AppShell } from "../../components/AppShell";
+import { GlobalBottomNav } from "../../components/GlobalBottomNav";
 import { PhoneFrame } from "../../components/PhoneFrame";
 import { basicChat, messageThreads, revealState, zone3CompletionNotes, zone3FlowLinks } from "./data";
 
@@ -99,34 +100,68 @@ export function Zone3Prototype() {
   );
 }
 
+const INBOX_FILTERS = [
+  { id: "reply", label: "回复我的", icon: "💬" },
+  { id: "like", label: "赞和收藏", icon: "✦" },
+  { id: "at", label: "@ 我", icon: "@" }
+];
+
 function InboxPage({ onBack, onOpenReveal, onOpenChat }) {
+  const [activeFilter, setActiveFilter] = useState(null);
+
   return (
-    <AppShell
-      title="消息列表"
-      subtitle="先知道谁在等你，再决定要不要继续。"
-      onBack={onBack}
-      progress="15 / 17"
-      bottomNav={{ activeTab: "messages" }}
-    >
-      <div className="zoneX-card-grid">
+    <div className="zone3-inbox-page">
+      {/* 标题区 */}
+      <div className="zone3-inbox-header">
+        <h2 className="zone3-inbox-title">消息</h2>
+      </div>
+
+      {/* 三个快捷筛选图标 */}
+      <div className="zone3-inbox-filters">
+        {INBOX_FILTERS.map((f) => (
+          <button
+            key={f.id}
+            type="button"
+            className={`zone3-filter-btn${activeFilter === f.id ? " zone3-filter-btn-active" : ""}`}
+            onClick={() => setActiveFilter(activeFilter === f.id ? null : f.id)}
+          >
+            <span className="zone3-filter-icon">{f.icon}</span>
+            <span className="zone3-filter-label">{f.label}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* 会话列表 */}
+      <div className="zone3-thread-list">
         {messageThreads.map((item) => (
           <button
             key={item.id}
             type="button"
-            className="home-card zoneX-button-card zone3-thread-card"
+            className="zone3-thread-row"
             onClick={item.type === "命定之人" ? onOpenReveal : onOpenChat}
           >
-            <span className="home-card-badge">{item.type}</span>
-            <h4>{item.title}</h4>
-            <p>{item.preview}</p>
-            <div className="zone1-inline-meta">
-              <span>{item.status}</span>
-              <span>{item.routeHint}</span>
+            <div
+              className="zone3-thread-avatar"
+              style={{ background: item.avatarColor }}
+            >
+              {item.avatarText}
+              {item.unread > 0 && (
+                <span className="zone3-thread-unread">{item.unread}</span>
+              )}
             </div>
+            <div className="zone3-thread-content">
+              <span className="zone3-thread-name">{item.title}</span>
+              <span className="zone3-thread-preview">{item.preview}</span>
+            </div>
+            <span className="zone3-thread-time">{item.time}</span>
           </button>
         ))}
       </div>
-    </AppShell>
+
+      <div className="app-shell-footer-stack">
+        <GlobalBottomNav activeTab="messages" />
+      </div>
+    </div>
   );
 }
 

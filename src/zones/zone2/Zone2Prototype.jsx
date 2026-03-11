@@ -3,6 +3,7 @@ import { Link, Navigate, Route, Routes, useLocation, useNavigate, useParams } fr
 import { AppShell } from "../../components/AppShell";
 import { PhoneFrame } from "../../components/PhoneFrame";
 import { bondSummaries, bondStorylines, zone2CompletionNotes, zone2FlowLinks } from "./data";
+import { mockContacts } from "../zone3/data";
 
 function matchFlowLink(pathname) {
   if (pathname.startsWith("/zone2/detail/")) {
@@ -142,10 +143,69 @@ function BondListPage({ onBack, onOpenBond }) {
 
 const STORY_PAGE_SIZE = 4;
 
+/* 转发分享面板 */
+function ShareSheet({ story, onClose, onSent }) {
+  const [sentTo, setSentTo] = useState(null);
+
+  if (sentTo) {
+    return (
+      <div className="zone2-share-overlay" onClick={onClose}>
+        <div className="zone2-share-sheet" onClick={(e) => e.stopPropagation()}>
+          <div className="zone2-share-sent">
+            <span className="zone2-share-sent-icon">✓</span>
+            <p>已转发给 <strong>{sentTo}</strong></p>
+            <button type="button" className="zone2-share-close-btn" onClick={onClose}>
+              关闭
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="zone2-share-overlay" onClick={onClose}>
+      <div className="zone2-share-sheet" onClick={(e) => e.stopPropagation()}>
+        <div className="zone2-share-header">
+          <span>转发故事给好友</span>
+          <button type="button" className="zone2-share-x" onClick={onClose}>×</button>
+        </div>
+        <div className="zone2-share-story-preview">
+          <div
+            className="zone2-share-thumb"
+            style={{ ["--thumb-label"]: `"${(story.imageLabel || "故事").slice(0, 4)}"` }}
+          />
+          <p className="zone2-share-story-title">{story.title}</p>
+        </div>
+        <div className="zone2-share-contacts">
+          {mockContacts.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              className="zone2-share-contact"
+              onClick={() => { onSent(c.name); setSentTo(c.name); }}
+            >
+              <span
+                className="zone2-share-contact-avatar"
+                style={{ background: c.avatarColor }}
+              >
+                {c.name[0]}
+              </span>
+              <span>{c.name}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function BondDetailPage({ onBack, onGoMessages }) {
   const bond = useBond();
+  const navigate = useNavigate();
   const storyline = bondStorylines[bond.id] || [];
   const [page, setPage] = useState(1);
+  const [shareStory, setShareStory] = useState(null);
   const totalPages = Math.max(1, Math.ceil(storyline.length / STORY_PAGE_SIZE));
   const start = (page - 1) * STORY_PAGE_SIZE;
   const pageItems = storyline.slice(start, start + STORY_PAGE_SIZE);
@@ -160,6 +220,15 @@ function BondDetailPage({ onBack, onGoMessages }) {
       bottomNav={{ activeTab: "relations" }}
       primaryAction={{ label: "续写下一章", onClick: onGoMessages }}
     >
+      {/* 转发分享面板 */}
+      {shareStory && (
+        <ShareSheet
+          story={shareStory}
+          onClose={() => setShareStory(null)}
+          onSent={() => {}}
+        />
+      )}
+
       {storyline.length > 0 && (
         <div className="zone2-story-meta">
           <span className="zone2-story-meta-count">{storyline.length} 条故事</span>
@@ -184,6 +253,25 @@ function BondDetailPage({ onBack, onGoMessages }) {
                 />
                 <p className="zone2-story-card-snippet">{node.snippet}</p>
                 <span className="zone2-story-card-time">{node.time}</span>
+                {/* 故事卡片操作行 */}
+                <div className="zone2-story-card-actions">
+                  <button
+                    type="button"
+                    className="zone2-story-action-btn"
+                    onClick={() => setShareStory(node)}
+                  >
+                    转发
+                  </button>
+                  <button
+                    type="button"
+                    className="zone2-story-action-btn zone2-story-action-plaza"
+                    onClick={() =>
+                      navigate("/zone1/publish", { state: { quotedStory: node } })
+                    }
+                  >
+                    发广场
+                  </button>
+                </div>
               </div>
             ))}
           </div>

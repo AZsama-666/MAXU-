@@ -15,7 +15,11 @@ export const messageThreads = [
     id: "k",
     type: "命定之人",
     title: "K",
+    avatarColor: "#7c5cff",
+    avatarText: "K",
     preview: "我把那条夜路补完了一半，另一半等你上线。",
+    unread: 1,
+    time: "今天 22:10",
     status: "可揭面",
     routeHint: "来自本轮 8 小时命定之人"
   },
@@ -23,10 +27,33 @@ export const messageThreads = [
     id: "zoe",
     type: "熟人关系",
     title: "Zoe",
+    avatarColor: "#ff6b81",
+    avatarText: "Z",
     preview: "你如果真回来，就别只在门口停一下。",
+    unread: 0,
+    time: "昨天 18:44",
     status: "可继续聊天",
     routeHint: "来自当前主线的基础消息承接"
+  },
+  {
+    id: "system",
+    type: "系统通知",
+    title: "系统通知",
+    avatarColor: "#20c99e",
+    avatarText: "⚑",
+    preview: "你的分身完成了今晚的活动报告，点击查看。",
+    unread: 0,
+    time: "2026-03-03 16:18",
+    status: "通知",
+    routeHint: "系统消息"
   }
+];
+
+export const mockContacts = [
+  { id: "zoe", name: "Zoe", avatarColor: "#ff6b81" },
+  { id: "nova", name: "NOVA", avatarColor: "#20c99e" },
+  { id: "kai", name: "KAI", avatarColor: "#ffd43b" },
+  { id: "rio", name: "RIO", avatarColor: "#7c5cff" }
 ];
 
 export const revealState = {
