@@ -99,6 +99,7 @@ export function Zone4Prototype() {
                 <AlignPage
                   onBack={() => navigate("/zone4/hub")}
                   tools={alignTools}
+                  onPublish={() => navigate("/zone1/publish")}
                 />
               }
             />
@@ -178,7 +179,7 @@ function ReportsPage({ onBack, reports }) {
   );
 }
 
-function AlignPage({ onBack, tools }) {
+function AlignPage({ onBack, tools, onPublish }) {
   return (
     <AppShell
       title="与分身对齐"
@@ -195,6 +196,11 @@ function AlignPage({ onBack, tools }) {
             <span className="zone1-inline-tag">{t.status}</span>
           </div>
         ))}
+        <button type="button" className="zone4-align-item zone4-align-publish-entry" onClick={onPublish}>
+          <strong>让分身发一条内容</strong>
+          <p className="zone1-copy-muted">选择场景与配图，由你最终确认发布到广场。</p>
+          <span className="zone1-inline-tag">AI 代发</span>
+        </button>
       </div>
     </AppShell>
   );

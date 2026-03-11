@@ -239,12 +239,6 @@ function HomePage({ onBack, onOpenFate, onGoToReports, onOpenPublish, posts }) {
         </button>
       </div>
 
-      <div className="zone1-quick-post-row">
-        <button type="button" className="zone1-publish-entry-btn" onClick={onOpenPublish}>
-          发布分身动态
-        </button>
-      </div>
-
       <div className="zone1-feed-grid">
         {posts.map((item) => (
           <FeedCard key={item.id} item={item} />

@@ -2649,6 +2649,18 @@ a {
   margin: 6px 0 8px;
 }
 
+.zone4-align-publish-entry {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  border-color: var(--accent);
+  transition: box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.zone4-align-publish-entry:hover {
+  box-shadow: 0 4px 16px rgba(124, 92, 255, 0.15);
+}
+
 .zone1-quick-nav-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }

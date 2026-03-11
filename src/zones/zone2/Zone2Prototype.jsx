@@ -119,7 +119,6 @@ function BondListPage({ onBack, onOpenBond }) {
             >
               <div className="zone2-bond-card-top">
                 <span className="zone2-bond-name">{item.name}</span>
-                <span className="home-card-badge">{item.status}</span>
               </div>
               {storyCount > 0 ? (
                 <div className="zone2-bond-story-hint">
