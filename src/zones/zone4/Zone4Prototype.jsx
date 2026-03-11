@@ -120,6 +120,88 @@ export function Zone4Prototype() {
   );
 }
 
+/* ─── 卡通数字人头像 ─────────────────────────────────────── */
+function AvatarIllustration({ expanded }) {
+  const size = expanded ? 120 : 80;
+  return (
+    <svg
+      viewBox="0 0 160 180"
+      width={size}
+      height={size}
+      className="zone4-avatar-svg"
+      aria-label="AI 分身数字人"
+    >
+      <defs>
+        <radialGradient id="glowGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#c4b5fd" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="#7c5cff" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="faceGrad" cx="38%" cy="32%" r="65%">
+          <stop offset="0%" stopColor="#fff8dc" />
+          <stop offset="100%" stopColor="#ffe066" />
+        </radialGradient>
+        <radialGradient id="bodyGrad" cx="50%" cy="20%" r="70%">
+          <stop offset="0%" stopColor="#c4b5fd" />
+          <stop offset="100%" stopColor="#7c5cff" />
+        </radialGradient>
+      </defs>
+
+      {/* 光晕 */}
+      <ellipse cx="80" cy="90" rx="72" ry="72" fill="url(#glowGrad)" />
+
+      {/* 身体 */}
+      <rect x="52" y="126" width="56" height="36" rx="12" fill="url(#bodyGrad)" opacity="0.9" />
+      <rect x="60" y="134" width="16" height="22" rx="8" fill="#a78bfa" opacity="0.6" />
+      <rect x="84" y="134" width="16" height="22" rx="8" fill="#a78bfa" opacity="0.6" />
+
+      {/* 领口 */}
+      <ellipse cx="80" cy="126" rx="20" ry="7" fill="#7c5cff" opacity="0.5" />
+
+      {/* 左耳 */}
+      <circle cx="30" cy="84" r="11" fill="#ffe066" stroke="#ffd43b" strokeWidth="2.5" />
+      <circle cx="30" cy="84" r="6" fill="#ffb3c6" opacity="0.65" />
+      {/* 右耳 */}
+      <circle cx="130" cy="84" r="11" fill="#ffe066" stroke="#ffd43b" strokeWidth="2.5" />
+      <circle cx="130" cy="84" r="6" fill="#ffb3c6" opacity="0.65" />
+
+      {/* 脸 */}
+      <circle cx="80" cy="84" r="48" fill="url(#faceGrad)" stroke="#ffd43b" strokeWidth="2.5" />
+
+      {/* 左眼 */}
+      <ellipse cx="63" cy="76" rx="9" ry="11" fill="#1a1d2e" />
+      <circle cx="67" cy="72" r="3" fill="#ffffff" />
+      <circle cx="65" cy="78" r="1.5" fill="#ffffff" opacity="0.4" />
+      {/* 右眼 */}
+      <ellipse cx="97" cy="76" rx="9" ry="11" fill="#1a1d2e" />
+      <circle cx="101" cy="72" r="3" fill="#ffffff" />
+      <circle cx="99" cy="78" r="1.5" fill="#ffffff" opacity="0.4" />
+
+      {/* 笑容 */}
+      <path d="M62 95 Q80 113 98 95" stroke="#c2410c" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.7" />
+
+      {/* 腮红 */}
+      <ellipse cx="50" cy="91" rx="10" ry="6" fill="#ffb3c6" opacity="0.5" />
+      <ellipse cx="110" cy="91" rx="10" ry="6" fill="#ffb3c6" opacity="0.5" />
+
+      {/* 发型 */}
+      <ellipse cx="55" cy="40" rx="14" ry="11" fill="#ffd43b" stroke="#ffba08" strokeWidth="1.5" />
+      <ellipse cx="80" cy="36" rx="14" ry="11" fill="#ffd43b" stroke="#ffba08" strokeWidth="1.5" />
+      <ellipse cx="105" cy="40" rx="14" ry="11" fill="#ffd43b" stroke="#ffba08" strokeWidth="1.5" />
+
+      {/* 天线 */}
+      <line x1="80" y1="37" x2="80" y2="16" stroke="#7c5cff" strokeWidth="4" strokeLinecap="round" />
+      <circle cx="80" cy="11" r="8" fill="#7c5cff" />
+      <circle cx="80" cy="11" r="4.5" fill="#c4b5fd" />
+
+      {/* 数字装饰点 */}
+      <circle cx="40" cy="55" r="4" fill="#3ecfb4" opacity="0.7" />
+      <circle cx="120" cy="55" r="4" fill="#7c5cff" opacity="0.7" />
+      <circle cx="30" cy="110" r="3" fill="#ffd43b" opacity="0.6" />
+      <circle cx="130" cy="110" r="3" fill="#ffd43b" opacity="0.6" />
+    </svg>
+  );
+}
+
 /* ─── 我的主页 ─────────────────────────────────────────── */
 function MinePage({ onGoAiHub }) {
   const [expanded, setExpanded] = useState(false);
@@ -145,7 +227,7 @@ function MinePage({ onGoAiHub }) {
       >
         <button type="button" className="zone4-mine-banner-body" onClick={onGoAiHub}>
           <div className="zone4-mine-robot">
-            <span className="zone4-mine-robot-icon">◈</span>
+            <AvatarIllustration expanded={expanded} />
             {expanded && (
               <p className="zone4-mine-banner-expand-hint">
                 点击进入 AI 分身调教中心

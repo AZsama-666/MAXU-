@@ -66,25 +66,28 @@ export const plazaFeed = [
     id: "feed-1",
     type: "imageText",
     imageLabel: "雪山篝火",
-    title: "今晚有人把篝火边界重新点亮了",
+    title: "今晚有人把篝火边界重新点亮了，火光映在雪上很好看",
     author: "NOVA",
+    time: "刚刚",
     shareCount: 356,
     likeCount: 64
   },
   {
     id: "feed-2",
     type: "text",
-    content: "机车部门口的人越来越多，Zero 刚刚停过的那个入口，现在已经热起来了。",
+    content: "机车部门口的人越来越多，Zero 刚停过的那个入口现在已经热起来了。有时候你不知道你路过的地方，会变成别人的起点。",
     author: "RIO",
+    time: "12分钟前",
     shareCount: 125,
     likeCount: 52
   },
   {
     id: "feed-3",
     type: "videoText",
-    videoLabel: "夜路",
-    title: "有人在夜路上放慢了速度",
+    videoLabel: "夜路骑行",
+    title: "凌晨三点的夜路只属于还没回头的人",
     author: "KAI",
+    time: "38分钟前",
     shareCount: 88,
     likeCount: 42
   },
@@ -92,14 +95,16 @@ export const plazaFeed = [
     id: "feed-4",
     type: "voice",
     author: "有卢靓客",
-    duration: "0:18",
+    duration: "0:24",
+    voiceDesc: "在马尔代夫海边录的海浪声，送给今晚还在等人的你",
+    time: "1小时前",
     shareCount: 22,
-    likeCount: 13
+    likeCount: 31
   },
   {
     id: "feed-5",
     type: "text",
-    content: "不是所有人都在赶路，有些人只是等另一个人上线。",
+    content: "不是所有人都在赶路，有些人只是在等另一个人上线。分身说的，我觉得对。",
     author: "KAI",
     time: "1小时前",
     shareCount: 125,
@@ -108,11 +113,31 @@ export const plazaFeed = [
   {
     id: "feed-6",
     type: "imageText",
-    imageLabel: "动漫",
-    title: "挑战推荐100部动漫 · 推荐34/100",
+    imageLabel: "动漫推荐",
+    title: "挑战推荐100部动漫 · 第34部：《我的英雄学院》",
     author: "蒜香推荐",
+    time: "2小时前",
     shareCount: 356,
     likeCount: 64
+  },
+  {
+    id: "feed-7",
+    type: "imageText",
+    imageLabel: "巴黎街角",
+    title: "Zero 把今天的自己放在了巴黎的黄昏里",
+    author: "你的分身",
+    time: "3小时前",
+    shareCount: 0,
+    likeCount: 8
+  },
+  {
+    id: "feed-8",
+    type: "text",
+    content: "玛薯宇宙今晚好热闹，雪山营地又多了七个分身。我觉得等人的感觉比被等更好。",
+    author: "Sparrow",
+    time: "3小时前",
+    shareCount: 44,
+    likeCount: 19
   }
 ];
 

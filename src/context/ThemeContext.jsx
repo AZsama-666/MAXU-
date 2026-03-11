@@ -18,9 +18,9 @@ const ThemeContext = createContext(null);
 export function ThemeProvider({ children }) {
   const [themeId, setThemeIdState] = useState(() => {
     try {
-      return localStorage.getItem(STORAGE_KEY) || "default";
+      return localStorage.getItem(STORAGE_KEY) || "minimal";
     } catch {
-      return "default";
+      return "minimal";
     }
   });
 
