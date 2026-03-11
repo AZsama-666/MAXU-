@@ -23,7 +23,11 @@ export const homeSnapshot = {
 export const twinReport = {
   title: "分身战报",
   period: "过去这段离线期间",
-  stripText: "2人 · 5条 · 3处",
+  /** 首页提示条（可配置）：仅展示浏览了多少条 */
+  stripLabel: "浏览",
+  stripValue: 10,
+  stripUnit: "条",
+  stripLinkText: "查看全部",
   items: [
     { label: "新认识的人", value: 2, unit: "位" },
     { label: "留下的留言", value: 5, unit: "条" },
@@ -50,7 +54,7 @@ export const fateState = {
   }
 };
 
-/** 广场信息流：双竖排（小红书式），支持 多图+文字 / 纯文字 / 纯语音 */
+/** 广场信息流：四类卡片全部双竖排（小红书式）图文 / 文字 / 视频文字 / 语音 */
 export const plazaFeedTabs = [
   { id: "market", label: "市集" },
   { id: "discover", label: "发现" },
@@ -60,24 +64,15 @@ export const plazaFeedTabs = [
 export const plazaFeed = [
   {
     id: "feed-1",
-    type: "multiImage",
-    title: "挑战推荐100部动漫",
-    subtitle: "推荐34/100 · 蒜香推荐",
-    author: "蒜香推荐",
-    imageLabels: ["封面", "图2", "图3"],
+    type: "imageText",
+    imageLabel: "雪山篝火",
+    title: "今晚有人把篝火边界重新点亮了",
+    author: "NOVA",
     shareCount: 356,
     likeCount: 64
   },
   {
     id: "feed-2",
-    type: "text",
-    content: "今晚有人把篝火边界重新点亮了，雪山营地的风刚好吹到这里。",
-    author: "NOVA",
-    shareCount: 125,
-    likeCount: 52
-  },
-  {
-    id: "feed-3",
     type: "text",
     content: "机车部门口的人越来越多，Zero 刚刚停过的那个入口，现在已经热起来了。",
     author: "RIO",
@@ -85,22 +80,39 @@ export const plazaFeed = [
     likeCount: 52
   },
   {
-    id: "feed-4",
-    type: "text",
-    content: "有人在夜路上放慢了速度。不是所有人都在赶路，有些人只是等另一个人上线。",
+    id: "feed-3",
+    type: "videoText",
+    videoLabel: "夜路",
+    title: "有人在夜路上放慢了速度",
     author: "KAI",
-    time: "1小时前",
-    shareCount: 125,
-    likeCount: 52,
-    fullWidth: true
+    shareCount: 88,
+    likeCount: 42
   },
   {
-    id: "feed-5",
+    id: "feed-4",
     type: "voice",
     author: "有卢靓客",
     duration: "0:18",
     shareCount: 22,
     likeCount: 13
+  },
+  {
+    id: "feed-5",
+    type: "text",
+    content: "不是所有人都在赶路，有些人只是等另一个人上线。",
+    author: "KAI",
+    time: "1小时前",
+    shareCount: 125,
+    likeCount: 52
+  },
+  {
+    id: "feed-6",
+    type: "imageText",
+    imageLabel: "动漫",
+    title: "挑战推荐100部动漫 · 推荐34/100",
+    author: "蒜香推荐",
+    shareCount: 356,
+    likeCount: 64
   }
 ];
 

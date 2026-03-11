@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link, Navigate, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AppShell } from "../../components/AppShell";
 import { PhoneFrame } from "../../components/PhoneFrame";
@@ -128,10 +128,16 @@ function BondListPage({ onBack, onOpenBond }) {
   );
 }
 
+const STORY_PAGE_SIZE = 4;
+
 function BondDetailPage({ onBack, onGoMessages }) {
   const bond = useBond();
   const content = bondHighlights[bond.id];
   const storyline = bondStorylines[bond.id] || [];
+  const [page, setPage] = useState(1);
+  const totalPages = Math.max(1, Math.ceil(storyline.length / STORY_PAGE_SIZE));
+  const start = (page - 1) * STORY_PAGE_SIZE;
+  const pageItems = storyline.slice(start, start + STORY_PAGE_SIZE);
 
   return (
     <AppShell
@@ -150,16 +156,42 @@ function BondDetailPage({ onBack, onGoMessages }) {
       </div>
 
       <div className="zone2-storyline">
-        <strong className="zone2-storyline-title">我们的小故事 · AIGC 故事线</strong>
-        <div className="zone2-storyline-list">
-          {storyline.map((node, index) => (
-            <div key={index} className="zone2-storyline-node">
-              <span className="zone2-storyline-time">{node.time}</span>
-              <h5>{node.title}</h5>
-              <p className="zone1-copy-muted">{node.snippet}</p>
+        <strong className="zone2-storyline-title">我们的小故事 · AIGC</strong>
+        {storyline.length === 0 ? (
+          <p className="zone2-story-empty">暂无小故事</p>
+        ) : (
+          <>
+            <div className="zone2-story-grid">
+              {pageItems.map((node, index) => (
+                <div key={start + index} className="zone2-story-card">
+                  <div
+                    className="zone2-story-card-image"
+                    style={{
+                      ["--thumb-label"]: `"${(node.imageLabel || "故事").slice(0, 4)}"`
+                    }}
+                  />
+                  <p className="zone2-story-card-snippet">{node.snippet}</p>
+                  <span className="zone2-story-card-time">{node.time}</span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+            <div className="zone2-story-pagination">
+              {page > 1 && (
+                <button type="button" onClick={() => setPage((p) => p - 1)}>
+                  上一页
+                </button>
+              )}
+              <span className="zone2-story-page-indicator">
+                {page}/{totalPages} Page
+              </span>
+              {page < totalPages && (
+                <button type="button" onClick={() => setPage((p) => p + 1)}>
+                  下一页
+                </button>
+              )}
+            </div>
+          </>
+        )}
       </div>
 
       <div className="status-card">

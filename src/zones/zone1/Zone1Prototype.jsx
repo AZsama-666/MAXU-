@@ -25,14 +25,25 @@ export function Zone1Prototype() {
   const [posts, setPosts] = useState(plazaFeed);
 
   const confirmPublish = (preset, caption) => {
-    const nextPost = {
-      id: `post-${Date.now().toString(36)}`,
-      type: "text",
-      content: caption || preset.content,
-      author: "你的分身",
-      shareCount: 0,
-      likeCount: 0
-    };
+    const isImageText = Boolean(preset.imageLabel);
+    const nextPost = isImageText
+      ? {
+          id: `post-${Date.now().toString(36)}`,
+          type: "imageText",
+          imageLabel: preset.imageLabel || preset.scene,
+          title: caption || preset.title || preset.content,
+          author: "你的分身",
+          shareCount: 0,
+          likeCount: 0
+        }
+      : {
+          id: `post-${Date.now().toString(36)}`,
+          type: "text",
+          content: caption || preset.content,
+          author: "你的分身",
+          shareCount: 0,
+          likeCount: 0
+        };
     setPosts((current) => [nextPost, ...current]);
   };
 
@@ -190,7 +201,6 @@ function HomePage({ onBack, onOpenFate, onGoToReports, onOpenPublish, posts }) {
   return (
     <AppShell
       title="广场"
-      subtitle="市集 · 发现 · 关注"
       onBack={onBack}
       progress="10 / 11"
       bottomNav={{ activeTab: "home" }}
@@ -215,9 +225,14 @@ function HomePage({ onBack, onOpenFate, onGoToReports, onOpenPublish, posts }) {
 
       <div className="zone1-report-strip">
         <button type="button" className="zone1-report-strip-inner" onClick={onGoToReports}>
-          <span className="zone1-report-strip-label">离线</span>
-          <span className="zone1-report-strip-values">{twinReport.stripText}</span>
-          <span className="zone1-report-strip-more">查看全部</span>
+          <span className="zone1-report-strip-label">{twinReport.stripLabel}</span>
+          <span className="zone1-report-strip-values">
+            {twinReport.stripValue}
+            {twinReport.stripUnit}
+          </span>
+          {twinReport.stripLinkText ? (
+            <span className="zone1-report-strip-more">{twinReport.stripLinkText}</span>
+          ) : null}
         </button>
         <button type="button" className="zone1-report-strip-fate" onClick={onOpenFate}>
           命定之人
@@ -241,72 +256,59 @@ function HomePage({ onBack, onOpenFate, onGoToReports, onOpenPublish, posts }) {
 
 function FeedCard({ item }) {
   const type = item.type || "text";
-  if (type === "multiImage") {
+  const footer = (
+    <div className="zone1-feed-footer">
+      <div className="zone1-feed-avatar zone1-feed-avatar-sm">{item.author?.slice(0, 1) || "?"}</div>
+      <span className="zone1-feed-author">{item.author || ""}</span>
+      <span className="zone1-feed-actions">
+        <span>↗ {item.shareCount ?? 0}</span>
+        <span>♥ {item.likeCount ?? 0}</span>
+      </span>
+    </div>
+  );
+
+  if (type === "imageText") {
     return (
-      <article className="zone1-feed-item zone1-feed-item-full zone1-feed-multi-image">
-        <div className="zone1-multi-image-row">
-          <div
-            className="zone1-multi-image-main"
-              style={{ ["--thumb-label"]: `"${(item.imageLabels && item.imageLabels[0]) || "封面"}"` }}
-          />
-          <div className="zone1-multi-image-side">
-            {(item.imageLabels || ["图2", "图3"]).slice(1, 3).map((label, i) => (
-              <div
-                key={i}
-                className="zone1-multi-image-small"
-                style={{ ["--thumb-label"]: `"${label.slice(0, 2)}"` }}
-              />
-            ))}
-          </div>
+      <article className="zone1-feed-item zone1-feed-image-text">
+        <div
+          className="zone1-feed-thumb zone1-feed-thumb-single"
+          style={{ ["--thumb-label"]: `"${(item.imageLabel || "图").slice(0, 4)}"` }}
+        />
+        <p className="zone1-feed-item-title">{item.title || item.content || ""}</p>
+        {footer}
+      </article>
+    );
+  }
+  if (type === "videoText") {
+    return (
+      <article className="zone1-feed-item zone1-feed-video-text">
+        <div className="zone1-feed-video-wrap">
+          <span className="zone1-feed-video-play" aria-hidden>▶</span>
+          <span className="zone1-feed-video-label">{item.videoLabel || "视频"}</span>
         </div>
-        <h4 className="zone1-feed-item-title">{item.title}</h4>
-        {item.subtitle && <p className="zone1-feed-item-sub">{item.subtitle}</p>}
-        <div className="zone1-feed-footer">
-          <div className="zone1-feed-avatar zone1-feed-avatar-sm">{item.author.slice(0, 1)}</div>
-          <span className="zone1-feed-author">{item.author}</span>
-          <span className="zone1-feed-actions">
-            <span>↗ {item.shareCount ?? 0}</span>
-            <span>♥ {item.likeCount ?? 0}</span>
-          </span>
-        </div>
+        <p className="zone1-feed-item-title">{item.title || item.content || ""}</p>
+        {footer}
       </article>
     );
   }
   if (type === "voice") {
     return (
-      <article className="zone1-feed-item zone1-feed-item-full zone1-feed-voice">
-        <div className="zone1-feed-footer zone1-feed-footer-inline">
-          <div className="zone1-feed-avatar zone1-feed-avatar-sm">{item.author.slice(0, 1)}</div>
-          <span className="zone1-feed-author">{item.author}</span>
-        </div>
-        <div className="zone1-voice-bar">
+      <article className="zone1-feed-item zone1-feed-voice">
+        <div className="zone1-voice-bar zone1-voice-bar-inline">
           <button type="button" className="zone1-voice-play" aria-label="播放">▶</button>
           <div className="zone1-voice-wave" />
           <span className="zone1-voice-duration">{item.duration || "0:18"}</span>
         </div>
-        <div className="zone1-feed-actions zone1-feed-actions-end">
-          <span>↗ {item.shareCount ?? 0}</span>
-          <span>♥ {item.likeCount ?? 0}</span>
-        </div>
+        {footer}
       </article>
     );
   }
-  const fullWidth = item.fullWidth || (item.title && !item.content);
   const content = item.content || item.title || "";
   return (
-    <article
-      className={`zone1-feed-item zone1-feed-text ${fullWidth ? "zone1-feed-item-full" : ""}`}
-    >
+    <article className="zone1-feed-item zone1-feed-text">
       <p className="zone1-feed-text-content">{content}</p>
       {item.time && <span className="zone1-feed-time">{item.time}</span>}
-      <div className="zone1-feed-footer">
-        <div className="zone1-feed-avatar zone1-feed-avatar-sm">{item.author.slice(0, 1)}</div>
-        <span className="zone1-feed-author">{item.author}</span>
-        <span className="zone1-feed-actions">
-          <span>↗ {item.shareCount ?? 0}</span>
-          <span>♥ {item.likeCount ?? 0}</span>
-        </span>
-      </div>
+      {footer}
     </article>
   );
 }
