@@ -162,6 +162,27 @@ export const quickSceneryPresets = [
     imageLabel: "动物大迁徙",
     title: "分身在看动物大迁徙",
     content: "Zero 坐在非洲草原的车顶，看着动物大迁徙缓慢经过，觉得今晚不用再刷信息流了。"
+  },
+  {
+    id: "tokyo",
+    scene: "东京",
+    imageLabel: "东京夜景",
+    title: "分身在东京的夜晚游荡",
+    content: "Zero 穿过新宿的霓虹，没有目的地，只是走。有时候分身比人更知道自己想去哪里。"
+  },
+  {
+    id: "iceland",
+    scene: "冰岛",
+    imageLabel: "冰岛极光",
+    title: "分身在冰岛看极光",
+    content: "Zero 躺在冰岛的雪地上，极光在头顶慢慢流动。这种颜色不属于任何一座城市。"
+  },
+  {
+    id: "kyoto",
+    scene: "京都",
+    imageLabel: "京都秋叶",
+    title: "分身在京都的枫叶林里",
+    content: "Zero 站在京都的枫叶林里，叶子掉下来的速度刚刚好，不急不缓，像在等人。"
   }
 ];
 

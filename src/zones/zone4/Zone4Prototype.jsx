@@ -78,6 +78,9 @@ export function Zone4Prototype() {
               element={
                 <MinePage
                   onGoAiHub={() => navigate("/zone4/ai-hub")}
+                  onPublish={(mode) =>
+                    navigate("/zone1/publish", { state: { publishMode: mode } })
+                  }
                 />
               }
             />
@@ -203,10 +206,11 @@ function AvatarIllustration({ expanded }) {
 }
 
 /* ─── 我的主页 ─────────────────────────────────────────── */
-function MinePage({ onGoAiHub }) {
+function MinePage({ onGoAiHub, onPublish }) {
   const [expanded, setExpanded] = useState(false);
   const [dragStartY, setDragStartY] = useState(null);
   const [activePostTab, setActivePostTab] = useState("published");
+  const [publishModalOpen, setPublishModalOpen] = useState(false);
 
   const handleTouchStart = (e) => setDragStartY(e.touches[0].clientY);
   const handleTouchEnd = (e) => {
@@ -215,6 +219,11 @@ function MinePage({ onGoAiHub }) {
     if (delta > 40) setExpanded(true);
     if (delta < -40) setExpanded(false);
     setDragStartY(null);
+  };
+
+  const handleChoosePublish = (mode) => {
+    setPublishModalOpen(false);
+    onPublish(mode);
   };
 
   return (
@@ -285,7 +294,13 @@ function MinePage({ onGoAiHub }) {
           </div>
           <div className="zone4-posts-empty-state">
             <p className="zone4-posts-empty-text">还没有发布过动态</p>
-            <button type="button" className="zone4-posts-cta">发点什么</button>
+            <button
+              type="button"
+              className="zone4-posts-cta"
+              onClick={() => setPublishModalOpen(true)}
+            >
+              ＋ 发点什么
+            </button>
           </div>
         </div>
       </div>
@@ -293,6 +308,54 @@ function MinePage({ onGoAiHub }) {
       <div className="app-shell-footer-stack">
         <GlobalBottomNav activeTab="mine" />
       </div>
+
+      {/* 发布方式选择 Modal */}
+      {publishModalOpen && (
+        <div
+          className="zone4-publish-modal-overlay"
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setPublishModalOpen(false)}
+        >
+          <div
+            className="zone4-publish-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="zone4-publish-modal-handle" />
+            <h3 className="zone4-publish-modal-title">发一条动态</h3>
+            <p className="zone4-publish-modal-sub">选择创作方式</p>
+
+            {/* AI 帮我发 */}
+            <button
+              type="button"
+              className="zone4-publish-modal-option zone4-publish-modal-option-ai"
+              onClick={() => handleChoosePublish("ai")}
+            >
+              <div className="zone4-publish-modal-option-icon zone4-publish-modal-option-icon-ai">
+                ✦
+              </div>
+              <div className="zone4-publish-modal-option-text">
+                <strong>AI 分身帮我发</strong>
+                <span>AI 生成场景 + 文案，我只需最终确认</span>
+              </div>
+              <span className="zone4-publish-modal-badge">推荐</span>
+            </button>
+
+            {/* 我自己写 */}
+            <button
+              type="button"
+              className="zone4-publish-modal-option"
+              onClick={() => handleChoosePublish(null)}
+            >
+              <div className="zone4-publish-modal-option-icon">✏️</div>
+              <div className="zone4-publish-modal-option-text">
+                <strong>我自己写</strong>
+                <span>自己选配图、写文案</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

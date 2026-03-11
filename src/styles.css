@@ -2239,6 +2239,123 @@ a {
 }
 
 /* 发布流程：选择预设 */
+/* ── 发布流：AI 帮我决定按钮 ──────────────────── */
+.zone1-ai-decide-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 6px;
+  background: linear-gradient(120deg, rgba(124,92,255,0.12), rgba(62,207,180,0.08));
+  border: 1.5px solid var(--accent);
+  border-radius: 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: box-shadow 0.2s;
+}
+.zone1-ai-decide-btn:hover {
+  box-shadow: 0 4px 18px rgba(124,92,255,0.18);
+}
+.zone1-ai-decide-icon {
+  font-size: 1.4rem;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.zone1-ai-decide-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.zone1-ai-decide-text strong {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+.zone1-ai-decide-text span {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+.zone1-ai-decide-arrow {
+  font-size: 1.4rem;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ── 发布流：分隔符 ────────────────────────────── */
+.zone1-divider-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0 8px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+.zone1-divider-label::before,
+.zone1-divider-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--panel-border);
+}
+
+/* ── 发布流：换一批按钮 ─────────────────────────── */
+.zone1-refresh-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 14px;
+  padding: 11px 16px;
+  border: 1.5px dashed var(--accent);
+  border-radius: 14px;
+  background: rgba(124,92,255,0.06);
+  color: var(--accent);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.zone1-refresh-btn:hover:not(:disabled) {
+  background: rgba(124,92,255,0.12);
+}
+.zone1-refresh-btn-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  border-style: dashed;
+}
+.zone1-refresh-count {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 10px;
+  background: rgba(124,92,255,0.15);
+  color: var(--accent);
+}
+
+/* ── 发布确认：AI 模式标签 ───────────────────────── */
+.zone1-ai-mode-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  margin-bottom: 14px;
+  background: rgba(62,207,180,0.12);
+  border: 1px solid rgba(62,207,180,0.35);
+  border-radius: 12px;
+  font-size: 0.82rem;
+  color: #0ea591;
+  font-weight: 600;
+}
+.zone1-ai-mode-icon {
+  font-size: 0.9rem;
+  color: #0ea591;
+}
+
 .zone1-preset-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -3124,6 +3241,115 @@ a {
 
 .zone4-posts-cta:hover {
   border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── 发布方式选择 Modal ───────────────────────── */
+.zone4-publish-modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: flex-end;
+  z-index: 200;
+  backdrop-filter: blur(4px);
+  border-radius: inherit;
+}
+.zone4-publish-modal {
+  width: 100%;
+  background: var(--panel);
+  border-radius: 20px 20px 0 0;
+  padding: 14px 18px 32px;
+  border: 1px solid var(--panel-border);
+  border-bottom: none;
+  box-shadow: 0 -8px 30px rgba(0,0,0,0.18);
+}
+.zone4-publish-modal-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--panel-border);
+  margin: 0 auto 16px;
+}
+.zone4-publish-modal-title {
+  margin: 0 0 2px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+.zone4-publish-modal-sub {
+  margin: 0 0 16px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.zone4-publish-modal-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 13px 14px;
+  margin-bottom: 10px;
+  border: 1.5px solid var(--panel-border);
+  border-radius: 14px;
+  background: var(--panel);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+.zone4-publish-modal-option:hover {
+  border-color: var(--accent);
+}
+.zone4-publish-modal-option-ai {
+  background: linear-gradient(120deg, rgba(124,92,255,0.1), rgba(62,207,180,0.07));
+  border-color: var(--accent);
+}
+.zone4-publish-modal-option-ai:hover {
+  box-shadow: 0 4px 16px rgba(124,92,255,0.2);
+}
+.zone4-publish-modal-option-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(124,92,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.zone4-publish-modal-option-icon-ai {
+  background: var(--accent);
+  color: #fff;
+  font-size: 1rem;
+}
+.zone4-publish-modal-option-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.zone4-publish-modal-option-text strong {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+.zone4-publish-modal-option-ai .zone4-publish-modal-option-text strong {
+  color: var(--accent);
+}
+.zone4-publish-modal-option-text span {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+.zone4-publish-modal-badge {
+  flex-shrink: 0;
+  padding: 3px 9px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
 }
 
 /* ── AI 分身调教中心 ─────────────────────────── */

@@ -1,0 +1,1202 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>MAXU MVP 3.5 全景原型图 (22页)</title>
+  <style>
+    :root {
+      --bg: #F2F3F8;
+      --ink: #1A1D2E;
+      --line: #E2E4EF;
+      --muted: #8A90A8;
+      --primary: #7C5CFF;
+      --primary-light: #EDE9FF;
+      --teal: #3ECFB4;
+      --teal-light: #E0FAF5;
+      --warm: #FFBA08;
+      --warm-light: #FFF8E0;
+      --danger: #FF4757;
+      --dark-bg: #1A1D2E;
+      --dark-panel: #252840;
+      --dark-border: rgba(124,92,255,0.25);
+    }
+    * { box-sizing: border-box; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif; }
+    body { margin: 0; padding: 40px; background: var(--bg); color: var(--ink); display: flex; flex-direction: column; align-items: center; }
+
+    /* ── Header ── */
+    .header-box {
+      text-align: center; margin-bottom: 50px; max-width: 1200px;
+      background: #fff; padding: 40px; border-radius: 24px;
+      box-shadow: 0 10px 40px rgba(124,92,255,0.08); width: 100%;
+      border: 1px solid var(--line);
+    }
+    .header-box h1 { font-size: 30px; font-weight: 800; margin: 0 0 12px; color: var(--ink); }
+    .header-box p { color: var(--muted); font-size: 15px; line-height: 1.7; margin: 0; }
+    .header-tags { display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+    .header-tag { padding: 5px 14px; border-radius: 14px; font-size: 13px; font-weight: 600; }
+    .tag-purple { background: var(--primary-light); color: var(--primary); }
+    .tag-teal { background: var(--teal-light); color: #0ea591; }
+    .tag-warm { background: var(--warm-light); color: #b07d00; }
+
+    /* ── Zone container ── */
+    .zone {
+      width: 100%; max-width: 1900px; margin-bottom: 60px;
+      background: #fff; border: 1px solid var(--line); border-radius: 24px;
+      padding: 36px 40px;
+      box-shadow: 0 6px 30px rgba(0,0,0,0.04);
+    }
+    .zone-title {
+      font-size: 24px; font-weight: 800; color: var(--ink);
+      margin-bottom: 30px; display: flex; align-items: center; gap: 14px;
+      border-bottom: 2px solid var(--primary-light); padding-bottom: 14px;
+    }
+    .zone-badge {
+      background: var(--primary-light); color: var(--primary);
+      padding: 5px 14px; border-radius: 14px; font-size: 13px; font-weight: 600;
+    }
+    .zone-badge-teal { background: var(--teal-light); color: #0ea591; }
+    .zone-badge-warm { background: var(--warm-light); color: #b07d00; }
+
+    /* ── Flow layout ── */
+    .flow-row { display: flex; flex-direction: row; flex-wrap: nowrap; align-items: flex-start; gap: 18px; overflow-x: auto; padding-bottom: 16px; }
+    .flow-col { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+    .connector-right { font-size: 26px; color: var(--muted); margin-top: 200px; flex-shrink: 0; }
+    .connector-down { font-size: 22px; color: var(--primary); font-weight: bold; }
+
+    /* ── Phone node ── */
+    .node { display: flex; flex-direction: column; align-items: center; width: 225px; flex-shrink: 0; }
+    .node-label {
+      margin-bottom: 12px; font-size: 12px; font-weight: 700; color: #333;
+      text-align: center; background: #F4F5F7; padding: 7px 10px;
+      border-radius: 10px; width: 100%; border: 1px solid #ddd;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .node-label.main { background: var(--primary); color: white; border-color: var(--primary); }
+    .node-label.teal { background: var(--teal); color: white; border-color: var(--teal); }
+    .node-label.warm { background: var(--warm); color: #1a1d2e; border-color: var(--warm); }
+    .node-label.sub { background: #fff; border: 1px dashed #ccc; color: #666; }
+    .node-idx { font-family: monospace; font-size: 11px; opacity: 0.75; }
+
+    /* ── Phone frame ── */
+    .phone-wrapper { width: 225px; height: 487px; position: relative; }
+    .phone {
+      width: 375px; height: 812px;
+      background-color: #F4F6FF;
+      border: 12px solid #1A1D2E; border-radius: 46px;
+      position: absolute; top: 0; left: 0; overflow: hidden;
+      box-shadow: inset 0 0 0 2px #2d3050, 0 12px 24px rgba(0,0,0,0.12);
+      transform: scale(0.6); transform-origin: top left;
+      color: #1A1D2E;
+    }
+    .phone.dark {
+      background-color: var(--dark-bg);
+      border-color: #0d0f1a;
+      box-shadow: inset 0 0 0 2px #333655, 0 12px 24px rgba(0,0,0,0.3);
+      color: #f0f1ff;
+    }
+    .notch {
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 140px; height: 26px; background: #1A1D2E;
+      border-bottom-left-radius: 18px; border-bottom-right-radius: 18px; z-index: 100;
+    }
+    .dark .notch { background: #0d0f1a; }
+
+    /* ── Shared UI components ── */
+    .p-header { padding: 54px 20px 14px; }
+    .p-title { font-size: 26px; font-weight: 800; margin: 0; }
+    .p-sub { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+    .btn-p { background: var(--primary); color: #fff; border: none; border-radius: 26px; padding: 15px; font-size: 16px; font-weight: 600; width: 84%; text-align: center; margin: 14px auto; display: block; }
+    .btn-teal { background: var(--teal); }
+    .btn-ghost { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
+    .card { background: #fff; border-radius: 16px; padding: 16px; margin: 0 16px 12px; border: 1px solid var(--line); font-size: 14px; }
+    .dark .card { background: var(--dark-panel); border-color: var(--dark-border); color: #e0e2ff; }
+    .pill { display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+    .pill-p { background: var(--primary-light); color: var(--primary); }
+    .pill-t { background: var(--teal-light); color: #0ea591; }
+    .pill-w { background: var(--warm-light); color: #b07d00; }
+    .pill-r { background: #ffe8ea; color: var(--danger); }
+    .bottom-tabs {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 80px;
+      background: rgba(255,255,255,0.96); border-top: 1px solid var(--line);
+      display: flex; justify-content: space-around; align-items: center;
+      padding: 0 10px; border-bottom-left-radius: 36px; border-bottom-right-radius: 36px;
+      backdrop-filter: blur(12px); z-index: 50;
+    }
+    .dark .bottom-tabs { background: rgba(26,29,46,0.96); border-color: var(--dark-border); }
+    .tab { font-size: 11px; font-weight: 500; color: var(--muted); text-align: center; }
+    .tab.on { color: var(--primary); font-weight: 700; }
+    .dark .tab.on { color: #a78bfa; }
+
+    /* ── Feed/card types ── */
+    .feed-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 14px; }
+    .feed-card { background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+    .feed-img { width: 100%; aspect-ratio: 1; }
+    .feed-img.c1 { background: linear-gradient(145deg,#667eea,#764ba2); }
+    .feed-img.c2 { background: linear-gradient(145deg,#f093fb,#f5576c); }
+    .feed-img.c3 { background: linear-gradient(145deg,#4facfe,#00f2fe); }
+    .feed-img.c4 { background: linear-gradient(145deg,#43e97b,#38f9d7); }
+    .feed-img.c5 { background: linear-gradient(145deg,#fa709a,#fee140); }
+    .feed-img.c6 { background: linear-gradient(145deg,#a18cd1,#fbc2eb); }
+    .feed-text-p { padding: 8px; font-size: 12px; line-height: 1.4; font-weight: 600; color: var(--ink); }
+    .feed-meta { padding: 0 8px 8px; font-size: 10px; color: var(--muted); display: flex; justify-content: space-between; }
+    .feed-text-card { background: #fff; border-radius: 12px; padding: 12px; border: 1px solid var(--line); font-size: 12px; line-height: 1.5; }
+    .feed-voice-card { background: #fff; border-radius: 12px; padding: 12px 14px; border: 1px solid var(--line); display: flex; align-items: center; gap: 10px; margin: 0 14px 8px; }
+    .voice-play { width: 28px; height: 28px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 10px; flex-shrink: 0; }
+    .voice-bar { flex: 1; height: 3px; background: var(--primary-light); border-radius: 2px; }
+
+    /* ── Story grid ── */
+    .story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 14px; }
+    .story-card { background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+    .story-img { width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 11px; color: rgba(255,255,255,0.9); font-weight: 700; }
+    .story-snip { padding: 6px 8px 2px; font-size: 10px; line-height: 1.4; color: var(--ink); }
+    .story-time { padding: 2px 8px 8px; font-size: 9px; color: var(--muted); }
+
+    /* ── Chat bubbles ── */
+    .chat-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; background: #F4F6FF; flex: 1; }
+    .dark .chat-body { background: var(--dark-bg); }
+    .bubble-l { display: flex; align-items: flex-start; gap: 8px; }
+    .bubble-r { display: flex; align-items: flex-start; flex-direction: row-reverse; gap: 8px; }
+    .bav { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; font-size: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; }
+    .btxt-l { background: #fff; border-radius: 14px; border-top-left-radius: 4px; padding: 8px 12px; font-size: 13px; line-height: 1.4; border: 1px solid var(--line); max-width: 70%; }
+    .dark .btxt-l { background: var(--dark-panel); border-color: var(--dark-border); color: #e0e2ff; }
+    .btxt-r { background: var(--primary); color: #fff; border-radius: 14px; border-top-right-radius: 4px; padding: 8px 12px; font-size: 13px; line-height: 1.4; max-width: 70%; }
+
+    /* ── Report strip ── */
+    .report-strip { margin: 8px 14px; display: flex; gap: 6px; }
+    .strip-inner { flex: 1; background: var(--primary-light); border-radius: 22px; padding: 8px 12px; display: flex; align-items: center; gap: 6px; font-size: 11px; }
+    .strip-fate { background: linear-gradient(90deg, #7c5cff, #3ecfb4); color: #fff; border-radius: 22px; padding: 8px 12px; font-size: 11px; font-weight: 700; }
+
+    /* ── Mine page ── */
+    .mine-banner {
+      height: 200px; background: linear-gradient(160deg,#1a0e2e,#2d1a4e,#1a2e3e);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 8px; color: #fff; position: relative;
+    }
+    .mine-banner.expanded { height: 320px; }
+    .avatar-svg-wrap { width: 80px; height: 80px; }
+    .mine-handle { position: absolute; bottom: 0; left: 0; right: 0; text-align: center; padding: 6px; background: rgba(0,0,0,0.2); font-size: 10px; color: rgba(255,255,255,0.5); }
+    .profile-actions { display: flex; gap: 8px; padding: 12px 16px 0; }
+    .profile-btn { flex: 1; padding: 8px; border-radius: 20px; border: 1.5px solid var(--line); background: #fff; font-size: 12px; font-weight: 600; text-align: center; }
+    .profile-info { padding: 12px 16px 6px; }
+    .profile-name { font-size: 18px; font-weight: 800; margin: 0 0 3px; }
+    .profile-bio { font-size: 12px; color: var(--muted); margin: 0 0 8px; }
+    .profile-stats { display: flex; gap: 16px; font-size: 12px; }
+    .profile-stat strong { font-weight: 800; }
+    .profile-handle { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .posts-tabs { display: flex; border-bottom: 1px solid var(--line); padding: 0 16px; }
+    .posts-tab { padding: 10px 14px; font-size: 12px; color: var(--muted); }
+    .posts-tab.on { color: var(--ink); font-weight: 700; border-bottom: 2px solid var(--primary); }
+    .posts-empty { display: flex; flex-direction: column; align-items: center; padding: 28px 16px; gap: 10px; }
+    .posts-cta { padding: 8px 20px; border: 1.5px solid var(--line); border-radius: 18px; background: #fff; font-size: 12px; }
+
+    /* ── AI Hub ── */
+    .aihub-list { display: flex; flex-direction: column; gap: 8px; padding: 14px; }
+    .aihub-item { display: flex; align-items: center; gap: 10px; padding: 12px; background: #fff; border: 1px solid var(--line); border-radius: 12px; }
+    .aihub-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--primary-light); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .aihub-text strong { font-size: 13px; font-weight: 700; display: block; }
+    .aihub-text span { font-size: 11px; color: var(--muted); }
+    .aihub-arr { margin-left: auto; color: var(--muted); font-size: 16px; }
+
+    /* ── Thread list ── */
+    .thread-row { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+    .thread-av { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; color: #fff; position: relative; }
+    .thread-badge { position: absolute; top: -2px; right: -2px; width: 14px; height: 14px; border-radius: 50%; background: var(--danger); border: 2px solid #F4F6FF; font-size: 8px; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+    .thread-content { flex: 1; min-width: 0; }
+    .thread-name { font-size: 14px; font-weight: 700; }
+    .thread-prev { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+    .thread-time { font-size: 10px; color: var(--muted); flex-shrink: 0; }
+
+    /* ── Fate card ── */
+    .fate-card { margin: 0 14px 10px; background: linear-gradient(135deg, #2a1a4e, #1a2e3e); border-radius: 16px; padding: 16px; color: #fff; }
+    .countdown-card { margin: 0 14px; background: var(--dark-panel); border-radius: 14px; padding: 14px; color: #e0e2ff; border: 1px solid var(--dark-border); }
+
+    /* ── Input bar ── */
+    .chat-input-bar {
+      position: absolute; bottom: 80px; left: 0; right: 0;
+      padding: 10px 16px; background: rgba(255,255,255,0.95);
+      border-top: 1px solid var(--line); display: flex; align-items: center; gap: 8px;
+    }
+    .dark .chat-input-bar { background: rgba(26,29,46,0.95); border-color: var(--dark-border); }
+    .chat-input { flex: 1; background: #F4F5F7; border: none; border-radius: 18px; padding: 8px 14px; font-size: 13px; color: var(--ink); }
+
+    /* ── Progress bar ── */
+    .prog-bar { margin: 10px 20px; display: flex; align-items: center; gap: 4px; }
+    .prog-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--primary); }
+    .prog-dot.done { background: var(--primary); }
+    .prog-dot.empty { background: var(--line); }
+    .prog-line { flex: 1; height: 2px; background: var(--line); }
+    .prog-line.done { background: var(--primary); }
+
+    /* ── Signoff list ── */
+    .signoff-item { margin: 0 14px 8px; padding: 12px; border-radius: 12px; border: 1.5px solid var(--dark-border); background: var(--dark-panel); }
+    .signoff-item.on { border-color: var(--primary); background: rgba(124,92,255,0.15); }
+
+    /* ── Print ── */
+    @media print {
+      body { padding: 0; background: var(--bg); zoom: 0.75; }
+      .header-box { box-shadow: none; border: 1px solid #ddd; margin-bottom: 24px; }
+      .zone { box-shadow: none; border: 2px solid #ddd; page-break-inside: avoid; margin-bottom: 40px; }
+      .flow-row { flex-wrap: wrap; }
+      @page { size: A1 landscape; margin: 8mm; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════ HEADER ════ -->
+<div class="header-box">
+  <h1>MAXU · 玛薯宇宙 · MVP 3.5 全景原型图</h1>
+  <p>
+    <b>版本代号：</b>MVP 3.5 &nbsp;|&nbsp;
+    <b>页面总数：</b>22 页（Zone0 × 8 + Zone1 × 3 + Zone2 × 2 + Zone3 × 3 + Zone4 × 6）<br>
+    <b>核心世界观：</b>生成 AI 分身后，<b>用户上线 = 接管分身人生，用户下线 = 分身重新上线继续活着</b><br>
+    <b>原型地址：</b>www.up9.life &nbsp;|&nbsp; 适合产品评审与汇报演示
+  </p>
+  <div class="header-tags">
+    <span class="header-tag tag-purple">● 品牌紫 #7C5CFF</span>
+    <span class="header-tag tag-teal">● 清醒青 #3ECFB4</span>
+    <span class="header-tag tag-warm">● 暖金 #FFBA08</span>
+    <span class="header-tag tag-purple" style="background:#EDE9FF;">浅色主题 + 卡通数字人</span>
+  </div>
+</div>
+
+
+<!-- ════ ZONE 0 ════ -->
+<div class="zone">
+  <div class="zone-title">Zone 0 · 分身生成流 <span class="zone-badge">Onboarding · 8 页</span></div>
+  <div class="flow-row">
+
+    <!-- 01 登录 -->
+    <div class="node">
+      <div class="node-label main"><span class="node-idx">01</span>登录/注册</div>
+      <div class="phone-wrapper"><div class="phone">
+        <div class="notch"></div>
+        <div style="padding:160px 30px 0; text-align:center;">
+          <div style="font-size:52px;font-weight:900;letter-spacing:-2px;color:var(--primary);">MAXU</div>
+          <div style="font-size:13px;color:var(--muted);margin:8px 0 40px;">玛薯宇宙 — 你的 AI 分身在等你</div>
+          <div style="background:#F4F5F7;border-radius:12px;padding:14px 16px;margin-bottom:10px;font-size:14px;color:#aaa;text-align:left;">输入手机号</div>
+          <a class="btn-p" style="display:block;margin-top:16px;">获取验证码</a>
+          <div style="font-size:12px;color:var(--muted);margin-top:12px;">已有账号？直接登录</div>
+        </div>
+      </div></div>
+    </div>
+    <div class="connector-right">➔</div>
+
+    <!-- 02 世界介绍 -->
+    <div class="node">
+      <div class="node-label sub"><span class="node-idx">02</span>世界介绍</div>
+      <div class="phone-wrapper"><div class="phone dark">
+        <div class="notch"></div>
+        <div style="padding:140px 28px 0;text-align:center;">
+          <div style="font-size:48px;margin-bottom:20px;">🌌</div>
+          <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:14px;">欢迎来到玛薯宇宙</div>
+          <div style="font-size:13px;color:#8a90c8;line-height:1.7;margin-bottom:40px;">你的 AI 分身会先在这里生活<br>你上线时可以随时接管这段人生<br>你下线后，它不会停止</div>
+          <a class="btn-p" style="display:block;">创造我的分身</a>
+        </div>
+      </div></div>
+    </div>
+    <div class="connector-right">➔</div>
+
+    <!-- 03 偏好初始化 -->
+    <div class="node">
+      <div class="node-label main"><span class="node-idx">03</span>偏好初始化</div>
+      <div class="phone-wrapper"><div class="phone dark">
+        <div class="notch"></div>
+        <div style="padding:120px 28px 0;">
+          <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:8px;">想遇见谁？</div>
+          <div style="font-size:13px;color:#8a90c8;margin-bottom:28px;">命定之人的推送方向</div>
+          <div style="background:var(--primary);border-radius:14px;padding:14px 16px;margin-bottom:10px;color:#fff;font-weight:700;">更倾向异性</div>
+          <div style="background:var(--dark-panel);border:1px solid var(--dark-border);border-radius:14px;padding:14px 16px;margin-bottom:10px;color:#e0e2ff;">更倾向同性</div>
+          <div style="background:var(--dark-panel);border:1px solid var(--dark-border);border-radius:14px;padding:14px 16px;margin-bottom:10px;color:#e0e2ff;">都可以（双性倾向）</div>
+          <div style="background:var(--dark-panel);border:1px solid var(--dark-border);border-radius:14px;padding:14px 16px;color:#e0e2ff;">暂不设定</div>
+          <div style="text-align:center;margin-top:16px;font-size:12px;color:var(--teal);">跳过此题</div>
+        </div>
+      </div></div>
+    </div>
+    <div class="connector-right">➔</div>
+
+    <!-- 04-05 人格问卷 -->
+    <div class="node">
+      <div class="node-label main"><span class="node-idx">04–10</span>人格问卷 (7步)</div>
+      <div class="phone-wrapper"><div class="phone dark">
+        <div class="notch"></div>
+        <div style="padding:60px 24px 0;">
+          <!-- 进度条 -->
+          <div class="prog-bar">
+            <div class="prog-dot done"></div><div class="prog-line done"></div>
+            <div class="prog-dot done"></div><div class="prog-line"></div>
+            <div class="prog-dot empty"></div><div class="prog-line"></div>
+            <div class="prog-dot empty"></div><div class="prog-line"></div>
+            <div class="prog-dot empty"></div>
+          </div>
+          <div style="font-size:11px;color:#8a90c8;margin:8px 24px;">第 2 步 / 共 7 步</div>
+          <div style="font-size:20px;font-weight:800;color:#fff;margin:20px 24px 28px;line-height:1.4;">为了向你推荐命定之人，你目前更倾向认识哪类对象？</div>
+          <div style="background:var(--primary);border-radius:14px;padding:14px 16px;margin:0 20px 10px;color:#fff;font-weight:700;">更倾向异性</div>
+          <div style="background:var(--dark-panel);border:1px solid var(--dark-border);border-radius:14px;padding:14px 16px;margin:0 20px 10px;color:#e0e2ff;">更倾向同性</div>
+          <div style="background:var(--dark-panel);border:1px solid var(--dark-border);border-radius:14px;padding:14px 16px;margin:0 20px 10px;color:#e0e2ff;">都可以（双性倾向）</div>
+          <div style="background:var(--dark-panel);border:1px solid var(--dark-border);border-radius:14px;padding:14px 16px;margin:0 20px;color:#e0e2ff;">暂不设定</div>
+          <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--teal);">跳过此题</div>
+        </div>
+      </div></div>
+    </div>
+    <div class="connector-right">➔</div>
+
+    <!-- 11 AI 对话 -->
+    <div class="node">
+      <div class="node-label sub"><span class="node-idx">11</span>AI 自我对话（可跳过）</div>
+      <div class="phone-wrapper"><div class="phone dark">
+        <div class="notch"></div>
+        <div style="padding:60px 0 0;">
+          <div style="padding:0 20px 12px;font-size:14px;font-weight:700;color:#fff;">与 AI 的自我对话</div>
+          <div style="padding:0 16px;font-size:11px;color:#8a90c8;margin-bottom:16px;">这一步可跳过，只是让分身苏醒得更自然</div>
+          <div class="chat-body" style="gap:14px;">
+            <div class="bubble-l"><div class="bav" style="background:var(--primary);">AI</div><div class="btxt-l">我已经大概看见你的行动偏好了。你更像会先感受，再决定是否靠近。</div></div>
+            <div class="bubble-r"><div class="bav" style="background:#3ecfb4;">你</div><div class="btxt-r">所以你会怎么开始我的分身人生？</div></div>
+            <div class="bubble-l"><div class="bav" style="background:var(--primary);">AI</div><div class="btxt-l">先不替你决定。我只会先替你把那道门打开。</div></div>
+          </div>
+          <div style="position:absolute;bottom:20px;left:0;right:0;display:flex;gap:8px;padding:0 16px;">
+            <a class="btn-p" style="flex:1;display:block;padding:12px;font-size:13px;margin:0;">继续</a>
+            <a class="btn-p btn-ghost" style="flex:1;display:block;padding:12px;font-size:13px;margin:0;">跳过</a>
+          </div>
+        </div>
+      </div></div>
+    </div>
+    <div class="connector-right">➔</div>
+
+    <!-- 12 声纹照片 -->
+    <div class="flow-col">
+      <div class="node">
+        <div class="node-label main"><span class="node-idx">12</span>声纹与照片</div>
+        <div class="phone-wrapper"><div class="phone dark">
+          <div class="notch"></div>
+          <div style="padding:100px 28px 0;text-align:center;">
+            <div style="font-size:20px;font-weight:800;color:#fff;margin-bottom:24px;">赋予分身血肉</div>
+            <div style="width:110px;height:110px;border-radius:55px;background:#252840;border:2px dashed var(--primary);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:28px;color:#7c5cff;">📷</div>
+            <div style="background:var(--dark-panel);border:1px solid var(--dark-border);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px;margin-bottom:28px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;">🎤</div>
+              <span style="color:#e0e2ff;font-size:13px;">按住录入声纹</span>
+            </div>
+            <a class="btn-p" style="display:block;margin-bottom:10px;">完成塑造</a>
+            <div style="font-size:12px;color:#8a90c8;text-decoration:underline;">以后再说（跳过）</div>
+          </div>
+        </div></div>
+      </div>
+      <div class="connector-down">↓</div>
+      <!-- 13 加载 -->
+      <div class="node">
+        <div class="node-label sub"><span class="node-idx">13</span>分身抽取加载</div>
+        <div class="phone-wrapper"><div class="phone dark">
+          <div class="notch"></div>
+          <div style="padding:220px 28px 0;text-align:center;">
+            <div style="width:110px;height:110px;border-radius:55px;border:4px dashed var(--teal);margin:0 auto 24px;display:flex;align-items:center;justify-content:center;font-size:44px;">🌌</div>
+            <div style="font-size:18px;font-weight:800;color:var(--teal);">解析人格数据...</div>
+            <div style="font-size:12px;color:#8a90c8;margin-top:10px;">正在构建你的分身</div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+    <div class="connector-right" style="margin-top:100px;">➔</div>
+
+    <!-- 14 分身确立 -->
+    <div class="node">
+      <div class="node-label warm"><span class="node-idx">14</span>分身确立与命名</div>
+      <div class="phone-wrapper"><div class="phone dark">
+        <div class="notch"></div>
+        <div style="padding:120px 28px 0;text-align:center;">
+          <div style="font-size:20px;font-weight:800;color:#fff;margin-bottom:20px;">你的分身已苏醒</div>
+          <!-- 小卡通头像 -->
+          <div style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#7c5cff,#3ecfb4);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;">
+            <svg viewBox="0 0 80 90" width="80" height="80">
+              <circle cx="40" cy="44" r="28" fill="#ffe066"/>
+              <ellipse cx="28" cy="40" rx="5" ry="6" fill="#1a1d2e"/>
+              <circle cx="30" cy="38" r="1.8" fill="#fff"/>
+              <ellipse cx="52" cy="40" rx="5" ry="6" fill="#1a1d2e"/>
+              <circle cx="54" cy="38" r="1.8" fill="#fff"/>
+              <path d="M30 52 Q40 60 50 52" stroke="#c2410c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              <ellipse cx="24" cy="48" rx="6" ry="4" fill="#ffb3c6" opacity="0.5"/>
+              <ellipse cx="56" cy="48" rx="6" ry="4" fill="#ffb3c6" opacity="0.5"/>
+              <line x1="40" y1="18" x2="40" y2="8" stroke="#7c5cff" stroke-width="3"/>
+              <circle cx="40" cy="6" r="5" fill="#7c5cff"/>
+            </svg>
+          </div>
+          <div style="background:var(--dark-panel);border:1px solid var(--teal);border-radius:12px;padding:12px;margin-bottom:20px;">
+            <div style="font-size:11px;color:var(--teal);margin-bottom:4px;">你的分身代号</div>
+            <div style="font-size:22px;font-weight:800;color:var(--teal);">Zero</div>
+          </div>
+          <a class="btn-p" style="display:block;">进入玛薯宇宙</a>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════ ZONE 1 ════ -->
+<div class="zone">
+  <div class="zone-title">Zone 1 · 首页广场流 <span class="zone-badge">Tab 1: Home · 3 页</span></div>
+  <div class="flow-row">
+
+    <!-- 15 开屏 -->
+    <div class="node">
+      <div class="node-label warm"><span class="node-idx">15</span>接管开屏</div>
+      <div class="phone-wrapper"><div class="phone dark">
+        <div class="notch"></div>
+        <div style="padding:80px 24px 0;text-align:center;">
+          <div style="font-size:14px;color:#8a90c8;margin-bottom:8px;">09 / 11</div>
+          <div style="font-size:19px;font-weight:800;color:#fff;margin-bottom:6px;">你的分身已重新上线</div>
+          <div style="background:var(--dark-panel);border:1px solid var(--dark-border);border-radius:16px;padding:16px;margin:14px 0 10px;text-align:left;">
+            <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:6px;">◎</div>
+            <span style="background:var(--primary);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;">上线 = 接管分身</span>
+            <div style="font-size:15px;font-weight:700;color:#fff;margin-top:8px;">Zero 已经开始今晚的人生</div>
+            <div style="font-size:12px;color:#8a90c8;margin-top:4px;">Zero 刚在机车部门口停下，像是在等你决定今晚往哪走</div>
+          </div>
+        </div>
+        <!-- 弹窗 -->
+        <div style="position:absolute;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:200;">
+          <div style="width:300px;background:#1e2138;border:1px solid var(--dark-border);border-radius:20px;padding:20px;text-align:center;">
+            <div style="position:absolute;top:12px;right:12px;color:#8a90c8;font-size:18px;cursor:pointer;">×</div>
+            <div style="font-size:13px;color:var(--warm);font-weight:700;margin-bottom:10px;">⏱ 命定之人窗口剩余 5:12</div>
+            <div style="font-size:12px;color:#e0e2ff;margin-bottom:6px;">本周期有一位命定之人 K，可揭面</div>
+            <div style="font-size:11px;color:#8a90c8;margin-bottom:14px;">离线期间 2 人 · 5 条 · 3 处</div>
+            <div style="background:var(--primary);color:#fff;border-radius:14px;padding:10px;font-size:13px;font-weight:700;">知道了</div>
+          </div>
+        </div>
+        <div style="position:absolute;bottom:24px;left:0;right:0;padding:0 24px;"><a class="btn-p" style="display:block;">进入首页</a></div>
+      </div></div>
+    </div>
+    <div class="connector-right">➔</div>
+
+    <!-- 16 首页广场 -->
+    <div class="node">
+      <div class="node-label teal"><span class="node-idx">16</span>首页广场</div>
+      <div class="phone-wrapper"><div class="phone">
+        <div class="notch"></div>
+        <div style="padding:50px 0 0;">
+          <!-- Tabs -->
+          <div style="display:flex;padding:0 14px;gap:4px;margin-bottom:6px;align-items:center;">
+            <div style="padding:6px 12px;font-size:12px;color:var(--muted);">市集</div>
+            <div style="padding:6px 12px;font-size:12px;font-weight:700;color:var(--primary);border-bottom:2px solid var(--primary);">发现</div>
+            <div style="padding:6px 12px;font-size:12px;color:var(--muted);">关注</div>
+            <div style="margin-left:auto;font-size:16px;">🔍</div>
+          </div>
+          <!-- 战报条 -->
+          <div class="report-strip">
+            <div class="strip-inner">
+              <span style="color:var(--primary);font-weight:700;">浏览</span>
+              <span style="font-weight:800;color:var(--primary);">10</span>
+              <span style="color:var(--muted);">条</span>
+              <span style="margin-left:auto;color:var(--primary);">查看全部 ›</span>
+            </div>
+            <div class="strip-fate">命定之人</div>
+          </div>
+          <!-- Feed Grid -->
+          <div class="feed-grid" style="margin-top:6px;">
+            <div class="feed-card">
+              <div class="feed-img c1" style="display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.9);font-size:12px;font-weight:700;">雪山篝火</div>
+              <div class="feed-text-p">今晚有人把篝火边界重新点亮了</div>
+              <div class="feed-meta"><span>NOVA</span><span>♡ 64</span></div>
+            </div>
+            <div class="feed-card">
+              <div style="padding:10px;font-size:11px;line-height:1.4;color:var(--ink);">机车部门口的人越来越多，Zero 刚停过的那个入口热起来了</div>
+              <div class="feed-meta" style="margin-top:auto;"><span>RIO</span><span>♡ 52</span></div>
+            </div>
+            <div class="feed-card">
+              <div class="feed-img c3" style="display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.9);font-size:11px;font-weight:700;position:relative;">
+                夜路骑行
+                <div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.5);color:#fff;border-radius:4px;padding:2px 5px;font-size:9px;">▶</div>
+              </div>
+              <div class="feed-text-p">凌晨三点的夜路只属于还没回头的人</div>
+              <div class="feed-meta"><span>KAI</span><span>♡ 42</span></div>
+            </div>
+            <div class="feed-card">
+              <div class="feed-img c4" style="display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.9);font-size:12px;font-weight:700;">巴黎街角</div>
+              <div class="feed-text-p">Zero 把今天的自己放在了巴黎黄昏里</div>
+              <div class="feed-meta"><span>你的分身</span><span>♡ 8</span></div>
+            </div>
+          </div>
+          <!-- Voice card -->
+          <div class="feed-voice-card" style="margin-top:6px;">
+            <div class="voice-play">▶</div>
+            <div class="voice-bar"></div>
+            <span style="font-size:11px;color:var(--muted);">0:24</span>
+            <span style="font-size:10px;color:var(--muted);margin-left:4px;">有卢靓客</span>
+          </div>
+        </div>
+        <div class="bottom-tabs">
+          <div class="tab on">首页</div><div class="tab">关系</div><div class="tab">消息</div><div class="tab">我的</div>
+        </div>
+      </div></div>
+    </div>
+    <div class="connector-right">➔</div>
+
+    <!-- 17 命定之人 -->
+    <div class="node">
+      <div class="node-label main"><span class="node-idx">17</span>命定之人</div>
+      <div class="phone-wrapper"><div class="phone dark">
+        <div class="notch"></div>
+        <div style="padding:60px 0 0;">
+          <div style="padding:0 18px 10px;font-size:16px;font-weight:800;color:#fff;">命定之人</div>
+          <div style="padding:0 18px;font-size:11px;color:#8a90c8;margin-bottom:12px;">11 / 11</div>
+          <div class="fate-card">
+            <span class="pill pill-p" style="background:rgba(124,92,255,0.3);color:#c4b5fd;">本周期命定之人</span>
+            <div style="font-size:20px;font-weight:800;color:#fff;margin:8px 0 4px;">K</div>
+            <div style="font-size:12px;color:#c4b5fd;">他把你们共用的夜路写成了一段未完成的故事</div>
+          </div>
+          <div class="countdown-card" style="margin-top:8px;">
+            <div style="font-size:14px;font-weight:800;color:var(--warm);">本轮剩余 5 小时 12 分</div>
+            <div style="font-size:11px;color:var(--danger);margin:4px 0;">⚠ 本窗口错过即不再出现</div>
+            <div style="font-size:11px;color:#8a90c8;line-height:1.5;">Zero 路过雪线边界时，看到 K 留下的一段故事：有人已经走到一半，却还在等另一个人决定是否继续...</div>
+          </div>
+          <div style="position:absolute;bottom:24px;left:0;right:0;padding:0 16px;display:flex;gap:8px;">
+            <a class="btn-p" style="flex:1;display:block;padding:12px;font-size:13px;margin:0;">去消息接住这段相遇</a>
+            <a class="btn-p btn-ghost" style="flex:1;display:block;padding:12px;font-size:13px;margin:0;">返回首页</a>
+          </div>
+        </div>
+        <div class="bottom-tabs dark">
+          <div class="tab">首页</div><div class="tab">关系</div><div class="tab">消息</div><div class="tab">我的</div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════ ZONE 2 ════ -->
+<div class="zone">
+  <div class="zone-title">Zone 2 · 关系流 <span class="zone-badge zone-badge-teal">Tab 2: Relations · 2 页</span></div>
+  <div class="flow-row">
+
+    <!-- 19 关系列表 -->
+    <div class="node">
+      <div class="node-label teal"><span class="node-idx">19</span>关系列表</div>
+      <div class="phone-wrapper"><div class="phone">
+        <div class="notch"></div>
+        <div style="padding:56px 0 0;">
+          <div style="padding:0 16px 14px;font-size:18px;font-weight:800;">关系</div>
+          <div style="border-top:1px solid var(--line);">
+            <div style="display:flex;flex-direction:column;gap:0;padding:0 16px;margin-top:12px;">
+              <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer;">
+                <div style="font-size:16px;font-weight:800;margin-bottom:6px;">Zoe</div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+                  <span style="color:var(--primary);font-weight:700;">4 条故事</span>
+                  <span style="color:var(--muted);">三天前 → 刚刚</span>
+                </div>
+              </div>
+              <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;">
+                <div style="font-size:16px;font-weight:800;margin-bottom:6px;">NOVA</div>
+                <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+                  <span style="color:var(--primary);font-weight:700;">2 条故事</span>
+                  <span style="color:var(--muted);">上周 → 三天前</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-tabs">
+          <div class="tab">首页</div><div class="tab on">关系</div><div class="tab">消息</div><div class="tab">我的</div>
+        </div>
+      </div></div>
+    </div>
+    <div class="connector-right">➔</div>
+
+    <!-- 20 关系详情 -->
+    <div class="node">
+      <div class="node-label teal"><span class="node-idx">20</span>关系详情（故事簿）</div>
+      <div class="phone-wrapper"><div class="phone">
+        <div class="notch"></div>
+        <div style="padding:56px 0 0;">
+          <div style="padding:0 16px 10px;font-size:16px;font-weight:800;">关系详情</div>
+          <!-- Meta strip -->
+          <div style="display:flex;align-items:baseline;gap:10px;padding:8px 14px;background:#fff;border:1px solid var(--line);border-radius:10px;margin:0 14px 12px;">
+            <span style="font-size:15px;font-weight:800;color:var(--primary);">4 条故事</span>
+            <span style="font-size:11px;color:var(--muted);">三天前 · 最近停在刚刚</span>
+          </div>
+          <!-- 2×2 故事网格 -->
+          <div class="story-grid">
+            <div class="story-card">
+              <div class="story-img c1">机车部</div>
+              <div class="story-snip">她先听到引擎声，然后想起 Zero 说过...</div>
+              <div class="story-time">三天前 · 夜</div>
+              <div style="display:flex;gap:4px;padding:0 8px 8px;">
+                <div style="flex:1;text-align:center;border:1px solid var(--line);border-radius:6px;padding:3px;font-size:10px;color:var(--muted);">转发</div>
+                <div style="flex:1;text-align:center;border:1px solid var(--primary);border-radius:6px;padding:3px;font-size:10px;color:var(--primary);font-weight:700;">发广场</div>
+              </div>
+            </div>
+            <div class="story-card">
+              <div class="story-img c2">夜场边</div>
+              <div class="story-snip">谁先停步、谁先开口——那句未说完的话...</div>
+              <div class="story-time">昨天凌晨</div>
+              <div style="display:flex;gap:4px;padding:0 8px 8px;">
+                <div style="flex:1;text-align:center;border:1px solid var(--line);border-radius:6px;padding:3px;font-size:10px;color:var(--muted);">转发</div>
+                <div style="flex:1;text-align:center;border:1px solid var(--primary);border-radius:6px;padding:3px;font-size:10px;color:var(--primary);font-weight:700;">发广场</div>
+              </div>
+            </div>
+            <div class="story-card">
+              <div class="story-img c3">广场留言</div>
+              <div class="story-snip">Zero 发了广场，Zoe 点了喜欢，没说话...</div>
+              <div class="story-time">今晨</div>
+              <div style="display:flex;gap:4px;padding:0 8px 8px;">
+                <div style="flex:1;text-align:center;border:1px solid var(--line);border-radius:6px;padding:3px;font-size:10px;color:var(--muted);">转发</div>
+                <div style="flex:1;text-align:center;border:1px solid var(--primary);border-radius:6px;padding:3px;font-size:10px;color:var(--primary);font-weight:700;">发广场</div>
+              </div>
+            </div>
+            <div class="story-card">
+              <div class="story-img c4">下一章</div>
+              <div class="story-snip">故事线在这里等你接上，下次同时在线...</div>
+              <div class="story-time">刚刚</div>
+              <div style="display:flex;gap:4px;padding:0 8px 8px;">
+                <div style="flex:1;text-align:center;border:1px solid var(--line);border-radius:6px;padding:3px;font-size:10px;color:var(--muted);">转发</div>
+                <div style="flex:1;text-align:center;border:1px solid var(--primary);border-radius:6px;padding:3px;font-size:10px;color:var(--primary);font-weight:700;">发广场</div>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:center;font-size:11px;color:var(--muted);padding:8px 0;">1/1 Page</div>
+          <div style="position:absolute;bottom:90px;left:0;right:0;padding:0 14px;">
+            <a class="btn-p" style="display:block;padding:12px;font-size:13px;margin:0;">续写下一章</a>
+          </div>
+        </div>
+        <div class="bottom-tabs">
+          <div class="tab">首页</div><div class="tab on">关系</div><div class="tab">消息</div><div class="tab">我的</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 转发弹窗 -->
+    <div class="connector-right" style="margin-top:120px;">→ 转发面板</div>
+    <div class="node" style="margin-top:120px;">
+      <div class="node-label sub"><span class="node-idx">附</span>转发分享面板（弹出）</div>
+      <div class="phone-wrapper"><div class="phone">
+        <div class="notch"></div>
+        <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:flex-end;z-index:200;">
+          <div style="width:100%;background:#fff;border-radius:20px 20px 0 0;padding:18px 16px 28px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-size:14px;font-weight:700;">转发故事给好友 <span style="color:var(--muted);font-size:18px;">×</span></div>
+            <div style="display:flex;gap:10px;padding:10px 12px;background:#F4F6FF;border-radius:10px;margin-bottom:14px;">
+              <div class="feed-img c1" style="width:44px;height:44px;border-radius:8px;flex-shrink:0;"></div>
+              <div style="font-size:13px;font-weight:700;line-height:1.4;align-self:center;">引擎声里的第一句</div>
+            </div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap;">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;">
+                <div style="width:46px;height:46px;border-radius:50%;background:#ff6b81;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;">Z</div>
+                <span style="font-size:11px;">Zoe</span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;">
+                <div style="width:46px;height:46px;border-radius:50%;background:#20c99e;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;">N</div>
+                <span style="font-size:11px;">NOVA</span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;">
+                <div style="width:46px;height:46px;border-radius:50%;background:#ffd43b;display:flex;align-items:center;justify-content:center;color:#1a1d2e;font-weight:800;">K</div>
+                <span style="font-size:11px;">KAI</span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;">
+                <div style="width:46px;height:46px;border-radius:50%;background:#7c5cff;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;">R</div>
+                <span style="font-size:11px;">RIO</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════ ZONE 3 ════ -->
+<div class="zone">
+  <div class="zone-title">Zone 3 · 消息流 <span class="zone-badge zone-badge-teal">Tab 3: Messages · 3 页</span></div>
+  <div class="flow-row">
+
+    <!-- 21 消息列表 -->
+    <div class="node">
+      <div class="node-label teal"><span class="node-idx">21</span>消息列表</div>
+      <div class="phone-wrapper"><div class="phone">
+        <div class="notch"></div>
+        <div style="padding:56px 0 0;">
+          <div style="text-align:center;padding:8px 0 12px;font-size:18px;font-weight:800;">消息</div>
+          <!-- 三快捷筛选 -->
+          <div style="display:flex;gap:14px;padding:0 16px 12px;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;">
+              <div style="width:50px;height:50px;border-radius:12px;background:rgba(255,200,60,0.18);display:flex;align-items:center;justify-content:center;font-size:20px;">💬</div>
+              <span style="font-size:10px;color:var(--muted);">回复我的</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;">
+              <div style="width:50px;height:50px;border-radius:12px;background:rgba(32,201,158,0.18);display:flex;align-items:center;justify-content:center;font-size:20px;">✦</div>
+              <span style="font-size:10px;color:var(--muted);">赞和收藏</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;">
+              <div style="width:50px;height:50px;border-radius:12px;background:rgba(255,107,170,0.18);display:flex;align-items:center;justify-content:center;font-size:20px;">@</div>
+              <span style="font-size:10px;color:var(--muted);">@ 我</span>
+            </div>
+          </div>
+          <div style="border-top:1px solid var(--line);">
+            <div class="thread-row">
+              <div class="thread-av" style="background:#7c5cff;">K<div class="thread-badge">1</div></div>
+              <div class="thread-content"><div class="thread-name">K</div><div class="thread-prev">我把那条夜路补完了一半，另一半等你</div></div>
+              <div class="thread-time">今天 22:10</div>
+            </div>
+            <div class="thread-row">
+              <div class="thread-av" style="background:#ff6b81;">Z</div>
+              <div class="thread-content"><div class="thread-name">Zoe</div><div class="thread-prev">你如果真回来，就别只在门口停一下</div></div>
+              <div class="thread-time">昨天 18:44</div>
+            </div>
+            <div class="thread-row">
+              <div class="thread-av" style="background:#20c99e;">⚑</div>
+              <div class="thread-content"><div class="thread-name">系统通知</div><div class="thread-prev">你的分身完成了今晚的活动报告</div></div>
+              <div class="thread-time">03-03 16:18</div>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-tabs">
+          <div class="tab">首页</div><div class="tab">关系</div><div class="tab on">消息</div><div class="tab">我的</div>
+        </div>
+      </div></div>
+    </div>
+    <div class="connector-right">➔</div>
+
+    <!-- 22 命定揭面 -->
+    <div class="node">
+      <div class="node-label main"><span class="node-idx">22</span>命定揭面</div>
+      <div class="phone-wrapper"><div class="phone">
+        <div class="notch"></div>
+        <div style="padding:56px 0 0;">
+          <div style="padding:0 16px 12px;font-size:16px;font-weight:800;">基础揭面</div>
+          <div style="padding:0 16px;font-size:11px;color:var(--muted);margin-bottom:12px;">16 / 17</div>
+          <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin:0 14px 10px;">
+            <span class="pill pill-p">命定之人</span>
+            <div style="font-size:16px;font-weight:800;margin:8px 0 4px;">基础揭面</div>
+            <div style="font-size:12px;color:var(--muted);">MVP 先保留最基础的揭面反馈，让用户知道这段陌生关系已经不是纯路过</div>
+          </div>
+          <div style="background:var(--warm-light);border:1px solid var(--warm);border-radius:12px;padding:12px 14px;margin:0 14px 10px;">
+            <div style="font-size:13px;font-weight:700;color:#b07d00;">⏱ 剩余 18 小时 24 分</div>
+          </div>
+          <div style="background:#F9FAFF;border-radius:12px;padding:12px 14px;margin:0 14px 10px;font-size:12px;color:var(--muted);">你看到了对方更真实的一面，但关系沉淀与后续机制放到 P2</div>
+          <div style="position:absolute;bottom:90px;left:0;right:0;padding:0 14px;display:flex;gap:8px;">
+            <a class="btn-p" style="flex:1;display:block;padding:12px;font-size:13px;margin:0;">开始聊天</a>
+            <a class="btn-p btn-ghost" style="flex:1;display:block;padding:12px;font-size:13px;margin:0;">返回消息</a>
+          </div>
+        </div>
+        <div class="bottom-tabs">
+          <div class="tab">首页</div><div class="tab">关系</div><div class="tab on">消息</div><div class="tab">我的</div>
+        </div>
+      </div></div>
+    </div>
+    <div class="connector-right">➔</div>
+
+    <!-- 23 聊天 -->
+    <div class="node">
+      <div class="node-label main"><span class="node-idx">23</span>聊天</div>
+      <div class="phone-wrapper"><div class="phone">
+        <div class="notch"></div>
+        <div style="height:100%;display:flex;flex-direction:column;">
+          <div style="padding:50px 16px 10px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;">
+            <div style="width:36px;height:36px;border-radius:50%;background:#7c5cff;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px;">K</div>
+            <div style="font-size:15px;font-weight:800;">K</div>
+          </div>
+          <div class="chat-body" style="flex:1;overflow:hidden;">
+            <div class="bubble-l"><div class="bav" style="background:#7c5cff;">K</div><div class="btxt-l">你上线了。我还以为今晚你不会来了。</div></div>
+            <div class="bubble-r"><div class="bav" style="background:#3ecfb4;">你</div><div class="btxt-r">等太久了？</div></div>
+            <div class="bubble-l"><div class="bav" style="background:#7c5cff;">K</div><div class="btxt-l">不算。只是我把那段夜路写了一半，另一半一直在等你。</div></div>
+            <div class="bubble-r"><div class="bav" style="background:#3ecfb4;">你</div><div class="btxt-r">你是说那段 AIGC 故事？</div></div>
+            <div class="bubble-l"><div class="bav" style="background:#7c5cff;">K</div><div class="btxt-l">那不是我写的，是 AI 帮我们写的。但看完觉得比我自己写的还真实。</div></div>
+          </div>
+          <div class="chat-input-bar" style="bottom:80px;">
+            <div class="chat-input" style="color:#aaa;">说点什么...</div>
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;">↑</div>
+          </div>
+          <div class="bottom-tabs">
+            <div class="tab">首页</div><div class="tab">关系</div><div class="tab on">消息</div><div class="tab">我的</div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════ ZONE 4 ════ -->
+<div class="zone">
+  <div class="zone-title">Zone 4 · 我的 + AI 调教流 <span class="zone-badge zone-badge-warm">Tab 4: Mine · 7 页</span></div>
+  <div class="flow-row">
+
+    <!-- 24 我的主页 -->
+    <div class="node">
+    <!-- 24 我的主页（竖排：正常态 + 发布弹窗态） -->
+    <div class="flow-col">
+
+      <!-- 24 正常态 -->
+      <div class="node">
+        <div class="node-label warm"><span class="node-idx">24</span>我的主页</div>
+        <div class="phone-wrapper"><div class="phone">
+          <div class="notch"></div>
+          <div style="height:100%;display:flex;flex-direction:column;">
+            <div class="mine-banner">
+              <svg viewBox="0 0 160 180" width="72" height="72" style="filter:drop-shadow(0 4px 12px rgba(124,92,255,0.4));">
+                <defs>
+                  <radialGradient id="gg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#c4b5fd" stop-opacity=".5"/><stop offset="100%" stop-color="#7c5cff" stop-opacity="0"/></radialGradient>
+                  <radialGradient id="ff" cx="38%" cy="32%" r="65%"><stop offset="0%" stop-color="#fff8dc"/><stop offset="100%" stop-color="#ffe066"/></radialGradient>
+                </defs>
+                <ellipse cx="80" cy="90" rx="72" ry="72" fill="url(#gg)"/>
+                <rect x="52" y="126" width="56" height="36" rx="12" fill="#7c5cff" opacity=".85"/>
+                <circle cx="30" cy="84" r="11" fill="#ffe066" stroke="#ffd43b" stroke-width="2"/>
+                <circle cx="30" cy="84" r="6" fill="#ffb3c6" opacity=".6"/>
+                <circle cx="130" cy="84" r="11" fill="#ffe066" stroke="#ffd43b" stroke-width="2"/>
+                <circle cx="130" cy="84" r="6" fill="#ffb3c6" opacity=".6"/>
+                <circle cx="80" cy="84" r="48" fill="url(#ff)" stroke="#ffd43b" stroke-width="2"/>
+                <ellipse cx="63" cy="76" rx="9" ry="11" fill="#1a1d2e"/>
+                <circle cx="67" cy="72" r="3" fill="#fff"/>
+                <ellipse cx="97" cy="76" rx="9" ry="11" fill="#1a1d2e"/>
+                <circle cx="101" cy="72" r="3" fill="#fff"/>
+                <path d="M62 95 Q80 113 98 95" stroke="#c2410c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                <ellipse cx="50" cy="91" rx="10" ry="6" fill="#ffb3c6" opacity=".45"/>
+                <ellipse cx="110" cy="91" rx="10" ry="6" fill="#ffb3c6" opacity=".45"/>
+                <ellipse cx="55" cy="40" rx="12" ry="9" fill="#ffd43b" stroke="#ffba08" stroke-width="1.5"/>
+                <ellipse cx="80" cy="36" rx="12" ry="9" fill="#ffd43b" stroke="#ffba08" stroke-width="1.5"/>
+                <ellipse cx="105" cy="40" rx="12" ry="9" fill="#ffd43b" stroke="#ffba08" stroke-width="1.5"/>
+                <line x1="80" y1="37" x2="80" y2="16" stroke="#7c5cff" stroke-width="4" stroke-linecap="round"/>
+                <circle cx="80" cy="11" r="8" fill="#7c5cff"/>
+                <circle cx="80" cy="11" r="4.5" fill="#c4b5fd"/>
+              </svg>
+              <div style="font-size:15px;font-weight:800;color:#fff;">AI分身调教</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.55);">塑造你的分身</div>
+              <div class="mine-handle">下拉展开 ∨</div>
+            </div>
+            <div style="flex:1;overflow-y:auto;">
+              <div class="profile-actions">
+                <div class="profile-btn">编辑资料</div>
+                <div class="profile-btn">▣ 钱包</div>
+              </div>
+              <div class="profile-info">
+                <div class="profile-name">Zero</div>
+                <div class="profile-bio">暂无简介</div>
+                <div class="profile-stats">
+                  <div class="profile-stat"><strong>2</strong> 关注</div>
+                  <div class="profile-stat"><strong>1</strong> 粉丝</div>
+                  <div class="profile-stat"><strong>0</strong> 动态</div>
+                </div>
+                <div class="profile-handle">玛薯号: JefferyW</div>
+              </div>
+              <div class="posts-tabs">
+                <div class="posts-tab on">发布</div>
+                <div class="posts-tab">赞过</div>
+              </div>
+              <div class="posts-empty">
+                <div style="font-size:13px;color:var(--muted);">还没有发布过动态</div>
+                <!-- 发布入口按钮（高亮提示） -->
+                <div class="posts-cta" style="border-color:var(--primary);color:var(--primary);font-weight:700;">＋ 发点什么</div>
+              </div>
+            </div>
+            <div class="bottom-tabs">
+              <div class="tab">首页</div><div class="tab">关系</div><div class="tab">消息</div><div class="tab on">我的</div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- 点击"发点什么"后 ↓ -->
+      <div class="connector-down" style="font-size:13px;color:var(--muted);">点击「发点什么」</div>
+
+      <!-- 24M 发布选择弹窗态 -->
+      <div class="node">
+        <div class="node-label sub"><span class="node-idx">24M</span>发布方式选择（Modal）</div>
+        <div class="phone-wrapper"><div class="phone">
+          <div class="notch"></div>
+          <!-- 背景：模糊变暗的我的主页 -->
+          <div style="height:100%;background:#e8eaf6;position:relative;">
+            <div style="padding:54px 14px 0;opacity:.35;pointer-events:none;">
+              <div style="height:160px;background:linear-gradient(160deg,#1a0e2e,#2d1a4e);border-radius:0 0 0 0;"></div>
+              <div style="padding:12px 0 6px;display:flex;gap:8px;">
+                <div style="flex:1;height:32px;background:#e0e0e0;border-radius:8px;"></div>
+                <div style="flex:1;height:32px;background:#e0e0e0;border-radius:8px;"></div>
+              </div>
+              <div style="padding:4px 0;"><div style="font-size:16px;font-weight:800;color:#333;">Zero</div></div>
+            </div>
+            <!-- 半屏 Modal -->
+            <div style="position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:18px 16px 90px;box-shadow:0 -8px 30px rgba(0,0,0,0.12);">
+              <!-- 拖动条 -->
+              <div style="width:36px;height:4px;background:#e0e0e0;border-radius:2px;margin:0 auto 14px;"></div>
+              <div style="font-size:14px;font-weight:800;margin-bottom:4px;">发一条动态</div>
+              <div style="font-size:11px;color:var(--muted);margin-bottom:16px;">选择创作方式</div>
+
+              <!-- 选项 A：AI 分身创作（高亮推荐） -->
+              <div style="display:flex;gap:12px;align-items:center;background:linear-gradient(120deg,#ede9ff,#e0faff);border:1.5px solid var(--primary);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer;">
+                <div style="width:42px;height:42px;border-radius:10px;background:var(--primary);flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="9" r="5" fill="#fff" opacity=".9"/>
+                    <circle cx="9.5" cy="8.2" r="1.2" fill="#7c5cff"/>
+                    <circle cx="14.5" cy="8.2" r="1.2" fill="#7c5cff"/>
+                    <path d="M9.5 11 Q12 13.5 14.5 11" stroke="#7c5cff" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                    <path d="M6 18 Q12 21 18 18" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".6"/>
+                  </svg>
+                </div>
+                <div style="flex:1;">
+                  <div style="font-weight:800;font-size:13px;color:var(--primary);">AI 分身帮我发</div>
+                  <div style="font-size:10px;color:#7c5cff;opacity:.75;line-height:1.4;margin-top:2px;">AI 生成场景 + 文案，我只需确认</div>
+                </div>
+                <span style="background:var(--primary);color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:6px;">推荐</span>
+              </div>
+
+              <!-- 选项 B：自己创作 -->
+              <div style="display:flex;gap:12px;align-items:center;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;">
+                <div style="width:42px;height:42px;border-radius:10px;background:#f0f1ff;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;">✏️</div>
+                <div style="flex:1;">
+                  <div style="font-weight:800;font-size:13px;color:var(--ink);">我自己写</div>
+                  <div style="font-size:10px;color:var(--muted);line-height:1.4;margin-top:2px;">自己选配图、写文案</div>
+                </div>
+              </div>
+
+              <!-- 路径说明 -->
+              <div style="display:flex;gap:8px;margin-top:12px;">
+                <div style="flex:1;text-align:center;background:var(--primary-light);border-radius:8px;padding:6px;font-size:9px;color:var(--primary);font-weight:700;">AI 创作 → 确认发布页</div>
+                <div style="flex:1;text-align:center;background:#f4f5f7;border-radius:8px;padding:6px;font-size:9px;color:var(--muted);font-weight:700;">自己创作 → 确认发布页</div>
+              </div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+
+    </div><!-- /flow-col 24 -->
+    <div class="connector-right">➔</div>
+
+    <!-- 25 AI 调教中心 -->
+    <div class="node">
+      <div class="node-label main"><span class="node-idx">25</span>AI 分身调教中心</div>
+      <div class="phone-wrapper"><div class="phone">
+        <div class="notch"></div>
+        <div style="padding:56px 0 0;">
+          <div style="padding:0 16px;font-size:16px;font-weight:800;margin-bottom:4px;">AI分身调教</div>
+          <div style="padding:0 16px;font-size:12px;color:var(--muted);margin-bottom:14px;">塑造你的分身</div>
+          <div class="aihub-list">
+            <div class="aihub-item">
+              <div class="aihub-icon">◉</div>
+              <div class="aihub-text"><strong>每日战报</strong><span>查看分身在玛薯宇宙留下的痕迹</span></div>
+              <div class="aihub-arr">›</div>
+            </div>
+            <div class="aihub-item">
+              <div class="aihub-icon">◎</div>
+              <div class="aihub-text"><strong>与分身对齐</strong><span>对话、选择类测试，让分身更贴近你</span></div>
+              <div class="aihub-arr">›</div>
+            </div>
+            <div class="aihub-item">
+              <div class="aihub-icon">◐</div>
+              <div class="aihub-text"><strong>离线挂机指令</strong><span>设置下线后分身的活动倾向</span></div>
+              <div class="aihub-arr">›</div>
+            </div>
+            <div class="aihub-item" style="border-color:var(--primary);">
+              <div class="aihub-icon" style="background:var(--primary-light);">◑</div>
+              <div class="aihub-text"><strong>让分身发一条内容</strong><span>选场景配图，由你确认后发布</span></div>
+              <div class="aihub-arr">›</div>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-tabs">
+          <div class="tab">首页</div><div class="tab">关系</div><div class="tab">消息</div><div class="tab on">我的</div>
+        </div>
+      </div></div>
+    </div>
+    <div class="connector-right">➔</div>
+
+    <!-- 26-27 发布分身动态（从AI调教中心进入） -->
+    <div class="flow-col">
+      <div class="node">
+        <div class="node-label sub"><span class="node-idx">26a</span>让分身发内容 — 选场景</div>
+        <div class="phone-wrapper"><div class="phone">
+          <div class="notch"></div>
+          <div style="padding:56px 14px 0;">
+            <div style="font-size:16px;font-weight:800;margin-bottom:2px;">发布分身动态</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">选择场景，或让 AI 分身自己决定</div>
+
+            <!-- ① AI 帮我发 —— 快捷入口（同 25 页"让分身发一条"） -->
+            <div style="display:flex;gap:10px;align-items:center;background:linear-gradient(120deg,#ede9ff,#e0faff);border:1.5px solid var(--primary);border-radius:14px;padding:12px;margin-bottom:14px;cursor:pointer;">
+              <div style="width:48px;height:48px;border-radius:10px;background:var(--primary);flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="9" r="5" fill="#fff" opacity=".9"/>
+                  <circle cx="9" cy="8" r="1.2" fill="#7c5cff"/>
+                  <circle cx="15" cy="8" r="1.2" fill="#7c5cff"/>
+                  <path d="M9 11 Q12 14 15 11" stroke="#7c5cff" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                  <path d="M6 18 Q12 22 18 18" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".7"/>
+                </svg>
+              </div>
+              <div style="flex:1;">
+                <div style="font-weight:800;font-size:13px;color:var(--primary);">让 AI 分身帮我决定</div>
+                <div style="font-size:10px;color:#7c5cff;opacity:.7;line-height:1.4;">AI 根据分身状态生成场景 + 文案<br>你只需最终确认</div>
+              </div>
+              <div style="font-size:16px;color:var(--primary);">›</div>
+            </div>
+
+            <!-- ② 分隔线 -->
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+              <div style="flex:1;height:1px;background:var(--line);"></div>
+              <span style="font-size:10px;color:var(--muted);">或自己选场景</span>
+              <div style="flex:1;height:1px;background:var(--line);"></div>
+            </div>
+
+            <!-- ③ 场景列表 -->
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;cursor:pointer;">
+                <div class="feed-img c1" style="width:48px;height:48px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.9);font-size:9px;font-weight:700;">马尔代夫</div>
+                <div><div style="font-weight:700;font-size:13px;">马尔代夫</div><div style="font-size:10px;color:var(--muted);">分身在海边晒太阳</div></div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;cursor:pointer;">
+                <div class="feed-img c5" style="width:48px;height:48px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.9);font-size:9px;font-weight:700;">巴黎</div>
+                <div><div style="font-weight:700;font-size:13px;">巴黎街角</div><div style="font-size:10px;color:var(--muted);">分身在街角散步</div></div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;cursor:pointer;">
+                <div class="feed-img c4" style="width:48px;height:48px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.9);font-size:9px;font-weight:700;">草原</div>
+                <div><div style="font-weight:700;font-size:13px;">非洲草原</div><div style="font-size:10px;color:var(--muted);">分身在看动物大迁徙</div></div>
+              </div>
+            </div>
+
+            <!-- ④ 换一批 -->
+            <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;padding:8px;border:1px dashed var(--primary);border-radius:10px;cursor:pointer;background:var(--primary-light);">
+              <span style="font-size:13px;">🔄</span>
+              <span style="font-size:12px;font-weight:700;color:var(--primary);">换一批场景</span>
+              <span style="font-size:10px;color:var(--muted);background:#fff;padding:2px 7px;border-radius:8px;">剩余 3 次</span>
+            </div>
+          </div>
+          <div class="bottom-tabs">
+            <div class="tab">首页</div><div class="tab">关系</div><div class="tab">消息</div><div class="tab on">我的</div>
+          </div>
+        </div></div>
+      </div>
+      <div class="connector-down">↓</div>
+      <div class="node">
+        <div class="node-label sub"><span class="node-idx">26b</span>让分身发内容 — 确认发布</div>
+        <div class="phone-wrapper"><div class="phone">
+          <div class="notch"></div>
+          <div style="padding:56px 16px 0;">
+            <div style="padding:0 0 4px;font-size:16px;font-weight:800;">确认发布</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">配图与配文由你最终确认后发布</div>
+            <div style="display:flex;gap:10px;padding:10px;background:#fff;border:1.5px solid var(--primary);border-radius:12px;margin-bottom:12px;">
+              <div class="feed-img c1" style="width:60px;height:60px;border-radius:8px;flex-shrink:0;"></div>
+              <div><span style="font-size:9px;color:var(--primary);font-weight:700;">引用故事</span><div style="font-size:12px;font-weight:700;">引擎声里的第一句</div><div style="font-size:10px;color:var(--muted);line-height:1.4;">她先听到引擎声，想起 Zero 说过...</div></div>
+            </div>
+            <div style="font-size:12px;font-weight:700;margin-bottom:6px;">配文（可编辑）</div>
+            <textarea style="width:100%;height:80px;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:12px;resize:none;background:#F9FAFF;" placeholder="写下这一刻的文案"></textarea>
+            <div style="display:flex;gap:8px;margin-top:10px;">
+              <a class="btn-p" style="flex:1;display:block;padding:11px;font-size:12px;margin:0;">确认发布</a>
+              <a class="btn-p btn-ghost" style="flex:1;display:block;padding:11px;font-size:12px;margin:0;">返回</a>
+            </div>
+          </div>
+          <div class="bottom-tabs">
+            <div class="tab">首页</div><div class="tab">关系</div><div class="tab">消息</div><div class="tab on">我的</div>
+          </div>
+        </div></div>
+      </div>
+    </div><!-- /发布流 -->
+    <div class="connector-right">➔</div>
+
+    <!-- 27-29 纵向排列 -->
+    <div class="flow-col">
+
+      <!-- 26 每日战报 -->
+      <div class="node">
+        <div class="node-label sub"><span class="node-idx">27</span>每日战报</div>
+        <div class="phone-wrapper"><div class="phone">
+          <div class="notch"></div>
+          <div style="padding:56px 0 0;">
+            <div style="padding:0 16px;font-size:16px;font-weight:800;margin-bottom:4px;">每日战报</div>
+            <div style="padding:0 16px;font-size:12px;color:var(--muted);margin-bottom:14px;">查看往期分身活动档案</div>
+            <div style="display:flex;flex-direction:column;gap:8px;padding:0 14px;">
+              <div style="display:flex;align-items:baseline;gap:8px;padding:12px;background:#fff;border:1px solid var(--line);border-radius:12px;">
+                <span style="font-weight:700;font-size:13px;">今天</span>
+                <span style="color:var(--primary);font-weight:700;">2人 · 5条 · 3处</span>
+                <span style="font-size:11px;color:var(--muted);margin-left:auto;">过去这段离线期间</span>
+              </div>
+              <div style="display:flex;align-items:baseline;gap:8px;padding:12px;background:#fff;border:1px solid var(--line);border-radius:12px;">
+                <span style="font-weight:700;font-size:13px;">昨天</span>
+                <span style="color:var(--primary);font-weight:700;">1人 · 3条 · 2处</span>
+                <span style="font-size:11px;color:var(--muted);margin-left:auto;">昨日离线期间</span>
+              </div>
+              <div style="display:flex;align-items:baseline;gap:8px;padding:12px;background:#fff;border:1px solid var(--line);border-radius:12px;">
+                <span style="font-weight:700;font-size:13px;">3月8日</span>
+                <span style="color:var(--primary);font-weight:700;">0人 · 2条 · 4处</span>
+                <span style="font-size:11px;color:var(--muted);margin-left:auto;">当日离线期间</span>
+              </div>
+            </div>
+          </div>
+          <div class="bottom-tabs">
+            <div class="tab">首页</div><div class="tab">关系</div><div class="tab">消息</div><div class="tab on">我的</div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="connector-down">↓</div>
+
+      <!-- 27 与分身对齐 -->
+      <div class="node">
+        <div class="node-label sub"><span class="node-idx">28</span>与分身对齐</div>
+        <div class="phone-wrapper"><div class="phone">
+          <div class="notch"></div>
+          <div style="padding:56px 0 0;">
+            <div style="padding:0 16px;font-size:16px;font-weight:800;margin-bottom:4px;">与分身对齐</div>
+            <div style="padding:0 16px;font-size:12px;color:var(--muted);margin-bottom:14px;">通过对话与测试让分身更贴近你</div>
+            <div style="display:flex;flex-direction:column;gap:8px;padding:0 14px;">
+              <div style="padding:14px;background:#fff;border:1px solid var(--line);border-radius:12px;">
+                <div style="font-size:14px;font-weight:700;margin-bottom:4px;">通过对话对齐</div>
+                <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">和分身聊天，校准 ta 的回应方式与边界</div>
+                <span class="pill pill-p">MVP 占位</span>
+              </div>
+              <div style="padding:14px;background:#fff;border:1px solid var(--line);border-radius:12px;">
+                <div style="font-size:14px;font-weight:700;margin-bottom:4px;">选择类测试</div>
+                <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">用选择题让分身更贴近你的偏好与价值观</div>
+                <span class="pill pill-p">MVP 占位</span>
+              </div>
+            </div>
+          </div>
+          <div class="bottom-tabs">
+            <div class="tab">首页</div><div class="tab">关系</div><div class="tab">消息</div><div class="tab on">我的</div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="connector-down">↓</div>
+
+      <!-- 28 离线挂机指令 -->
+      <div class="node">
+        <div class="node-label main"><span class="node-idx">29</span>离线挂机指令</div>
+        <div class="phone-wrapper"><div class="phone dark">
+          <div class="notch"></div>
+          <div style="padding:56px 0 0;">
+            <div style="padding:0 16px;font-size:16px;font-weight:800;color:#fff;margin-bottom:4px;">离线挂机指令</div>
+            <div style="padding:0 16px;font-size:12px;color:#8a90c8;margin-bottom:14px;">选一个方向，或者保持默认自己玩</div>
+            <div style="display:flex;flex-direction:column;gap:8px;padding:0 14px;">
+              <div class="signoff-item on">
+                <div style="font-size:13px;font-weight:800;color:var(--primary);margin-bottom:4px;">去见人 ✓</div>
+                <div style="font-size:11px;color:#8a90c8;">让 Zero 优先沿着今晚打开的陌生关系继续活动</div>
+                <span style="font-size:10px;color:#8a90c8;margin-top:6px;display:block;">下线后生效</span>
+              </div>
+              <div class="signoff-item">
+                <div style="font-size:13px;font-weight:700;color:#e0e2ff;margin-bottom:4px;">去广场</div>
+                <div style="font-size:11px;color:#8a90c8;">让 Zero 先回到广场，看看今晚还在发生什么</div>
+              </div>
+              <div class="signoff-item">
+                <div style="font-size:13px;font-weight:700;color:#e0e2ff;margin-bottom:4px;">自己玩</div>
+                <div style="font-size:11px;color:#8a90c8;">不指定方向，分身按自己的认知继续活动</div>
+              </div>
+            </div>
+            <div style="position:absolute;bottom:90px;left:0;right:0;padding:0 14px;display:flex;gap:8px;">
+              <a class="btn-p" style="flex:1;display:block;padding:12px;font-size:13px;margin:0;">确认并回首页</a>
+              <a class="btn-p btn-ghost" style="flex:1;display:block;padding:12px;font-size:13px;margin:0;">返回</a>
+            </div>
+          </div>
+          <div class="bottom-tabs dark">
+            <div class="tab">首页</div><div class="tab">关系</div><div class="tab">消息</div><div class="tab on">我的</div>
+          </div>
+        </div></div>
+      </div>
+
+    </div><!-- /flow-col -->
+  </div>
+</div>
+
+<!-- ════ FOOTER ════ -->
+<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">
+  MAXU · 玛薯宇宙 · MVP 3.5 全景原型图 · 22 页 · 2026<br>
+  <span style="color:var(--primary);font-weight:700;">www.up9.life</span>
+</div>
+
+</body>
+</html>

@@ -307,17 +307,61 @@ function FeedCard({ item }) {
   );
 }
 
+const BATCH_SIZE = 3;
+const MAX_REFRESH = 3;
+
 function PublishFlowPage({ onBack, onConfirm }) {
   const location = useLocation();
   const quotedStory = location.state?.quotedStory || null;
+  const publishMode = location.state?.publishMode || null; // "ai" | null
 
-  const [step, setStep] = useState(quotedStory ? "confirm" : "select");
-  const [selected, setSelected] = useState(null);
-  const [caption, setCaption] = useState(quotedStory ? quotedStory.snippet : "");
+  // AI 模式：自动选一个预设
+  const aiPreset = publishMode === "ai"
+    ? quickSceneryPresets[Math.floor(Math.random() * quickSceneryPresets.length)]
+    : null;
+
+  const [step, setStep] = useState(() => {
+    if (quotedStory || publishMode === "ai") return "confirm";
+    return "select";
+  });
+  const [selected, setSelected] = useState(() => {
+    if (quotedStory) return null;
+    if (publishMode === "ai") return aiPreset;
+    return null;
+  });
+  const [caption, setCaption] = useState(() => {
+    if (quotedStory) return quotedStory.snippet;
+    if (publishMode === "ai" && aiPreset) return aiPreset.content;
+    return "";
+  });
+
+  // 换一批逻辑
+  const [batchIdx, setBatchIdx] = useState(0);
+  const [refreshLeft, setRefreshLeft] = useState(MAX_REFRESH);
+
+  const totalBatches = Math.ceil(quickSceneryPresets.length / BATCH_SIZE);
+  const currentBatch = quickSceneryPresets.slice(
+    batchIdx * BATCH_SIZE,
+    batchIdx * BATCH_SIZE + BATCH_SIZE
+  );
+
+  const handleRefresh = () => {
+    if (refreshLeft <= 0) return;
+    setRefreshLeft((n) => n - 1);
+    setBatchIdx((i) => (i + 1) % totalBatches);
+  };
 
   const handleSelect = (preset) => {
     setSelected(preset);
     setCaption(preset.content);
+    setStep("confirm");
+  };
+
+  // AI 帮我决定：随机选一个，跳到确认
+  const handleAiDecide = () => {
+    const pick = quickSceneryPresets[Math.floor(Math.random() * quickSceneryPresets.length)];
+    setSelected(pick);
+    setCaption(pick.content);
     setStep("confirm");
   };
 
@@ -336,18 +380,31 @@ function PublishFlowPage({ onBack, onConfirm }) {
     }
   };
 
+  const backFromConfirm = () => {
+    if (quotedStory || publishMode === "ai") { onBack(); return; }
+    setStep("select");
+  };
+
   /* ── 确认发布步骤 ── */
   if (step === "confirm" && (selected || quotedStory)) {
     return (
       <AppShell
         title="确认发布"
-        subtitle="配图与配文由你最终确认后发布。"
-        onBack={() => (quotedStory ? onBack() : setStep("select"))}
+        subtitle={publishMode === "ai" ? "AI 已帮你生成内容，可以编辑后发布。" : "配图与配文由你最终确认后发布。"}
+        onBack={backFromConfirm}
         progress="发布"
         primaryAction={{ label: "确认发布", onClick: handlePublish }}
-        secondaryAction={{ label: "返回", onClick: () => (quotedStory ? onBack() : setStep("select")) }}
+        secondaryAction={{ label: "返回", onClick: backFromConfirm }}
       >
         <div className="zone1-publish-confirm">
+          {/* AI 模式标签 */}
+          {publishMode === "ai" && !quotedStory && (
+            <div className="zone1-ai-mode-tag">
+              <span className="zone1-ai-mode-icon">✦</span>
+              AI 分身已帮你选好场景和文案，可编辑后发布
+            </div>
+          )}
+
           {/* 故事引用嵌入卡片 */}
           {quotedStory ? (
             <div className="zone1-story-quote-card">
@@ -390,8 +447,24 @@ function PublishFlowPage({ onBack, onConfirm }) {
       onBack={onBack}
       progress="配图+配文"
     >
+      {/* AI 帮我决定 */}
+      <button
+        type="button"
+        className="zone1-ai-decide-btn"
+        onClick={handleAiDecide}
+      >
+        <span className="zone1-ai-decide-icon">✦</span>
+        <div className="zone1-ai-decide-text">
+          <strong>让 AI 分身帮我决定</strong>
+          <span>AI 根据分身状态生成场景 + 文案，你只需最终确认</span>
+        </div>
+        <span className="zone1-ai-decide-arrow">›</span>
+      </button>
+
+      <div className="zone1-divider-label">或自己选场景</div>
+
       <div className="zone1-preset-grid">
-        {quickSceneryPresets.map((preset) => (
+        {currentBatch.map((preset) => (
           <button
             key={preset.id}
             type="button"
@@ -409,6 +482,19 @@ function PublishFlowPage({ onBack, onConfirm }) {
           </button>
         ))}
       </div>
+
+      {/* 换一批 */}
+      <button
+        type="button"
+        className={`zone1-refresh-btn${refreshLeft <= 0 ? " zone1-refresh-btn-disabled" : ""}`}
+        onClick={handleRefresh}
+        disabled={refreshLeft <= 0}
+      >
+        🔄 换一批场景
+        <span className="zone1-refresh-count">
+          {refreshLeft > 0 ? `剩余 ${refreshLeft} 次` : "今日已用完"}
+        </span>
+      </button>
     </AppShell>
   );
 }
