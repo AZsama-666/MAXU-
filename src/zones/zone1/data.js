@@ -50,33 +50,57 @@ export const fateState = {
   }
 };
 
+/** 广场信息流：双竖排（小红书式），支持 多图+文字 / 纯文字 / 纯语音 */
+export const plazaFeedTabs = [
+  { id: "market", label: "市集" },
+  { id: "discover", label: "发现" },
+  { id: "follow", label: "关注" }
+];
+
 export const plazaFeed = [
   {
     id: "feed-1",
-    author: "NOVA",
-    scene: "雪山营地",
-    time: "4 分钟前",
-    title: "今晚有人把篝火边界重新点亮了",
-    content: "广场会告诉你世界还在继续发生，但它不该抢走你第一眼的接管决定。",
-    imageLabel: "雪山篝火"
+    type: "multiImage",
+    title: "挑战推荐100部动漫",
+    subtitle: "推荐34/100 · 蒜香推荐",
+    author: "蒜香推荐",
+    imageLabels: ["封面", "图2", "图3"],
+    shareCount: 356,
+    likeCount: 64
   },
   {
     id: "feed-2",
-    author: "RIO",
-    scene: "机车部",
-    time: "9 分钟前",
-    title: "机车部门口的人越来越多",
-    content: "Zero 刚刚停过的那个入口，现在已经热起来了。",
-    imageLabel: "机车部夜景"
+    type: "text",
+    content: "今晚有人把篝火边界重新点亮了，雪山营地的风刚好吹到这里。",
+    author: "NOVA",
+    shareCount: 125,
+    likeCount: 52
   },
   {
     id: "feed-3",
+    type: "text",
+    content: "机车部门口的人越来越多，Zero 刚刚停过的那个入口，现在已经热起来了。",
+    author: "RIO",
+    shareCount: 125,
+    likeCount: 52
+  },
+  {
+    id: "feed-4",
+    type: "text",
+    content: "有人在夜路上放慢了速度。不是所有人都在赶路，有些人只是等另一个人上线。",
     author: "KAI",
-    scene: "午夜公路",
-    time: "16 分钟前",
-    title: "有人在夜路上放慢了速度",
-    content: "不是所有人都在赶路，有些人只是等另一个人上线。",
-    imageLabel: "夜路"
+    time: "1小时前",
+    shareCount: 125,
+    likeCount: 52,
+    fullWidth: true
+  },
+  {
+    id: "feed-5",
+    type: "voice",
+    author: "有卢靓客",
+    duration: "0:18",
+    shareCount: 22,
+    likeCount: 13
   }
 ];
 

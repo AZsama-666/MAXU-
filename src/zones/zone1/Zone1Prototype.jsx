@@ -7,6 +7,7 @@ import {
   homeSnapshot,
   openingPopup,
   plazaFeed,
+  plazaFeedTabs,
   quickSceneryPresets,
   twinReport,
   zone1CompletionNotes,
@@ -26,12 +27,11 @@ export function Zone1Prototype() {
   const confirmPublish = (preset, caption) => {
     const nextPost = {
       id: `post-${Date.now().toString(36)}`,
-      author: "你的分身",
-      scene: preset.scene,
-      time: "刚刚",
-      title: preset.title,
+      type: "text",
       content: caption || preset.content,
-      imageLabel: preset.imageLabel || preset.scene
+      author: "你的分身",
+      shareCount: 0,
+      likeCount: 0
     };
     setPosts((current) => [nextPost, ...current]);
   };
@@ -186,14 +186,33 @@ function OpeningPage({ onBack, onNext }) {
 }
 
 function HomePage({ onBack, onOpenFate, onGoToReports, onOpenPublish, posts }) {
+  const [activeTab, setActiveTab] = useState("discover");
   return (
     <AppShell
       title="广场"
-      subtitle="世界还在发生。"
+      subtitle="市集 · 发现 · 关注"
       onBack={onBack}
       progress="10 / 11"
       bottomNav={{ activeTab: "home" }}
     >
+      <div className="zone1-plaza-top">
+        <div className="zone1-plaza-tabs">
+          {plazaFeedTabs.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              className={`zone1-plaza-tab ${activeTab === tab.id ? "zone1-plaza-tab-active" : ""}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+        <button type="button" className="zone1-plaza-search" aria-label="搜索">
+          🔍
+        </button>
+      </div>
+
       <div className="zone1-report-strip">
         <button type="button" className="zone1-report-strip-inner" onClick={onGoToReports}>
           <span className="zone1-report-strip-label">离线</span>
@@ -211,31 +230,84 @@ function HomePage({ onBack, onOpenFate, onGoToReports, onOpenPublish, posts }) {
         </button>
       </div>
 
-      <div className="zone1-feed-list zone1-feed-list-horizontal">
-        {posts.map((post) => (
-          <div key={post.id} className="zone1-feed-card zone1-feed-card-h">
-            <div
-              className="zone1-feed-thumb"
-              aria-hidden
-              style={{ ["--thumb-label"]: `"${(post.imageLabel || post.scene).slice(0, 4)}"` }}
-            />
-            <div className="zone1-feed-body">
-              <div className="zone1-feed-head">
-                <div className="zone1-feed-avatar">{post.author.slice(0, 1)}</div>
-                <div className="zone1-feed-meta">
-                  <strong>{post.author}</strong>
-                  <span>
-                    {post.scene} · {post.time}
-                  </span>
-                </div>
-              </div>
-              <h4>{post.title}</h4>
-              <p>{post.content}</p>
-            </div>
-          </div>
+      <div className="zone1-feed-grid">
+        {posts.map((item) => (
+          <FeedCard key={item.id} item={item} />
         ))}
       </div>
     </AppShell>
+  );
+}
+
+function FeedCard({ item }) {
+  const type = item.type || "text";
+  if (type === "multiImage") {
+    return (
+      <article className="zone1-feed-item zone1-feed-item-full zone1-feed-multi-image">
+        <div className="zone1-multi-image-row">
+          <div
+            className="zone1-multi-image-main"
+              style={{ ["--thumb-label"]: `"${(item.imageLabels && item.imageLabels[0]) || "封面"}"` }}
+          />
+          <div className="zone1-multi-image-side">
+            {(item.imageLabels || ["图2", "图3"]).slice(1, 3).map((label, i) => (
+              <div
+                key={i}
+                className="zone1-multi-image-small"
+                style={{ ["--thumb-label"]: `"${label.slice(0, 2)}"` }}
+              />
+            ))}
+          </div>
+        </div>
+        <h4 className="zone1-feed-item-title">{item.title}</h4>
+        {item.subtitle && <p className="zone1-feed-item-sub">{item.subtitle}</p>}
+        <div className="zone1-feed-footer">
+          <div className="zone1-feed-avatar zone1-feed-avatar-sm">{item.author.slice(0, 1)}</div>
+          <span className="zone1-feed-author">{item.author}</span>
+          <span className="zone1-feed-actions">
+            <span>↗ {item.shareCount ?? 0}</span>
+            <span>♥ {item.likeCount ?? 0}</span>
+          </span>
+        </div>
+      </article>
+    );
+  }
+  if (type === "voice") {
+    return (
+      <article className="zone1-feed-item zone1-feed-item-full zone1-feed-voice">
+        <div className="zone1-feed-footer zone1-feed-footer-inline">
+          <div className="zone1-feed-avatar zone1-feed-avatar-sm">{item.author.slice(0, 1)}</div>
+          <span className="zone1-feed-author">{item.author}</span>
+        </div>
+        <div className="zone1-voice-bar">
+          <button type="button" className="zone1-voice-play" aria-label="播放">▶</button>
+          <div className="zone1-voice-wave" />
+          <span className="zone1-voice-duration">{item.duration || "0:18"}</span>
+        </div>
+        <div className="zone1-feed-actions zone1-feed-actions-end">
+          <span>↗ {item.shareCount ?? 0}</span>
+          <span>♥ {item.likeCount ?? 0}</span>
+        </div>
+      </article>
+    );
+  }
+  const fullWidth = item.fullWidth || (item.title && !item.content);
+  const content = item.content || item.title || "";
+  return (
+    <article
+      className={`zone1-feed-item zone1-feed-text ${fullWidth ? "zone1-feed-item-full" : ""}`}
+    >
+      <p className="zone1-feed-text-content">{content}</p>
+      {item.time && <span className="zone1-feed-time">{item.time}</span>}
+      <div className="zone1-feed-footer">
+        <div className="zone1-feed-avatar zone1-feed-avatar-sm">{item.author.slice(0, 1)}</div>
+        <span className="zone1-feed-author">{item.author}</span>
+        <span className="zone1-feed-actions">
+          <span>↗ {item.shareCount ?? 0}</span>
+          <span>♥ {item.likeCount ?? 0}</span>
+        </span>
+      </div>
+    </article>
   );
 }
 
