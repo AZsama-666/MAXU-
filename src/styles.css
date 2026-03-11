@@ -2406,6 +2406,85 @@ a {
   gap: 12px;
 }
 
+/* 关系列表卡片（最简版）*/
+.zone2-bond-card-clean {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  padding: 16px;
+  text-align: left;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.zone2-bond-card-clean:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 16px rgba(124, 92, 255, 0.12);
+}
+
+.zone2-bond-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.zone2-bond-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.zone2-bond-story-hint {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.zone2-bond-story-count {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.zone2-bond-story-range {
+  color: var(--text-muted);
+}
+
+.zone2-bond-no-story {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* 关系详情页故事元信息条 */
+.zone2-story-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  margin-bottom: 14px;
+}
+
+.zone2-story-meta-count {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--accent);
+}
+
+.zone2-story-meta-range {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
 .zone2-storyline {
   margin-top: 18px;
   padding: 16px;

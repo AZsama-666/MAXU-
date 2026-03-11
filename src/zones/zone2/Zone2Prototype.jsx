@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Link, Navigate, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AppShell } from "../../components/AppShell";
 import { PhoneFrame } from "../../components/PhoneFrame";
-import { bondHighlights, bondSummaries, bondStorylines, zone2CompletionNotes, zone2FlowLinks } from "./data";
+import { bondSummaries, bondStorylines, zone2CompletionNotes, zone2FlowLinks } from "./data";
 
 function matchFlowLink(pathname) {
   if (pathname.startsWith("/zone2/detail/")) {
@@ -100,29 +100,42 @@ export function Zone2Prototype() {
 function BondListPage({ onBack, onOpenBond }) {
   return (
     <AppShell
-      title="关系列表"
-      subtitle="先保留最基础的关系存在感。"
+      title="关系"
       onBack={onBack}
       progress="13 / 17"
       bottomNav={{ activeTab: "relations" }}
     >
       <div className="zone2-list-single">
-        {bondSummaries.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            className="home-card zoneX-button-card zone2-bond-card"
-            onClick={() => onOpenBond(item.id)}
-          >
-            <span className="home-card-badge">{item.status}</span>
-            <h4>{item.name}</h4>
-            <p>{item.reason}</p>
-            <div className="zone1-inline-meta">
-              <span>{item.currentScene}</span>
-              <span>{item.mood}</span>
-            </div>
-          </button>
-        ))}
+        {bondSummaries.map((item) => {
+          const storyCount = (bondStorylines[item.id] || []).length;
+          const firstStory = (bondStorylines[item.id] || [])[0];
+          const lastStory = (bondStorylines[item.id] || []).slice(-1)[0];
+          return (
+            <button
+              key={item.id}
+              type="button"
+              className="zone2-bond-card-clean"
+              onClick={() => onOpenBond(item.id)}
+            >
+              <div className="zone2-bond-card-top">
+                <span className="zone2-bond-name">{item.name}</span>
+                <span className="home-card-badge">{item.status}</span>
+              </div>
+              {storyCount > 0 ? (
+                <div className="zone2-bond-story-hint">
+                  <span className="zone2-bond-story-count">{storyCount} 条故事</span>
+                  {firstStory && (
+                    <span className="zone2-bond-story-range">
+                      {firstStory.time} → {lastStory?.time || firstStory.time}
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <p className="zone2-bond-story-hint zone2-bond-no-story">暂无故事线</p>
+              )}
+            </button>
+          );
+        })}
       </div>
     </AppShell>
   );
@@ -132,83 +145,66 @@ const STORY_PAGE_SIZE = 4;
 
 function BondDetailPage({ onBack, onGoMessages }) {
   const bond = useBond();
-  const content = bondHighlights[bond.id];
   const storyline = bondStorylines[bond.id] || [];
   const [page, setPage] = useState(1);
   const totalPages = Math.max(1, Math.ceil(storyline.length / STORY_PAGE_SIZE));
   const start = (page - 1) * STORY_PAGE_SIZE;
   const pageItems = storyline.slice(start, start + STORY_PAGE_SIZE);
+  const firstStory = storyline[0];
+  const lastStory = storyline[storyline.length - 1];
 
   return (
     <AppShell
       title="关系详情"
-      subtitle="双方通过 AIGC 产生的小故事，会在这里连成一条故事线。"
       onBack={onBack}
       progress="14 / 17"
       bottomNav={{ activeTab: "relations" }}
-      primaryAction={{ label: "去消息继续承接", onClick: onGoMessages }}
-      secondaryAction={{ label: "返回列表", onClick: onBack }}
+      primaryAction={{ label: "续写下一章", onClick: onGoMessages }}
     >
-      <div className="home-card zone2-hero-card">
-        <span className="home-card-badge">{bond.status}</span>
-        <h4>{bond.name}</h4>
-        <p>{bond.lastSignal}</p>
-      </div>
+      {storyline.length > 0 && (
+        <div className="zone2-story-meta">
+          <span className="zone2-story-meta-count">{storyline.length} 条故事</span>
+          <span className="zone2-story-meta-range">
+            {firstStory.time} · 最近停在 {lastStory.time}
+          </span>
+        </div>
+      )}
 
-      <div className="zone2-storyline">
-        <strong className="zone2-storyline-title">我们的小故事 · AIGC</strong>
-        {storyline.length === 0 ? (
-          <p className="zone2-story-empty">暂无小故事</p>
-        ) : (
-          <>
-            <div className="zone2-story-grid">
-              {pageItems.map((node, index) => (
-                <div key={start + index} className="zone2-story-card">
-                  <div
-                    className="zone2-story-card-image"
-                    style={{
-                      ["--thumb-label"]: `"${(node.imageLabel || "故事").slice(0, 4)}"`
-                    }}
-                  />
-                  <p className="zone2-story-card-snippet">{node.snippet}</p>
-                  <span className="zone2-story-card-time">{node.time}</span>
-                </div>
-              ))}
-            </div>
-            <div className="zone2-story-pagination">
-              {page > 1 && (
-                <button type="button" onClick={() => setPage((p) => p - 1)}>
-                  上一页
-                </button>
-              )}
-              <span className="zone2-story-page-indicator">
-                {page}/{totalPages} Page
-              </span>
-              {page < totalPages && (
-                <button type="button" onClick={() => setPage((p) => p + 1)}>
-                  下一页
-                </button>
-              )}
-            </div>
-          </>
-        )}
-      </div>
-
-      <div className="status-card">
-        <strong>{content.title}</strong>
-        <p>{content.summary}</p>
-      </div>
-
-      <div className="selection-list">
-        {content.bullets.map((item) => (
-          <div key={item} className="selection-item">
-            <div>
-              <strong>{item}</strong>
-            </div>
-            <span className="zone1-inline-tag">关系影响</span>
+      {storyline.length === 0 ? (
+        <p className="zone2-story-empty">暂无小故事，等待双方继续互动生成。</p>
+      ) : (
+        <>
+          <div className="zone2-story-grid">
+            {pageItems.map((node, index) => (
+              <div key={start + index} className="zone2-story-card">
+                <div
+                  className="zone2-story-card-image"
+                  style={{
+                    ["--thumb-label"]: `"${(node.imageLabel || "故事").slice(0, 4)}"`
+                  }}
+                />
+                <p className="zone2-story-card-snippet">{node.snippet}</p>
+                <span className="zone2-story-card-time">{node.time}</span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+          <div className="zone2-story-pagination">
+            {page > 1 && (
+              <button type="button" onClick={() => setPage((p) => p - 1)}>
+                上一页
+              </button>
+            )}
+            <span className="zone2-story-page-indicator">
+              {page}/{totalPages} Page
+            </span>
+            {page < totalPages && (
+              <button type="button" onClick={() => setPage((p) => p + 1)}>
+                下一页
+              </button>
+            )}
+          </div>
+        </>
+      )}
     </AppShell>
   );
 }
