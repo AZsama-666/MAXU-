@@ -1,9 +1,19 @@
-import { useMemo, useState } from "react";
-import { Link, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, Navigate, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AppShell } from "../../components/AppShell";
 import { GlobalBottomNav } from "../../components/GlobalBottomNav";
 import { PhoneFrame } from "../../components/PhoneFrame";
-import { basicChat, messageThreads, revealState, zone3CompletionNotes, zone3FlowLinks } from "./data";
+import {
+  basicChat,
+  messageThreads,
+  revealState,
+  scenePresets,
+  SCENE_ENTER_MAX,
+  SCENE_REFRESH_MAX,
+  sceneStoryPresets,
+  zone3CompletionNotes,
+  zone3FlowLinks
+} from "./data";
 
 function matchFlowLink(pathname) {
   return zone3FlowLinks.find((item) => pathname.startsWith(item.path)) || zone3FlowLinks[0];
@@ -71,6 +81,7 @@ export function Zone3Prototype() {
                   onBack={() => navigate("/zone1/home")}
                   onOpenReveal={() => navigate("/zone3/reveal")}
                   onOpenChat={() => navigate("/zone3/chat")}
+                  onGoToRelation={(bondId) => navigate(`/zone2/detail/${bondId || "zoe"}`)}
                 />
               }
             />
@@ -89,6 +100,25 @@ export function Zone3Prototype() {
                 <ChatPage
                   onBack={() => navigate("/zone3/inbox")}
                   onGoRelation={() => navigate("/zone2/detail/zoe")}
+                  onOpenSceneSelect={() => navigate("/zone3/scene-select")}
+                />
+              }
+            />
+            <Route
+              path="scene-select"
+              element={
+                <SceneSelectPage
+                  onBack={() => navigate("/zone3/chat")}
+                  onSelectScene={(sceneId) => navigate(`/zone3/scene/${sceneId}`)}
+                />
+              }
+            />
+            <Route
+              path="scene/:sceneId"
+              element={
+                <SceneRoomPage
+                  onEndScene={() => navigate("/zone3/chat")}
+                  onGoRelation={() => navigate("/zone2/detail/zoe")}
                 />
               }
             />
@@ -106,8 +136,20 @@ const INBOX_FILTERS = [
   { id: "at", label: "@ 我", icon: "@" }
 ];
 
-function InboxPage({ onBack, onOpenReveal, onOpenChat }) {
+const PEER_NAME = "Zoe";
+
+function InboxPage({ onBack, onOpenReveal, onOpenChat, onGoToRelation }) {
   const [activeFilter, setActiveFilter] = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.state?.trigger === "storyContinue") {
+      const bondId = location.state?.bondId || null;
+      navigate(location.pathname, { replace: true, state: {} });
+      navigate("/zone3/chat", { state: { autoStory: true, bondId } });
+    }
+  }, [location.state?.trigger, location.state?.bondId, location.pathname, navigate]);
 
   return (
     <div className="zone3-inbox-page">
@@ -150,7 +192,12 @@ function InboxPage({ onBack, onOpenReveal, onOpenChat }) {
               )}
             </div>
             <div className="zone3-thread-content">
-              <span className="zone3-thread-name">{item.title}</span>
+              <span className="zone3-thread-name">
+                {item.title}
+                {item.type === "命定之人" && (
+                  <span className="zone3-thread-countdown"> · {revealState.countdown}</span>
+                )}
+              </span>
               <span className="zone3-thread-preview">{item.preview}</span>
             </div>
             <span className="zone3-thread-time">{item.time}</span>
@@ -195,7 +242,127 @@ function RevealPage({ onBack, onNext }) {
   );
 }
 
-function ChatPage({ onBack, onGoRelation }) {
+const CHAT_PLUS_ITEMS = [
+  { id: "photo", icon: "🖼", label: "照片" },
+  { id: "capture", icon: "📷", label: "拍摄" },
+  { id: "location", icon: "📍", label: "位置" },
+  { id: "voice", icon: "🎤", label: "语音输入" },
+  { id: "favorite", icon: "📦", label: "收藏" },
+  { id: "card", icon: "👤", label: "个人名片" },
+  { id: "file", icon: "📁", label: "文件" },
+  { id: "music", icon: "🎵", label: "音乐" },
+  { id: "storyContinue", icon: "📖", label: "发起续写" },
+  { id: "virtualScene", icon: "🎭", label: "虚拟场景" }
+];
+
+let _storyMsgIdCounter = 0;
+function makeStoryRequestMsg(initiator) {
+  _storyMsgIdCounter += 1;
+  return { role: "storyRequest", id: `story-${_storyMsgIdCounter}`, state: "pending", initiator };
+}
+
+function StoryRequestCard({ msg, onUpdateState, onGoRelation }) {
+  const { state, initiator, id } = msg;
+
+  const update = (newState) => {
+    onUpdateState(id, newState);
+  };
+
+  if (state === "pending") {
+    return (
+      <div className="zone3-story-request-card zone3-story-request-pending">
+        <p className="zone3-src-label">📖 续写邀请</p>
+        <p className="zone3-src-title">{initiator} 邀请你一起续写故事</p>
+        <p className="zone3-src-hint">双方同意后，240 分钟后自动生成故事并归入关系页</p>
+        <div className="zone3-src-actions">
+          <button type="button" className="zone3-src-btn zone3-src-no" onClick={() => update("rejected")}>
+            NO
+          </button>
+          <button type="button" className="zone3-src-btn zone3-src-yes" onClick={() => update("countdown")}>
+            YES
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (state === "countdown") {
+    return (
+      <button
+        type="button"
+        className="zone3-story-request-card zone3-story-request-countdown"
+        onClick={() => update("done")}
+      >
+        <p className="zone3-src-label">⏳ 续写中</p>
+        <p className="zone3-src-countdown">240 分钟</p>
+        <p className="zone3-src-hint">点击此处完成（模拟 240 分钟后）</p>
+      </button>
+    );
+  }
+
+  if (state === "done") {
+    return (
+      <div className="zone3-story-request-card zone3-story-request-done">
+        <p className="zone3-src-label">✓ 故事已生成</p>
+        <p className="zone3-src-title">已归入关系页</p>
+        <button type="button" className="zone3-src-btn zone3-src-go" onClick={onGoRelation}>
+          去关系页看看
+        </button>
+      </div>
+    );
+  }
+
+  if (state === "rejected") {
+    return (
+      <div className="zone3-story-request-card zone3-story-request-rejected">
+        <p className="zone3-src-label">续写邀请</p>
+        <p className="zone3-src-title">已拒绝</p>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+function ChatPage({ onBack, onGoRelation, onOpenSceneSelect }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [plusOpen, setPlusOpen] = useState(false);
+  const [messages, setMessages] = useState(basicChat);
+  const [inputText, setInputText] = useState("");
+
+  useEffect(() => {
+    if (location.state?.autoStory) {
+      navigate(location.pathname, { replace: true, state: {} });
+      setMessages((prev) => [...prev, makeStoryRequestMsg("你")]);
+    }
+  }, [location.state?.autoStory, location.pathname, navigate]);
+
+  const updateStoryMsgState = (id, newState) => {
+    setMessages((prev) =>
+      prev.map((m) => (m.role === "storyRequest" && m.id === id ? { ...m, state: newState } : m))
+    );
+  };
+
+  const handlePlusItem = (item) => {
+    setPlusOpen(false);
+    if (item.id === "storyContinue") {
+      setMessages((prev) => [...prev, makeStoryRequestMsg("你")]);
+      return;
+    }
+    if (item.id === "virtualScene") {
+      onOpenSceneSelect?.();
+      return;
+    }
+    if (item.id === "photo" || item.id === "capture") {
+      setMessages((prev) => [...prev, { role: "你", text: `[已发送${item.label}]` }]);
+    } else if (item.id === "voice") {
+      setMessages((prev) => [...prev, { role: "你", text: "[语音消息]" }]);
+    } else {
+      setMessages((prev) => [...prev, { role: "你", text: `[${item.label}]` }]);
+    }
+  };
+
   return (
     <AppShell
       title="基础聊天"
@@ -206,17 +373,248 @@ function ChatPage({ onBack, onGoRelation }) {
       primaryAction={{ label: "回到关系页", onClick: onGoRelation }}
       secondaryAction={{ label: "返回消息", onClick: onBack }}
     >
-      <div className="zoneX-chat-list zone3-chat-list">
-        {basicChat.map((item, index) => (
-          <div
-            key={`${item.role}-${index}`}
-            className={item.role === "你" ? "zoneX-chat-bubble zoneX-chat-self" : "zoneX-chat-bubble"}
+      <div className="zone3-chat-page-wrap">
+        <div className="zoneX-chat-list zone3-chat-list">
+          {messages.map((item, index) => {
+            if (item.role === "storyRequest") {
+              return (
+                <StoryRequestCard
+                  key={item.id}
+                  msg={item}
+                  onUpdateState={updateStoryMsgState}
+                  onGoRelation={onGoRelation}
+                />
+              );
+            }
+            return (
+              <div
+                key={`${item.role}-${index}`}
+                className={
+                  item.role === "你"
+                    ? "zoneX-chat-bubble zoneX-chat-self"
+                    : item.role === "system"
+                      ? "zoneX-chat-bubble zoneX-chat-system"
+                      : "zoneX-chat-bubble"
+                }
+              >
+                {item.role !== "system" && <strong>{item.role}</strong>}
+                <p>{item.text}</p>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="zone3-chat-input-bar">
+          <button type="button" className="zone3-chat-input-icon" aria-label="语音">
+            🎙
+          </button>
+          <input
+            type="text"
+            className="zone3-chat-input-field"
+            placeholder="输入消息"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+          />
+          <button type="button" className="zone3-chat-input-icon" aria-label="语音消息">
+            🎤
+          </button>
+          <button type="button" className="zone3-chat-input-icon" aria-label="表情">
+            😊
+          </button>
+          <button
+            type="button"
+            className="zone3-chat-input-plus"
+            aria-label="更多"
+            onClick={() => setPlusOpen((v) => !v)}
           >
-            <strong>{item.role}</strong>
-            <p>{item.text}</p>
+            +
+          </button>
+        </div>
+
+        {plusOpen && (
+          <div className="zone3-chat-plus-overlay" onClick={() => setPlusOpen(false)}>
+            <div className="zone3-chat-plus-grid zone3-chat-plus-grid-9" onClick={(e) => e.stopPropagation()}>
+              {CHAT_PLUS_ITEMS.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className="zone3-chat-plus-item"
+                  onClick={() => handlePlusItem(item)}
+                >
+                  <span className="zone3-chat-plus-icon">{item.icon}</span>
+                  <span className="zone3-chat-plus-label">{item.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
+        )}
+      </div>
+    </AppShell>
+  );
+}
+
+function shuffleArr(arr) {
+  const out = [...arr];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+function SceneSelectPage({ onBack, onSelectScene }) {
+  const [displayScenes, setDisplayScenes] = useState(scenePresets);
+  const [refreshLeft, setRefreshLeft] = useState(SCENE_REFRESH_MAX);
+  const [enterLeft, setEnterLeft] = useState(SCENE_ENTER_MAX);
+
+  const handleRefresh = () => {
+    if (refreshLeft <= 0) return;
+    setRefreshLeft((n) => n - 1);
+    setDisplayScenes(shuffleArr(scenePresets));
+  };
+
+  const handleSelectScene = (sceneId) => {
+    if (enterLeft <= 0) return;
+    setEnterLeft((n) => n - 1);
+    onSelectScene(sceneId);
+  };
+
+  return (
+    <AppShell
+      title="虚拟场景"
+      subtitle="选择场景与剧本，AI 会给出话题提示，可随时结束。"
+      onBack={onBack}
+      progress="场景"
+      primaryAction={undefined}
+    >
+      <div className="zone3-scene-select-meta">
+        <span className="zone3-scene-enter-count">进入剧本 剩余 {enterLeft} 次</span>
+      </div>
+      <div className="zone3-scene-select-list">
+        {displayScenes.map((scene) => (
+          <button
+            key={scene.id}
+            type="button"
+            className={`zone3-scene-select-card${enterLeft <= 0 ? " zone3-scene-select-card-disabled" : ""}`}
+            onClick={() => handleSelectScene(scene.id)}
+            disabled={enterLeft <= 0}
+          >
+            <span className="zone3-scene-select-name">{scene.name}</span>
+            <p className="zone3-scene-select-intro">{scene.intro}</p>
+          </button>
         ))}
       </div>
+      <button
+        type="button"
+        className={`zone3-scene-refresh-btn${refreshLeft <= 0 ? " zone3-scene-refresh-btn-disabled" : ""}`}
+        onClick={handleRefresh}
+        disabled={refreshLeft <= 0}
+      >
+        换一批场景
+        <span className="zone3-scene-refresh-count">
+          {refreshLeft > 0 ? `剩余 ${refreshLeft} 次` : "今日已用完"}
+        </span>
+      </button>
+    </AppShell>
+  );
+}
+
+function SceneRoomPage({ onEndScene, onGoRelation }) {
+  const { sceneId } = useParams();
+  const scene = scenePresets.find((s) => s.id === sceneId) || scenePresets[0];
+  const [messages, setMessages] = useState([]);
+  const [inputText, setInputText] = useState("");
+  const [showStoryResult, setShowStoryResult] = useState(false);
+
+  const storyResult =
+    sceneStoryPresets.find((s) => s.sceneId === scene.id) ||
+    sceneStoryPresets[Math.floor(Math.random() * sceneStoryPresets.length)];
+
+  const handleSend = () => {
+    const t = inputText.trim();
+    if (!t) return;
+    setMessages((prev) => [...prev, { role: "你", text: t }]);
+    setInputText("");
+  };
+
+  const handleEndScene = () => {
+    setShowStoryResult(true);
+  };
+
+  const handleCloseStory = () => {
+    setShowStoryResult(false);
+    onEndScene();
+  };
+
+  return (
+    <AppShell
+      title={scene.name}
+      subtitle="AI 主持 · 可随时结束"
+      onBack={onEndScene}
+      progress="场景中"
+      primaryAction={{ label: "结束场景", onClick: handleEndScene }}
+    >
+      <div className="zone3-scene-room-wrap">
+        <div className="zone3-scene-room">
+          <div className="zone3-scene-room-intro">
+            <span className="zone3-scene-room-badge">剧本</span>
+            <p className="zone3-scene-room-prompt">{scene.intro}</p>
+          </div>
+          <p className="zone3-scene-room-hint">在此与对方自由聊天，AI 会适时插入话题提示。本场可随时结束。</p>
+
+          {messages.length > 0 && (
+            <div className="zone3-scene-room-messages">
+              {messages.map((item, index) => (
+                <div
+                  key={index}
+                  className={item.role === "你" ? "zoneX-chat-bubble zoneX-chat-self" : "zoneX-chat-bubble"}
+                >
+                  {item.role !== "你" && <strong>{item.role}</strong>}
+                  <p>{item.text}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="zone3-scene-room-input-bar">
+            <input
+              type="text"
+              className="zone3-scene-room-input"
+              placeholder="输入消息"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            />
+            <button type="button" className="zone3-scene-room-send" onClick={handleSend}>
+              发送
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {showStoryResult && (
+        <div className="zone3-scene-story-overlay" onClick={handleCloseStory}>
+          <div className="zone3-scene-story-card" onClick={(e) => e.stopPropagation()}>
+            <p className="zone3-scene-story-title">AIGC 纪念</p>
+            <h3 className="zone3-scene-story-heading">{storyResult.title}</h3>
+            <div
+              className="zone3-scene-story-thumb"
+              style={{ ["--thumb-label"]: `"${(storyResult.imageLabel || "故事").slice(0, 4)}"` }}
+            />
+            <p className="zone3-scene-story-snippet">{storyResult.snippet}</p>
+            <div className="zone3-scene-story-actions">
+              {onGoRelation && (
+                <button type="button" className="zone3-scene-story-btn zone3-scene-story-primary" onClick={() => { setShowStoryResult(false); onGoRelation?.(); }}>
+                  去关系页
+                </button>
+              )}
+              <button type="button" className="zone3-scene-story-btn" onClick={handleCloseStory}>
+                返回聊天
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </AppShell>
   );
 }

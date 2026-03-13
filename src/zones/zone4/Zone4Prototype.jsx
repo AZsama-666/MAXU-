@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { AppShell } from "../../components/AppShell";
 import { GlobalBottomNav } from "../../components/GlobalBottomNav";
@@ -16,12 +16,34 @@ function matchFlowLink(pathname) {
   return zone4FlowLinks.find((item) => pathname.startsWith(item.path)) || zone4FlowLinks[0];
 }
 
+const STORAGE_KEY_TWIN_AVATAR = "maxu_twin_avatar_url";
+
+function getStoredTwinAvatarUrl() {
+  try {
+    return localStorage.getItem(STORAGE_KEY_TWIN_AVATAR) || null;
+  } catch {
+    return null;
+  }
+}
+
 export function Zone4Prototype() {
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedOption, setSelectedOption] = useState(signoffOptions[2].id);
+  const [twinAvatarUrl, setTwinAvatarUrl] = useState(getStoredTwinAvatarUrl);
   const currentLink = useMemo(() => matchFlowLink(location.pathname), [location.pathname]);
   const currentOption = signoffOptions.find((item) => item.id === selectedOption) || signoffOptions[2];
+
+  const handleTwinAvatarConfirm = (url) => {
+    setTwinAvatarUrl(url);
+    try {
+      if (url && (url.startsWith("http:") || url.startsWith("https:")))
+        localStorage.setItem(STORAGE_KEY_TWIN_AVATAR, url);
+      else if (!url) localStorage.removeItem(STORAGE_KEY_TWIN_AVATAR);
+      // blob URL 不持久化，刷新后回退默认形象
+    } catch (_) {}
+    navigate("/zone4/align");
+  };
 
   return (
     <div className="prototype-layout">
@@ -77,10 +99,9 @@ export function Zone4Prototype() {
               path="hub"
               element={
                 <MinePage
+                  twinAvatarUrl={twinAvatarUrl}
                   onGoAiHub={() => navigate("/zone4/ai-hub")}
-                  onPublish={(mode) =>
-                    navigate("/zone1/publish", { state: { publishMode: mode } })
-                  }
+                  onPublish={() => navigate("/zone1/publish")}
                 />
               }
             />
@@ -102,7 +123,32 @@ export function Zone4Prototype() {
             />
             <Route
               path="align"
-              element={<AlignPage onBack={() => navigate("/zone4/ai-hub")} tools={alignTools} />}
+              element={
+                <AlignPage
+                  onBack={() => navigate("/zone4/ai-hub")}
+                  tools={alignTools}
+                  onNavigateVoice={() => navigate("/zone4/voice-capture")}
+                  onNavigateAvatar={() => navigate("/zone4/avatar-upload")}
+                />
+              }
+            />
+            <Route
+              path="voice-capture"
+              element={
+                <VoiceCapturePage
+                  onBack={() => navigate("/zone4/align")}
+                  onDone={() => navigate("/zone4/align")}
+                />
+              }
+            />
+            <Route
+              path="avatar-upload"
+              element={
+                <AvatarUploadPage
+                  onBack={() => navigate("/zone4/align")}
+                  onConfirm={handleTwinAvatarConfirm}
+                />
+              }
             />
             <Route
               path="signoff"
@@ -206,7 +252,7 @@ function AvatarIllustration({ expanded }) {
 }
 
 /* ─── 我的主页 ─────────────────────────────────────────── */
-function MinePage({ onGoAiHub, onPublish }) {
+function MinePage({ twinAvatarUrl, onGoAiHub, onPublish }) {
   const [expanded, setExpanded] = useState(false);
   const [dragStartY, setDragStartY] = useState(null);
   const [activePostTab, setActivePostTab] = useState("published");
@@ -236,7 +282,16 @@ function MinePage({ onGoAiHub, onPublish }) {
       >
         <button type="button" className="zone4-mine-banner-body" onClick={onGoAiHub}>
           <div className="zone4-mine-robot">
-            <AvatarIllustration expanded={expanded} />
+            {twinAvatarUrl ? (
+              <img
+                src={twinAvatarUrl}
+                alt="AI 分身数字人"
+                className="zone4-avatar-img"
+                style={{ width: expanded ? 120 : 80, height: expanded ? 120 : 80, objectFit: "cover", borderRadius: "50%" }}
+              />
+            ) : (
+              <AvatarIllustration expanded={expanded} />
+            )}
             {expanded && (
               <p className="zone4-mine-banner-expand-hint">
                 点击进入 AI 分身调教中心
@@ -422,7 +477,12 @@ function ReportsPage({ onBack, reports }) {
 }
 
 /* ─── 与分身对齐 ───────────────────────────────────────── */
-function AlignPage({ onBack, tools }) {
+function AlignPage({ onBack, tools, onNavigateVoice, onNavigateAvatar }) {
+  const handleItemClick = (t) => {
+    if (t.id === "voice" && onNavigateVoice) onNavigateVoice();
+    else if (t.id === "avatar" && onNavigateAvatar) onNavigateAvatar();
+  };
+
   return (
     <AppShell
       title="与分身对齐"
@@ -432,12 +492,167 @@ function AlignPage({ onBack, tools }) {
     >
       <div className="zone4-align-list">
         {tools.map((t) => (
-          <div key={t.id} className="zone4-align-item">
+          <div
+            key={t.id}
+            className="zone4-align-item"
+            role={t.id === "voice" || t.id === "avatar" ? "button" : undefined}
+            tabIndex={t.id === "voice" || t.id === "avatar" ? 0 : undefined}
+            onClick={t.id === "voice" || t.id === "avatar" ? () => handleItemClick(t) : undefined}
+            onKeyDown={
+              t.id === "voice" || t.id === "avatar"
+                ? (e) => { if (e.key === "Enter" || e.key === " ") handleItemClick(t); }
+                : undefined
+            }
+          >
             <strong>{t.title}</strong>
             <p className="zone1-copy-muted">{t.desc}</p>
             <span className="zone1-inline-tag">{t.status}</span>
           </div>
         ))}
+      </div>
+    </AppShell>
+  );
+}
+
+/* ─── 补录声纹 ─────────────────────────────────────────── */
+function VoiceCapturePage({ onBack, onDone }) {
+  const [recorded, setRecorded] = useState(false);
+  const [recording, setRecording] = useState(false);
+
+  const handlePressStart = () => {
+    setRecording(true);
+    // Mock: 2s 后视为录入完成
+    window._voiceCaptureTimer = setTimeout(() => {
+      setRecording(false);
+      setRecorded(true);
+    }, 2000);
+  };
+
+  const handlePressEnd = () => {
+    if (window._voiceCaptureTimer) {
+      clearTimeout(window._voiceCaptureTimer);
+      window._voiceCaptureTimer = null;
+    }
+    if (recording) {
+      setRecording(false);
+      setRecorded(true);
+    }
+  };
+
+  return (
+    <AppShell
+      title="补录声纹"
+      subtitle="补录或更新声纹，用于语音分身。可覆盖此前录入。"
+      onBack={onBack}
+      dark
+      bottomNav={{ activeTab: "mine" }}
+      footerTone="dark"
+      primaryAction={recorded ? { label: "完成", onClick: onDone } : undefined}
+      secondaryAction={recorded ? { label: "重新录制", onClick: () => setRecorded(false) } : undefined}
+    >
+      <div className="zone4-voice-capture">
+        {!recorded ? (
+          <>
+            <div className="zone4-voice-capture-mic">
+              <button
+                type="button"
+                className="zone4-voice-hold-btn"
+                onMouseDown={handlePressStart}
+                onMouseLeave={handlePressEnd}
+                onMouseUp={handlePressEnd}
+                onTouchStart={(e) => { e.preventDefault(); handlePressStart(); }}
+                onTouchEnd={(e) => { e.preventDefault(); handlePressEnd(); }}
+              >
+                <span className="zone4-voice-hold-icon">🎤</span>
+                <span>{recording ? "正在录入… 松开结束" : "按住录入声纹"}</span>
+              </button>
+            </div>
+            <p className="zone1-copy-muted" style={{ textAlign: "center", marginTop: 12 }}>
+              长按按钮说话，松开后结束录入
+            </p>
+          </>
+        ) : (
+          <div className="status-card status-card-dark">
+            <strong>声纹</strong>
+            <p>已录入样本，可用于语音分身。可点击「重新录制」覆盖。</p>
+          </div>
+        )}
+      </div>
+    </AppShell>
+  );
+}
+
+/* ─── 上传真人照片生成数字人形象 ───────────────────────── */
+function AvatarUploadPage({ onBack, onConfirm }) {
+  const [step, setStep] = useState("select");
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    if (step !== "generating") return;
+    const t = setTimeout(() => setStep("confirm"), 1800);
+    return () => clearTimeout(t);
+  }, [step]);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !file.type.startsWith("image/")) return;
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+    setStep("generating");
+  };
+
+  const handleConfirm = () => {
+    if (previewUrl) onConfirm(previewUrl);
+  };
+
+  return (
+    <AppShell
+      title="上传真人照片生成数字人形象"
+      subtitle="上传一张真人照片，生成你的 AI 分身数字人形象。"
+      onBack={onBack}
+      bottomNav={{ activeTab: "mine" }}
+      primaryAction={
+        step === "confirm" ? { label: "确认为分身形象", onClick: handleConfirm } : undefined
+      }
+      secondaryAction={step === "confirm" ? { label: "返回", onClick: onBack } : undefined}
+    >
+      <div className="zone4-avatar-upload">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="zone4-avatar-upload-input"
+          aria-hidden="true"
+          onChange={handleFileChange}
+        />
+        {step === "select" && (
+          <>
+            <button
+              type="button"
+              className="zone4-avatar-upload-select"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <span className="zone4-avatar-upload-select-icon">📷</span>
+              <span>选择照片</span>
+            </button>
+            <p className="zone1-copy-muted" style={{ textAlign: "center", marginTop: 12 }}>
+              支持 JPG、PNG，建议使用正面清晰照片
+            </p>
+          </>
+        )}
+        {step === "generating" && (
+          <div className="zone4-avatar-upload-loading">
+            <div className="zone4-avatar-upload-orb">◎</div>
+            <p>正在生成数字人形象…</p>
+          </div>
+        )}
+        {step === "confirm" && previewUrl && (
+          <div className="zone4-avatar-upload-preview">
+            <img src={previewUrl} alt="分身形象预览" />
+            <p>确认为你的 AI 分身数字人形象后，将展示在「我的」页顶部。</p>
+          </div>
+        )}
       </div>
     </AppShell>
   );

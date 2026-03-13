@@ -3043,6 +3043,13 @@ a {
   filter: drop-shadow(0 4px 16px rgba(124, 92, 255, 0.3));
 }
 
+.zone4-avatar-img {
+  object-fit: cover;
+  border-radius: 50%;
+  filter: drop-shadow(0 4px 16px rgba(124, 92, 255, 0.3));
+  transition: width 0.38s, height 0.38s;
+}
+
 .zone4-mine-banner-expand-hint {
   font-size: 0.78rem;
   color: rgba(255, 255, 255, 0.55);
@@ -3483,6 +3490,146 @@ a {
   margin: 6px 0 8px;
 }
 
+.zone4-align-item[role="button"] {
+  cursor: pointer;
+}
+
+.zone4-align-item[role="button"]:hover {
+  border-color: var(--accent);
+  box-shadow: 0 2px 12px rgba(124, 92, 255, 0.1);
+}
+
+/* ── 补录声纹 ── */
+.zone4-voice-capture {
+  padding: 24px 16px;
+}
+
+.zone4-voice-capture-mic {
+  display: flex;
+  justify-content: center;
+}
+
+.zone4-voice-hold-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 28px 36px;
+  border-radius: 20px;
+  border: 2px dashed rgba(124, 92, 255, 0.5);
+  background: rgba(124, 92, 255, 0.12);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.zone4-voice-hold-btn:hover,
+.zone4-voice-hold-btn:active {
+  background: rgba(124, 92, 255, 0.2);
+  border-color: var(--accent);
+}
+
+.zone4-voice-hold-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.zone4-voice-capture .status-card {
+  margin-top: 12px;
+}
+
+/* ── 上传真人照片生成数字人形象 ── */
+.zone4-avatar-upload {
+  padding: 24px 16px;
+}
+
+.zone4-avatar-upload-input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.zone4-avatar-upload-select {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 32px 24px;
+  border-radius: 16px;
+  border: 2px dashed var(--panel-border);
+  background: var(--panel);
+  color: var(--text-main);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.zone4-avatar-upload-select:hover {
+  border-color: var(--accent);
+  background: rgba(124, 92, 255, 0.06);
+}
+
+.zone4-avatar-upload-select-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.zone4-avatar-upload-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  gap: 16px;
+}
+
+.zone4-avatar-upload-orb {
+  font-size: 3rem;
+  color: var(--accent);
+  animation: zone4-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes zone4-pulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+
+.zone4-avatar-upload-loading p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.zone4-avatar-upload-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.zone4-avatar-upload-preview img {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid var(--accent);
+  box-shadow: 0 8px 24px rgba(124, 92, 255, 0.2);
+}
+
+.zone4-avatar-upload-preview p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.5;
+}
+
 .zone4-align-publish-entry {
   width: 100%;
   text-align: left;
@@ -3570,6 +3717,19 @@ a {
   margin-left: auto;
   border-radius: 20px 20px 8px 20px;
   background: rgba(124, 92, 255, 0.2);
+}
+
+.zoneX-chat-system {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 90%;
+  font-size: 0.85rem;
+  color: var(--text-muted, #666);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.zoneX-chat-system strong {
+  display: none;
 }
 
 .zone-badge {
@@ -3767,6 +3927,12 @@ a {
   color: var(--text-main);
 }
 
+.zone3-thread-countdown {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
 .zone3-thread-preview {
   font-size: 0.82rem;
   color: var(--text-muted);
@@ -3792,6 +3958,457 @@ a {
 
 .zone3-chat-list {
   padding-top: 6px;
+}
+
+.zone3-chat-page-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.zone3-chat-page-wrap .zone3-chat-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.zone3-chat-input-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  background: var(--bg-sub, #f5f5f5);
+  border-top: 1px solid var(--border-sub, #eee);
+}
+
+.zone3-chat-input-field {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  background: #fff;
+}
+
+.zone3-chat-input-icon,
+.zone3-chat-input-plus {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.zone3-chat-input-plus {
+  background: var(--bg-sub, #e0e0e0);
+  font-size: 1.4rem;
+  line-height: 1;
+  font-weight: 300;
+}
+
+.zone3-chat-plus-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 12px;
+  z-index: 10;
+}
+
+.zone3-chat-plus-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  background: var(--bg-sub, #f0f0f0);
+  padding: 16px;
+  border-radius: 12px;
+  max-width: 320px;
+}
+
+.zone3-chat-plus-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: var(--text-main, #333);
+}
+
+.zone3-chat-plus-item:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.zone3-chat-plus-icon {
+  font-size: 1.5rem;
+}
+
+.zone3-chat-plus-label {
+  white-space: nowrap;
+}
+
+.zone3-chat-plus-grid-9 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* ── 续写卡片气泡（嵌入聊天流） ── */
+.zone3-story-request-card {
+  margin: 8px 0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  border: 1.5px solid rgba(124, 92, 255, 0.25);
+  background: rgba(124, 92, 255, 0.05);
+  width: 100%;
+  text-align: left;
+  cursor: default;
+}
+
+.zone3-story-request-countdown {
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.zone3-story-request-countdown:hover {
+  background: rgba(124, 92, 255, 0.1);
+}
+
+.zone3-story-request-done {
+  border-color: rgba(57, 217, 138, 0.4);
+  background: rgba(57, 217, 138, 0.06);
+}
+
+.zone3-story-request-rejected {
+  border-color: #eee;
+  background: rgba(0, 0, 0, 0.03);
+  opacity: 0.6;
+}
+
+.zone3-src-label {
+  font-size: 0.75rem;
+  color: var(--accent, #7c5cff);
+  margin: 0 0 4px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.zone3-story-request-done .zone3-src-label {
+  color: #39d98a;
+}
+
+.zone3-story-request-rejected .zone3-src-label {
+  color: var(--text-muted, #999);
+}
+
+.zone3-src-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: var(--text-main, #222);
+}
+
+.zone3-src-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted, #888);
+  margin: 0 0 12px;
+}
+
+.zone3-src-countdown {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--accent, #7c5cff);
+  margin: 4px 0 4px;
+}
+
+.zone3-src-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.zone3-src-btn {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.zone3-src-no {
+  background: rgba(0, 0, 0, 0.07);
+  color: var(--text-main, #333);
+}
+
+.zone3-src-yes {
+  background: var(--accent, #7c5cff);
+  color: #fff;
+}
+
+.zone3-src-go {
+  background: #39d98a;
+  color: #fff;
+  flex: unset;
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 16px;
+}
+
+.zone3-scene-select-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.zone3-scene-select-card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-sub, #eee);
+  background: var(--bg-sub, #fafafa);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.zone3-scene-select-card:hover {
+  background: #f0f0f0;
+  border-color: #ddd;
+}
+
+.zone3-scene-select-name {
+  font-weight: 700;
+  font-size: 1rem;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.zone3-scene-select-intro {
+  font-size: 0.85rem;
+  color: var(--text-muted, #666);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.zone3-scene-room {
+  padding: 12px 0;
+}
+
+.zone3-scene-room-intro {
+  background: linear-gradient(135deg, rgba(124, 92, 255, 0.08), rgba(124, 92, 255, 0.02));
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.zone3-scene-room-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  color: var(--accent, #7c5cff);
+  margin-bottom: 8px;
+}
+
+.zone3-scene-room-prompt {
+  font-size: 0.95rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.zone3-scene-room-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted, #666);
+  margin: 0;
+}
+
+.zone3-scene-select-meta {
+  margin-bottom: 10px;
+}
+
+.zone3-scene-enter-count {
+  font-size: 0.82rem;
+  color: var(--text-muted, #666);
+}
+
+.zone3-scene-select-card-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.zone3-scene-refresh-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 14px;
+  padding: 11px 16px;
+  border: 1.5px dashed var(--accent, #7c5cff);
+  border-radius: 14px;
+  background: rgba(124, 92, 255, 0.06);
+  color: var(--accent, #7c5cff);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.zone3-scene-refresh-btn:hover:not(:disabled) {
+  background: rgba(124, 92, 255, 0.12);
+}
+
+.zone3-scene-refresh-btn-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.zone3-scene-refresh-count {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 10px;
+  background: rgba(124, 92, 255, 0.15);
+  color: var(--accent, #7c5cff);
+}
+
+.zone3-scene-room-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.zone3-scene-room-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 0;
+}
+
+.zone3-scene-room-messages .zoneX-chat-bubble {
+  margin-bottom: 8px;
+}
+
+.zone3-scene-room-input-bar {
+  display: flex;
+  gap: 8px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border-sub, #eee);
+}
+
+.zone3-scene-room-input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--border-sub, #ddd);
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+.zone3-scene-room-send {
+  flex-shrink: 0;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 20px;
+  background: var(--accent, #7c5cff);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.zone3-scene-story-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 25;
+  padding: 16px;
+}
+
+.zone3-scene-story-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  max-width: 320px;
+  width: 100%;
+  text-align: center;
+}
+
+.zone3-scene-story-title {
+  font-size: 0.75rem;
+  color: var(--accent, #7c5cff);
+  margin: 0 0 6px;
+  font-weight: 600;
+}
+
+.zone3-scene-story-heading {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+
+.zone3-scene-story-thumb {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  position: relative;
+  background: linear-gradient(145deg, #667eea 0%, #764ba2 100%);
+}
+
+.zone3-scene-story-thumb::after {
+  content: var(--thumb-label, "故事");
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+}
+
+.zone3-scene-story-snippet {
+  font-size: 0.88rem;
+  color: var(--text-muted, #666);
+  line-height: 1.45;
+  margin: 0 0 16px;
+}
+
+.zone3-scene-story-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.zone3-scene-story-btn {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.zone3-scene-story-primary {
+  background: var(--accent, #7c5cff);
+  color: #fff;
+  border-color: var(--accent, #7c5cff);
 }
 
 .zone3-unmask-card {

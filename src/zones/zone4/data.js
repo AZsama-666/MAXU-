@@ -29,7 +29,9 @@ export const reportHistory = [
 
 export const alignTools = [
   { id: "chat", title: "通过对话对齐", desc: "和分身聊天，校准 ta 的回应方式与边界。", status: "MVP 占位" },
-  { id: "test", title: "选择类测试", desc: "用选择题让分身更贴近你的偏好与价值观。", status: "MVP 占位" }
+  { id: "test", title: "选择类测试", desc: "用选择题让分身更贴近你的偏好与价值观。", status: "MVP 占位" },
+  { id: "voice", title: "补录声纹", desc: "补录或更新声纹，用于语音分身。", status: "可进入" },
+  { id: "avatar", title: "上传真人照片生成数字人形象", desc: "上传真人照片，生成并设置为你的 AI 分身数字人形象。", status: "可进入" }
 ];
 
 export const mineSnapshot = {

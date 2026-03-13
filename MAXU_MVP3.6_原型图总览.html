@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>MAXU MVP 3.5 全景原型图 (22页)</title>
+  <title>MAXU MVP 3.6 全景原型图 (22页)</title>
   <style>
     :root {
       --bg: #F2F3F8;
@@ -257,9 +257,9 @@
 
 <!-- ════ HEADER ════ -->
 <div class="header-box">
-  <h1>MAXU · 玛薯宇宙 · MVP 3.5 全景原型图</h1>
+  <h1>MAXU · 玛薯宇宙 · MVP 3.6 全景原型图</h1>
   <p>
-    <b>版本代号：</b>MVP 3.5 &nbsp;|&nbsp;
+    <b>版本代号：</b>MVP 3.6 &nbsp;|&nbsp;
     <b>页面总数：</b>22 页（Zone0 × 8 + Zone1 × 3 + Zone2 × 2 + Zone3 × 3 + Zone4 × 6）<br>
     <b>核心世界观：</b>生成 AI 分身后，<b>用户上线 = 接管分身人生，用户下线 = 分身重新上线继续活着</b><br>
     <b>原型地址：</b>www.up9.life &nbsp;|&nbsp; 适合产品评审与汇报演示
@@ -830,16 +830,12 @@
 
 <!-- ════ ZONE 4 ════ -->
 <div class="zone">
-  <div class="zone-title">Zone 4 · 我的 + AI 调教流 <span class="zone-badge zone-badge-warm">Tab 4: Mine · P17–P22</span></div>
+  <div class="zone-title">Zone 4 · 我的 + AI 调教流 <span class="zone-badge zone-badge-warm">Tab 4: Mine · 7 页</span></div>
 
-  <!-- 主流程行：P17 → P17M → P18 -->
+  <!-- 第 1 行：24 我的主页 → 25 AI调教中心 → 26a 发布选场景 -->
   <div class="flow-row">
-    <!-- P17 我的主页（竖排：正常态 + 发布弹窗态） -->
-    <div class="flow-col">
-
-      <!-- P17 正常态 -->
-      <div class="node">
-        <div class="node-label warm"><span class="node-idx">P17</span>我的主页</div>
+    <div class="node">
+      <div class="node-label warm"><span class="node-idx">24</span>我的主页</div>
         <div class="phone-wrapper"><div class="phone">
           <div class="notch"></div>
           <div style="height:100%;display:flex;flex-direction:column;">
@@ -906,74 +902,10 @@
         </div></div>
       </div>
 
-      <!-- 点击"发点什么"后 ↓ -->
-      <div class="connector-down" style="font-size:13px;color:var(--muted);">点击「发点什么」</div>
-
-      <!-- P17M 发布弹窗态 -->
-      <div class="node">
-        <div class="node-label sub"><span class="node-idx">P17M</span>发布方式选择（Modal）</div>
-        <div class="phone-wrapper"><div class="phone">
-          <div class="notch"></div>
-          <!-- 背景：模糊变暗的我的主页 -->
-          <div style="height:100%;background:#e8eaf6;position:relative;">
-            <div style="padding:54px 14px 0;opacity:.35;pointer-events:none;">
-              <div style="height:160px;background:linear-gradient(160deg,#1a0e2e,#2d1a4e);border-radius:0 0 0 0;"></div>
-              <div style="padding:12px 0 6px;display:flex;gap:8px;">
-                <div style="flex:1;height:32px;background:#e0e0e0;border-radius:8px;"></div>
-                <div style="flex:1;height:32px;background:#e0e0e0;border-radius:8px;"></div>
-              </div>
-              <div style="padding:4px 0;"><div style="font-size:16px;font-weight:800;color:#333;">Zero</div></div>
-            </div>
-            <!-- 半屏 Modal -->
-            <div style="position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:18px 16px 90px;box-shadow:0 -8px 30px rgba(0,0,0,0.12);">
-              <!-- 拖动条 -->
-              <div style="width:36px;height:4px;background:#e0e0e0;border-radius:2px;margin:0 auto 14px;"></div>
-              <div style="font-size:14px;font-weight:800;margin-bottom:4px;">发一条动态</div>
-              <div style="font-size:11px;color:var(--muted);margin-bottom:16px;">选择创作方式</div>
-
-              <!-- 选项 A：AI 分身创作（高亮推荐） -->
-              <div style="display:flex;gap:12px;align-items:center;background:linear-gradient(120deg,#ede9ff,#e0faff);border:1.5px solid var(--primary);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer;">
-                <div style="width:42px;height:42px;border-radius:10px;background:var(--primary);flex-shrink:0;display:flex;align-items:center;justify-content:center;">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="9" r="5" fill="#fff" opacity=".9"/>
-                    <circle cx="9.5" cy="8.2" r="1.2" fill="#7c5cff"/>
-                    <circle cx="14.5" cy="8.2" r="1.2" fill="#7c5cff"/>
-                    <path d="M9.5 11 Q12 13.5 14.5 11" stroke="#7c5cff" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-                    <path d="M6 18 Q12 21 18 18" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".6"/>
-                  </svg>
-                </div>
-                <div style="flex:1;">
-                  <div style="font-weight:800;font-size:13px;color:var(--primary);">AI 分身帮我发</div>
-                  <div style="font-size:10px;color:#7c5cff;opacity:.75;line-height:1.4;margin-top:2px;">AI 生成场景 + 文案，我只需确认</div>
-                </div>
-                <span style="background:var(--primary);color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:6px;">推荐</span>
-              </div>
-
-              <!-- 选项 B：自己创作 -->
-              <div style="display:flex;gap:12px;align-items:center;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;">
-                <div style="width:42px;height:42px;border-radius:10px;background:#f0f1ff;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;">✏️</div>
-                <div style="flex:1;">
-                  <div style="font-weight:800;font-size:13px;color:var(--ink);">我自己写</div>
-                  <div style="font-size:10px;color:var(--muted);line-height:1.4;margin-top:2px;">自己选配图、写文案</div>
-                </div>
-              </div>
-
-              <!-- 路径说明 -->
-              <div style="display:flex;gap:8px;margin-top:12px;">
-                <div style="flex:1;text-align:center;background:var(--primary-light);border-radius:8px;padding:6px;font-size:9px;color:var(--primary);font-weight:700;">AI 创作 → 确认发布页</div>
-                <div style="flex:1;text-align:center;background:#f4f5f7;border-radius:8px;padding:6px;font-size:9px;color:var(--muted);font-weight:700;">自己创作 → 确认发布页</div>
-              </div>
-            </div>
-          </div>
-        </div></div>
-      </div>
-
-    </div><!-- /flow-col P17 -->
+    </div>
     <div class="connector-right">➔</div>
-
-    <!-- P18 AI 调教中心 -->
     <div class="node">
-      <div class="node-label main"><span class="node-idx">P18</span>AI 分身调教中心</div>
+      <div class="node-label main"><span class="node-idx">25</span>AI 分身调教中心</div>
       <div class="phone-wrapper"><div class="phone">
         <div class="notch"></div>
         <div style="padding:56px 0 0;">
@@ -1007,17 +939,9 @@
         </div>
       </div></div>
     </div>
-  </div><!-- /主流程 flow-row -->
-
-  <!-- 分支功能行：从 P18 AI调教中心展开 -->
-  <div class="branch-section">
-    <div class="branch-label">↳ 从 P18 AI调教中心进入的四个功能</div>
-    <div class="flow-row" style="flex-wrap:wrap;align-items:flex-start;">
-
-    <!-- P19a / P19b 发布流 -->
-    <div class="flow-col">
-      <div class="node">
-        <div class="node-label sub"><span class="node-idx">P19a</span>发布 — 选场景</div>
+    <div class="connector-right">➔</div>
+    <div class="node">
+      <div class="node-label sub"><span class="node-idx">26a</span>发布 — 选场景</div>
         <div class="phone-wrapper"><div class="phone">
           <div class="notch"></div>
           <div style="padding:56px 14px 0;">
@@ -1077,9 +1001,13 @@
           </div>
         </div></div>
       </div>
-      <div class="connector-down">↓</div>
-      <div class="node">
-        <div class="node-label sub"><span class="node-idx">P19b</span>发布 — 确认发布</div>
+    </div>
+  </div>
+
+  <!-- 第 2 行：26b 确认发布 → 27 每日战报 → 28 与分身对齐 -->
+  <div class="flow-row">
+    <div class="node">
+      <div class="node-label sub"><span class="node-idx">26b</span>发布 — 确认发布</div>
         <div class="phone-wrapper"><div class="phone">
           <div class="notch"></div>
           <div style="padding:56px 16px 0;">
@@ -1101,12 +1029,10 @@
           </div>
         </div></div>
       </div>
-    </div><!-- /P19 发布流 -->
-    <div class="connector-right" style="align-self:center;">➔</div>
-
-    <!-- P20 每日战报 -->
+    </div>
+    <div class="connector-right">➔</div>
     <div class="node">
-      <div class="node-label sub"><span class="node-idx">P20</span>每日战报</div>
+      <div class="node-label sub"><span class="node-idx">27</span>每日战报</div>
         <div class="phone-wrapper"><div class="phone">
           <div class="notch"></div>
           <div style="padding:56px 0 0;">
@@ -1136,12 +1062,10 @@
         </div></div>
       </div>
 
-    </div><!-- /P20 -->
-    <div class="connector-right" style="align-self:center;">➔</div>
-
-    <!-- P21 与分身对齐 -->
+    </div>
+    <div class="connector-right">➔</div>
     <div class="node">
-      <div class="node-label sub"><span class="node-idx">P21</span>与分身对齐</div>
+      <div class="node-label sub"><span class="node-idx">28</span>与分身对齐</div>
         <div class="phone-wrapper"><div class="phone">
           <div class="notch"></div>
           <div style="padding:56px 0 0;">
@@ -1164,12 +1088,13 @@
             <div class="tab">首页</div><div class="tab">关系</div><div class="tab">消息</div><div class="tab on">我的</div>
           </div>
         </div></div>
-    </div><!-- /P21 -->
-    <div class="connector-right" style="align-self:center;">➔</div>
+    </div>
+  </div>
 
-    <!-- P22 离线挂机指令 -->
+  <!-- 第 3 行：29 离线挂机指令 -->
+  <div class="flow-row">
     <div class="node">
-      <div class="node-label main"><span class="node-idx">P22</span>离线挂机指令</div>
+      <div class="node-label main"><span class="node-idx">29</span>离线挂机指令</div>
         <div class="phone-wrapper"><div class="phone dark">
           <div class="notch"></div>
           <div style="padding:56px 0 0;">
@@ -1201,16 +1126,13 @@
         </div></div>
       </div>
 
-    </div><!-- /P22 -->
-
-    </div><!-- /branch flow-row -->
-  </div><!-- /branch-section -->
-
+    </div>
+  </div>
 </div><!-- /Zone4 -->
 
 <!-- ════ FOOTER ════ -->
 <div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">
-  MAXU · 玛薯宇宙 · MVP 3.5 全景原型图 · 22 页 · 2026<br>
+  MAXU · 玛薯宇宙 · MVP 3.6 全景原型图 · 22 页 · 2026<br>
   <span style="color:var(--primary);font-weight:700;">www.up9.life</span>
 </div>
 

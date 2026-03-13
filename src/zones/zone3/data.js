@@ -72,3 +72,45 @@ export const basicChat = [
   { role: "你", text: "那就继续往下写吧。" },
   { role: "K", text: "好，从你刚才推开那扇门开始。" }
 ];
+
+export const SCENE_REFRESH_MAX = 3;
+export const SCENE_ENTER_MAX = 3;
+
+export const scenePresets = [
+  {
+    id: "coffee",
+    name: "咖啡厅",
+    intro: "你们刚坐下，窗外下雨。服务员还没来。要聊点什么？"
+  },
+  {
+    id: "meeting",
+    name: "会议室",
+    intro: "会议还有五分钟开始，桌上只有咖啡和笔记本。趁这会儿可以随便聊聊。"
+  },
+  {
+    id: "yacht",
+    name: "海上游艇",
+    intro: "甲板上只有你们俩，海风很轻。远处是岸上的灯火。"
+  }
+];
+
+export const sceneStoryPresets = [
+  {
+    sceneId: "coffee",
+    title: "咖啡厅 · 今夜对话",
+    snippet: "窗外的雨声和两杯拿铁，把这段对话留在了今晚。AI 把这一刻写成了你们共同的故事。",
+    imageLabel: "咖啡厅"
+  },
+  {
+    sceneId: "meeting",
+    title: "会议室 · 五分钟前",
+    snippet: "会议开始前的五分钟，你们聊了些什么，只有咖啡和笔记本知道。",
+    imageLabel: "会议室"
+  },
+  {
+    sceneId: "yacht",
+    title: "海上游艇 · 今夜对话",
+    snippet: "甲板上只有你们俩，海风很轻。远处是岸上的灯火。AI 把这段时光写成了纪念。",
+    imageLabel: "游艇"
+  }
+];

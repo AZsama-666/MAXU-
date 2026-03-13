@@ -87,6 +87,9 @@ export function Zone2Prototype() {
                 <BondDetailPage
                   onBack={() => navigate("/zone2/list")}
                   onGoMessages={() => navigate("/zone3/inbox")}
+                  onStartStoryContinue={(bondId) =>
+                    navigate("/zone3/inbox", { state: { trigger: "storyContinue", bondId } })
+                  }
                 />
               }
             />
@@ -200,7 +203,7 @@ function ShareSheet({ story, onClose, onSent }) {
   );
 }
 
-function BondDetailPage({ onBack, onGoMessages }) {
+function BondDetailPage({ onBack, onGoMessages, onStartStoryContinue }) {
   const bond = useBond();
   const navigate = useNavigate();
   const storyline = bondStorylines[bond.id] || [];
@@ -218,7 +221,10 @@ function BondDetailPage({ onBack, onGoMessages }) {
       onBack={onBack}
       progress="14 / 17"
       bottomNav={{ activeTab: "relations" }}
-      primaryAction={{ label: "续写下一章", onClick: onGoMessages }}
+      primaryAction={{
+        label: "续写下一章",
+        onClick: onStartStoryContinue ? () => onStartStoryContinue(bond.id) : onGoMessages
+      }}
     >
       {/* 转发分享面板 */}
       {shareStory && (
