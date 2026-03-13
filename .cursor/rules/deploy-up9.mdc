@@ -1,9 +1,17 @@
 ---
-description: 项目更新后需同步推送到 www.up9.life
+description: 项目更新后需同步推送到 www.up9.life；明确 UP9 指网站而非分支
 alwaysApply: true
 ---
 
 # 部署与同步规则
+
+## 重要：UP9 指网站，不是分支名
+
+- **UP9** 在本项目中固定指 **线上站点 www.up9.life**，不是 Git 分支名。
+- 当用户说「同步到 UP9」「推送到 UP9」「更新 UP9」「同步到 UP9.life」时，一律理解为：**更新网站 www.up9.life**。正确做法是 **推送到或合并到 `main` 分支并 push**，以触发 GitHub Pages 部署。
+- **禁止**：因用户提到 UP9 就创建或推送到名为 `UP9` 的分支。若需创建功能/版本分支，请使用其他名称（如 `MVP3.9`、`feature/xxx`）。仓库中若已有名为 `UP9` 的分支，仅为历史遗留，与「同步到 UP9（网站）」无关。
+
+## 部署方式与流程
 
 - **更新后同步到 up9.life**：对本项目（MAXU 展示页）做任何代码或文档更新并提交后，应推送到 Git 的 `main` 分支，以便自动部署到 **www.up9.life**。
 - **部署方式**：仓库已配置 GitHub Actions（`.github/workflows/deploy-pages.yml`），`main` 分支有 push 时会构建并发布到 gh-pages，自定义域为 `www.up9.life`。无需额外步骤，推送即触发部署。
