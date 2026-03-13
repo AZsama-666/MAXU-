@@ -1,9 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, Navigate, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
 import { AppShell } from "../../components/AppShell";
 import { GlobalBottomNav } from "../../components/GlobalBottomNav";
 import { PhoneFrame } from "../../components/PhoneFrame";
 import {
+  AI_GREETINGS_BY_STYLE,
+  AI_REPLIES_BY_STYLE,
+  AI_STYLES,
   basicChat,
   messageThreads,
   revealState,
@@ -330,6 +333,29 @@ function ChatPage({ onBack, onGoRelation, onOpenSceneSelect }) {
   const [plusOpen, setPlusOpen] = useState(false);
   const [messages, setMessages] = useState(basicChat);
   const [inputText, setInputText] = useState("");
+  const [lightbulbOpen, setLightbulbOpen] = useState(false);
+  const [aiStyle, setAiStyle] = useState("default");
+  const nextSendAiAssisted = useRef(false);
+
+  const hasUserSent = messages.some((m) => m.role === "你");
+  const greetingLines = AI_GREETINGS_BY_STYLE[aiStyle] || AI_GREETINGS_BY_STYLE.default;
+  const replySets = AI_REPLIES_BY_STYLE[aiStyle] || AI_REPLIES_BY_STYLE.default;
+  const replyLines = replySets[0] || ["嗯嗯", "有道理", "然后呢？"];
+
+  const fillFromAi = (text) => {
+    setInputText(text);
+    nextSendAiAssisted.current = true;
+    setLightbulbOpen(false);
+  };
+
+  const handleSendMessage = () => {
+    const t = inputText.trim();
+    if (!t) return;
+    const aiAssisted = nextSendAiAssisted.current;
+    nextSendAiAssisted.current = false;
+    setMessages((prev) => [...prev, { role: "你", text: t, ...(aiAssisted ? { aiAssisted: true } : {}) }]);
+    setInputText("");
+  };
 
   useEffect(() => {
     if (location.state?.autoStory) {
@@ -397,12 +423,40 @@ function ChatPage({ onBack, onGoRelation, onOpenSceneSelect }) {
                       : "zoneX-chat-bubble"
                 }
               >
-                {item.role !== "system" && <strong>{item.role}</strong>}
+                <div className="zone3-chat-bubble-head">
+                  {item.role !== "system" && <strong>{item.role}</strong>}
+                  {item.aiAssisted && <span className="zone3-ai-tag">AI</span>}
+                </div>
                 <p>{item.text}</p>
               </div>
             );
           })}
         </div>
+
+        {!hasUserSent && (
+          <div className="zone3-ai-greeting-area">
+            <p className="zone3-ai-greeting-hint">灵感回复可提升回复率哦</p>
+            <div className="zone3-ai-style-tabs">
+              {AI_STYLES.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  className={`zone3-ai-style-tab${aiStyle === s.id ? " zone3-ai-style-tab-active" : ""}`}
+                  onClick={() => setAiStyle(s.id)}
+                >
+                  {s.icon} {s.label}
+                </button>
+              ))}
+            </div>
+            <div className="zone3-ai-suggestions">
+              {greetingLines.map((line, i) => (
+                <button key={i} type="button" className="zone3-ai-suggestion-card" onClick={() => fillFromAi(line)}>
+                  {line}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="zone3-chat-input-bar">
           <button type="button" className="zone3-chat-input-icon" aria-label="语音">
@@ -414,9 +468,19 @@ function ChatPage({ onBack, onGoRelation, onOpenSceneSelect }) {
             placeholder="输入消息"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
           />
-          <button type="button" className="zone3-chat-input-icon" aria-label="语音消息">
-            🎤
+          <button type="button" className="zone3-chat-input-icon zone3-chat-input-send" onClick={handleSendMessage}>
+            发送
+          </button>
+          <button
+            type="button"
+            className="zone3-chat-input-icon zone3-chat-input-lightbulb"
+            aria-label="灵感回复"
+            onClick={() => setLightbulbOpen((v) => !v)}
+            title="灵感回复"
+          >
+            💡
           </button>
           <button type="button" className="zone3-chat-input-icon" aria-label="表情">
             😊
@@ -430,6 +494,33 @@ function ChatPage({ onBack, onGoRelation, onOpenSceneSelect }) {
             +
           </button>
         </div>
+
+        {lightbulbOpen && (
+          <div className="zone3-lightbulb-overlay" onClick={() => setLightbulbOpen(false)}>
+            <div className="zone3-lightbulb-panel" onClick={(e) => e.stopPropagation()}>
+              <p className="zone3-lightbulb-title">灵感回复</p>
+              <div className="zone3-ai-style-tabs zone3-lightbulb-styles">
+                {AI_STYLES.map((s) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    className={`zone3-ai-style-tab${aiStyle === s.id ? " zone3-ai-style-tab-active" : ""}`}
+                    onClick={() => setAiStyle(s.id)}
+                  >
+                    {s.icon} {s.label}
+                  </button>
+                ))}
+              </div>
+              <div className="zone3-ai-suggestions">
+                {replyLines.map((line, i) => (
+                  <button key={i} type="button" className="zone3-ai-suggestion-card" onClick={() => fillFromAi(line)}>
+                    {line}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         {plusOpen && (
           <div className="zone3-chat-plus-overlay" onClick={() => setPlusOpen(false)}>
@@ -525,17 +616,33 @@ function SceneRoomPage({ onEndScene, onGoRelation }) {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState("");
   const [showStoryResult, setShowStoryResult] = useState(false);
+  const [lightbulbOpen, setLightbulbOpen] = useState(false);
+  const [aiStyle, setAiStyle] = useState("default");
+  const nextSendAiAssisted = useRef(false);
 
-  const storyResult =
-    sceneStoryPresets.find((s) => s.sceneId === scene.id) ||
-    sceneStoryPresets[Math.floor(Math.random() * sceneStoryPresets.length)];
+  const hasUserSent = messages.some((m) => m.role === "你");
+  const greetingLines = AI_GREETINGS_BY_STYLE[aiStyle] || AI_GREETINGS_BY_STYLE.default;
+  const replySets = AI_REPLIES_BY_STYLE[aiStyle] || AI_REPLIES_BY_STYLE.default;
+  const replyLines = replySets[0] || ["嗯嗯", "有道理", "然后呢？"];
+
+  const fillFromAi = (text) => {
+    setInputText(text);
+    nextSendAiAssisted.current = true;
+    setLightbulbOpen(false);
+  };
 
   const handleSend = () => {
     const t = inputText.trim();
     if (!t) return;
-    setMessages((prev) => [...prev, { role: "你", text: t }]);
+    const aiAssisted = nextSendAiAssisted.current;
+    nextSendAiAssisted.current = false;
+    setMessages((prev) => [...prev, { role: "你", text: t, ...(aiAssisted ? { aiAssisted: true } : {}) }]);
     setInputText("");
   };
+
+  const storyResult =
+    sceneStoryPresets.find((s) => s.sceneId === scene.id) ||
+    sceneStoryPresets[Math.floor(Math.random() * sceneStoryPresets.length)];
 
   const handleEndScene = () => {
     setShowStoryResult(true);
@@ -569,10 +676,38 @@ function SceneRoomPage({ onEndScene, onGoRelation }) {
                   key={index}
                   className={item.role === "你" ? "zoneX-chat-bubble zoneX-chat-self" : "zoneX-chat-bubble"}
                 >
-                  {item.role !== "你" && <strong>{item.role}</strong>}
+                  <div className="zone3-chat-bubble-head">
+                    {item.role !== "你" && <strong>{item.role}</strong>}
+                    {item.aiAssisted && <span className="zone3-ai-tag">AI</span>}
+                  </div>
                   <p>{item.text}</p>
                 </div>
               ))}
+            </div>
+          )}
+
+          {!hasUserSent && (
+            <div className="zone3-ai-greeting-area">
+              <p className="zone3-ai-greeting-hint">灵感回复可提升回复率哦</p>
+              <div className="zone3-ai-style-tabs">
+                {AI_STYLES.map((s) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    className={`zone3-ai-style-tab${aiStyle === s.id ? " zone3-ai-style-tab-active" : ""}`}
+                    onClick={() => setAiStyle(s.id)}
+                  >
+                    {s.icon} {s.label}
+                  </button>
+                ))}
+              </div>
+              <div className="zone3-ai-suggestions">
+                {greetingLines.map((line, i) => (
+                  <button key={i} type="button" className="zone3-ai-suggestion-card" onClick={() => fillFromAi(line)}>
+                    {line}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
@@ -585,10 +720,40 @@ function SceneRoomPage({ onEndScene, onGoRelation }) {
               onChange={(e) => setInputText(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
             />
+            <button type="button" className="zone3-chat-input-icon zone3-chat-input-lightbulb" aria-label="灵感回复" onClick={() => setLightbulbOpen((v) => !v)} title="灵感回复">
+              💡
+            </button>
             <button type="button" className="zone3-scene-room-send" onClick={handleSend}>
               发送
             </button>
           </div>
+
+          {lightbulbOpen && (
+            <div className="zone3-lightbulb-overlay" onClick={() => setLightbulbOpen(false)}>
+              <div className="zone3-lightbulb-panel" onClick={(e) => e.stopPropagation()}>
+                <p className="zone3-lightbulb-title">灵感回复</p>
+                <div className="zone3-ai-style-tabs zone3-lightbulb-styles">
+                  {AI_STYLES.map((s) => (
+                    <button
+                      key={s.id}
+                      type="button"
+                      className={`zone3-ai-style-tab${aiStyle === s.id ? " zone3-ai-style-tab-active" : ""}`}
+                      onClick={() => setAiStyle(s.id)}
+                    >
+                      {s.icon} {s.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="zone3-ai-suggestions">
+                  {replyLines.map((line, i) => (
+                    <button key={i} type="button" className="zone3-ai-suggestion-card" onClick={() => fillFromAi(line)}>
+                      {line}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

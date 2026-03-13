@@ -1,7 +1,7 @@
 {
   "name": "maxu-zone0-prototype",
   "private": true,
-  "version": "0.1.0",
+  "version": "3.8.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
