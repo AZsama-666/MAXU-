@@ -38,6 +38,9 @@ jobs:
           ls -la dist/
           head -20 dist/index.html
 
+      - name: Add 404 for SPA fallback
+        run: cp dist/index.html dist/404.html
+
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
