@@ -478,6 +478,28 @@ a {
   color: var(--accent-2);
 }
 
+.page-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.app-shell-header-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent, #7c5cff);
+  background: none;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.app-shell-header-link:hover {
+  background: rgba(124, 92, 255, 0.12);
+}
+
 .app-shell-body {
   flex: 1;
   overflow: auto;
@@ -3690,32 +3712,34 @@ a {
 
 .zoneX-chat-list {
   display: grid;
-  gap: 12px;
+  gap: 8px;
 }
 
 .zoneX-chat-bubble {
   max-width: 82%;
-  padding: 14px 16px;
-  border-radius: 20px 20px 20px 8px;
+  padding: 10px 12px;
+  border-radius: 16px 16px 16px 6px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .zoneX-chat-bubble strong {
   display: block;
-  margin-bottom: 6px;
-  font-size: 12px;
+  margin-bottom: 4px;
+  font-size: 11px;
   color: var(--accent-2);
 }
 
 .zoneX-chat-bubble p {
   margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
   color: inherit;
 }
 
 .zoneX-chat-self {
   margin-left: auto;
-  border-radius: 20px 20px 8px 20px;
+  border-radius: 16px 16px 6px 16px;
   background: rgba(124, 92, 255, 0.2);
 }
 
@@ -3975,41 +3999,53 @@ a {
 
 .zone3-chat-input-bar {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 6px;
-  padding: 8px 10px;
+  padding: 6px 10px 8px;
   background: var(--bg-sub, #f5f5f5);
   border-top: 1px solid var(--border-sub, #eee);
+}
+
+.zone3-chat-input-row-main {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.zone3-chat-input-row-tools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .zone3-chat-input-field {
   flex: 1;
   min-width: 0;
-  padding: 8px 12px;
+  padding: 6px 12px;
   border: none;
-  border-radius: 20px;
-  font-size: 0.9rem;
+  border-radius: 18px;
+  font-size: 0.875rem;
   background: #fff;
 }
 
 .zone3-chat-input-icon,
 .zone3-chat-input-plus {
   flex-shrink: 0;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
   border-radius: 50%;
   background: transparent;
-  font-size: 1.1rem;
+  font-size: 1rem;
   cursor: pointer;
 }
 
 .zone3-chat-input-plus {
   background: var(--bg-sub, #e0e0e0);
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   line-height: 1;
   font-weight: 300;
 }
@@ -4082,16 +4118,16 @@ a {
   letter-spacing: 0.02em;
 }
 .zone3-ai-greeting-area {
-  padding: 10px 12px;
+  padding: 8px 10px;
   background: rgba(124, 92, 255, 0.04);
   border-top: 1px solid rgba(124, 92, 255, 0.12);
-  border-radius: 12px 12px 0 0;
+  border-radius: 10px 10px 0 0;
   margin: 0 -4px;
 }
 .zone3-ai-greeting-hint {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--text-muted, #666);
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -4099,13 +4135,13 @@ a {
 .zone3-ai-style-tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 10px;
+  gap: 4px;
+  margin-bottom: 8px;
 }
 .zone3-ai-style-tab {
-  font-size: 0.7rem;
-  padding: 4px 8px;
-  border-radius: 10px;
+  font-size: 0.65rem;
+  padding: 3px 6px;
+  border-radius: 8px;
   border: 1px solid rgba(124, 92, 255, 0.2);
   background: rgba(255, 255, 255, 0.6);
   color: #333;
@@ -4128,9 +4164,9 @@ a {
 }
 .zone3-ai-suggestion-card {
   text-align: left;
-  font-size: 0.85rem;
-  padding: 10px 12px;
-  border-radius: 10px;
+  font-size: 0.8rem;
+  padding: 8px 10px;
+  border-radius: 8px;
   border: 1px solid rgba(124, 92, 255, 0.2);
   background: #fff;
   color: #333;

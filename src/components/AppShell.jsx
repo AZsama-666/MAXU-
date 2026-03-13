@@ -12,10 +12,22 @@ export function AppShell({
   secondaryAction,
   footerTone,
   progress,
-  bottomNav
+  bottomNav,
+  headerRight
 }) {
   const hasActions = Boolean(primaryAction || secondaryAction);
   const hasBottomNav = Boolean(bottomNav?.activeTab);
+
+  const rightSlot =
+    headerRight != null
+      ? headerRight
+      : typeof progress === "string"
+        ? (
+            <span className={`header-progress ${dark ? "header-progress-dark" : ""}`}>
+              {progress}
+            </span>
+          )
+        : null;
 
   return (
     <section className={`app-shell ${dark ? "app-shell-dark" : ""}`}>
@@ -24,13 +36,7 @@ export function AppShell({
         subtitle={subtitle}
         onBack={onBack}
         dark={dark}
-        rightSlot={
-          typeof progress === "string" ? (
-            <span className={`header-progress ${dark ? "header-progress-dark" : ""}`}>
-              {progress}
-            </span>
-          ) : null
-        }
+        rightSlot={rightSlot}
       />
       <div
         className={`app-shell-body ${hasActions ? "app-shell-body-with-actions" : ""} ${

@@ -336,6 +336,7 @@ function ChatPage({ onBack, onGoRelation, onOpenSceneSelect }) {
   const [lightbulbOpen, setLightbulbOpen] = useState(false);
   const [aiStyle, setAiStyle] = useState("default");
   const nextSendAiAssisted = useRef(false);
+  const chatListRef = useRef(null);
 
   const hasUserSent = messages.some((m) => m.role === "你");
   const greetingLines = AI_GREETINGS_BY_STYLE[aiStyle] || AI_GREETINGS_BY_STYLE.default;
@@ -363,6 +364,12 @@ function ChatPage({ onBack, onGoRelation, onOpenSceneSelect }) {
       setMessages((prev) => [...prev, makeStoryRequestMsg("你")]);
     }
   }, [location.state?.autoStory, location.pathname, navigate]);
+
+  useEffect(() => {
+    if (chatListRef.current) {
+      chatListRef.current.scrollTop = chatListRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const updateStoryMsgState = (id, newState) => {
     setMessages((prev) =>
@@ -394,13 +401,18 @@ function ChatPage({ onBack, onGoRelation, onOpenSceneSelect }) {
       title="基础聊天"
       subtitle="MVP 先证明你已经能接住这段关系。"
       onBack={onBack}
-      progress="17 / 17"
       bottomNav={{ activeTab: "messages" }}
-      primaryAction={{ label: "回到关系页", onClick: onGoRelation }}
-      secondaryAction={{ label: "返回消息", onClick: onBack }}
+      headerRight={
+        <>
+          <span className="header-progress">17 / 17</span>
+          <button type="button" className="app-shell-header-link" onClick={onGoRelation}>
+            关系
+          </button>
+        </>
+      }
     >
       <div className="zone3-chat-page-wrap">
-        <div className="zoneX-chat-list zone3-chat-list">
+        <div ref={chatListRef} className="zoneX-chat-list zone3-chat-list">
           {messages.map((item, index) => {
             if (item.role === "storyRequest") {
               return (
@@ -459,40 +471,44 @@ function ChatPage({ onBack, onGoRelation, onOpenSceneSelect }) {
         )}
 
         <div className="zone3-chat-input-bar">
-          <button type="button" className="zone3-chat-input-icon" aria-label="语音">
-            🎙
-          </button>
-          <input
-            type="text"
-            className="zone3-chat-input-field"
-            placeholder="输入消息"
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-          />
-          <button type="button" className="zone3-chat-input-icon zone3-chat-input-send" onClick={handleSendMessage}>
-            发送
-          </button>
-          <button
-            type="button"
-            className="zone3-chat-input-icon zone3-chat-input-lightbulb"
-            aria-label="灵感回复"
-            onClick={() => setLightbulbOpen((v) => !v)}
-            title="灵感回复"
-          >
-            💡
-          </button>
-          <button type="button" className="zone3-chat-input-icon" aria-label="表情">
-            😊
-          </button>
-          <button
-            type="button"
-            className="zone3-chat-input-plus"
-            aria-label="更多"
-            onClick={() => setPlusOpen((v) => !v)}
-          >
-            +
-          </button>
+          <div className="zone3-chat-input-row-main">
+            <button type="button" className="zone3-chat-input-icon" aria-label="语音">
+              🎙
+            </button>
+            <input
+              type="text"
+              className="zone3-chat-input-field"
+              placeholder="输入消息"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+            />
+            <button type="button" className="zone3-chat-input-icon zone3-chat-input-send" onClick={handleSendMessage}>
+              发送
+            </button>
+          </div>
+          <div className="zone3-chat-input-row-tools">
+            <button
+              type="button"
+              className="zone3-chat-input-icon zone3-chat-input-lightbulb"
+              aria-label="灵感回复"
+              onClick={() => setLightbulbOpen((v) => !v)}
+              title="灵感回复"
+            >
+              💡
+            </button>
+            <button type="button" className="zone3-chat-input-icon" aria-label="表情">
+              😊
+            </button>
+            <button
+              type="button"
+              className="zone3-chat-input-plus"
+              aria-label="更多"
+              onClick={() => setPlusOpen((v) => !v)}
+            >
+              +
+            </button>
+          </div>
         </div>
 
         {lightbulbOpen && (

@@ -4,14 +4,18 @@ on:
   push:
     branches: [main]
 
+# 部署到 Pages 需要写 contents；部分环境需 pages 与 id-token
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -25,6 +29,15 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Verify build output
+        run: |
+          if [ ! -d dist ] || [ ! -f dist/index.html ]; then
+            echo "::error::dist missing or no index.html - build failed"
+            exit 1
+          fi
+          ls -la dist/
+          head -20 dist/index.html
+
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
@@ -33,3 +46,4 @@ jobs:
           publish_branch: gh-pages
           force_orphan: true
           cname: www.up9.life
+          allow_empty_commit: true
