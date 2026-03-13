@@ -471,44 +471,40 @@ function ChatPage({ onBack, onGoRelation, onOpenSceneSelect }) {
         )}
 
         <div className="zone3-chat-input-bar">
-          <div className="zone3-chat-input-row-main">
-            <button type="button" className="zone3-chat-input-icon" aria-label="语音">
-              🎙
-            </button>
-            <input
-              type="text"
-              className="zone3-chat-input-field"
-              placeholder="输入消息"
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-            />
-            <button type="button" className="zone3-chat-input-icon zone3-chat-input-send" onClick={handleSendMessage}>
-              发送
-            </button>
-          </div>
-          <div className="zone3-chat-input-row-tools">
-            <button
-              type="button"
-              className="zone3-chat-input-icon zone3-chat-input-lightbulb"
-              aria-label="灵感回复"
-              onClick={() => setLightbulbOpen((v) => !v)}
-              title="灵感回复"
-            >
-              💡
-            </button>
-            <button type="button" className="zone3-chat-input-icon" aria-label="表情">
-              😊
-            </button>
-            <button
-              type="button"
-              className="zone3-chat-input-plus"
-              aria-label="更多"
-              onClick={() => setPlusOpen((v) => !v)}
-            >
-              +
-            </button>
-          </div>
+          <button type="button" className="zone3-chat-input-icon" aria-label="语音">
+            🎙
+          </button>
+          <input
+            type="text"
+            className="zone3-chat-input-field"
+            placeholder="输入消息"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+          />
+          <button type="button" className="zone3-chat-input-icon zone3-chat-input-send" onClick={handleSendMessage}>
+            发送
+          </button>
+          <button
+            type="button"
+            className="zone3-chat-input-icon zone3-chat-input-lightbulb"
+            aria-label="灵感回复"
+            onClick={() => setLightbulbOpen((v) => !v)}
+            title="灵感回复"
+          >
+            💡
+          </button>
+          <button type="button" className="zone3-chat-input-icon" aria-label="表情">
+            😊
+          </button>
+          <button
+            type="button"
+            className="zone3-chat-input-plus"
+            aria-label="更多"
+            onClick={() => setPlusOpen((v) => !v)}
+          >
+            +
+          </button>
         </div>
 
         {lightbulbOpen && (

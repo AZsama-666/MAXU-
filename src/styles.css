@@ -3999,23 +3999,11 @@ a {
 
 .zone3-chat-input-bar {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  gap: 4px;
   padding: 6px 10px 8px;
   background: var(--bg-sub, #f5f5f5);
   border-top: 1px solid var(--border-sub, #eee);
-}
-
-.zone3-chat-input-row-main {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.zone3-chat-input-row-tools {
-  display: flex;
-  align-items: center;
-  gap: 4px;
 }
 
 .zone3-chat-input-field {
