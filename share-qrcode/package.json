@@ -1,0 +1,12 @@
+{
+  "name": "maxu-share-qrcode",
+  "private": true,
+  "version": "1.0.0",
+  "description": "生成玛薯 App 双平台下载二维码 PNG",
+  "scripts": {
+    "generate": "node generate.js"
+  },
+  "devDependencies": {
+    "qrcode": "^1.5.4"
+  }
+}

@@ -4,11 +4,12 @@ import { AppShell } from "../../components/AppShell";
 import { GlobalBottomNav } from "../../components/GlobalBottomNav";
 import { PhoneFrame } from "../../components/PhoneFrame";
 import {
-  AI_GREETINGS_BY_STYLE,
-  AI_REPLIES_BY_STYLE,
+  AI_GREETINGS_CONTEXT_AWARE,
+  AI_REPLIES_CONTEXT_AWARE,
   AI_STYLES,
   basicChat,
   messageThreads,
+  MOCK_LLM_CONTEXT,
   revealState,
   scenePresets,
   SCENE_ENTER_MAX,
@@ -339,9 +340,9 @@ function ChatPage({ onBack, onGoRelation, onOpenSceneSelect }) {
   const chatListRef = useRef(null);
 
   const hasUserSent = messages.some((m) => m.role === "你");
-  const greetingLines = AI_GREETINGS_BY_STYLE[aiStyle] || AI_GREETINGS_BY_STYLE.default;
-  const replySets = AI_REPLIES_BY_STYLE[aiStyle] || AI_REPLIES_BY_STYLE.default;
-  const replyLines = replySets[0] || ["嗯嗯", "有道理", "然后呢？"];
+  const greetingLines = AI_GREETINGS_CONTEXT_AWARE[aiStyle] || AI_GREETINGS_CONTEXT_AWARE.default;
+  const replySets = AI_REPLIES_CONTEXT_AWARE[aiStyle] || AI_REPLIES_CONTEXT_AWARE.default;
+  const replyLines = replySets[0] || ["今天下雨，确实适合聊会儿。", "樱花节啊，你去了吗？", "我们这边也凉，注意保暖。"];
 
   const fillFromAi = (text) => {
     setInputText(text);
@@ -447,6 +448,9 @@ function ChatPage({ onBack, onGoRelation, onOpenSceneSelect }) {
 
         {!hasUserSent && (
           <div className="zone3-ai-greeting-area">
+            <p className="zone3-ai-greeting-context" title="Mock：接大模型时可传入城市+天气+本地活动">
+              今日 · {MOCK_LLM_CONTEXT.city} · {MOCK_LLM_CONTEXT.summary}
+            </p>
             <p className="zone3-ai-greeting-hint">灵感回复可提升回复率哦</p>
             <div className="zone3-ai-style-tabs">
               {AI_STYLES.map((s) => (
@@ -511,6 +515,9 @@ function ChatPage({ onBack, onGoRelation, onOpenSceneSelect }) {
           <div className="zone3-lightbulb-overlay" onClick={() => setLightbulbOpen(false)}>
             <div className="zone3-lightbulb-panel" onClick={(e) => e.stopPropagation()}>
               <p className="zone3-lightbulb-title">灵感回复</p>
+              <p className="zone3-lightbulb-context" title="Mock：接大模型时可传入城市+天气+本地活动">
+                今日 · {MOCK_LLM_CONTEXT.city} · {MOCK_LLM_CONTEXT.summary}
+              </p>
               <div className="zone3-ai-style-tabs zone3-lightbulb-styles">
                 {AI_STYLES.map((s) => (
                   <button
@@ -633,9 +640,9 @@ function SceneRoomPage({ onEndScene, onGoRelation }) {
   const nextSendAiAssisted = useRef(false);
 
   const hasUserSent = messages.some((m) => m.role === "你");
-  const greetingLines = AI_GREETINGS_BY_STYLE[aiStyle] || AI_GREETINGS_BY_STYLE.default;
-  const replySets = AI_REPLIES_BY_STYLE[aiStyle] || AI_REPLIES_BY_STYLE.default;
-  const replyLines = replySets[0] || ["嗯嗯", "有道理", "然后呢？"];
+  const greetingLines = AI_GREETINGS_CONTEXT_AWARE[aiStyle] || AI_GREETINGS_CONTEXT_AWARE.default;
+  const replySets = AI_REPLIES_CONTEXT_AWARE[aiStyle] || AI_REPLIES_CONTEXT_AWARE.default;
+  const replyLines = replySets[0] || ["今天下雨，确实适合聊会儿。", "樱花节啊，你去了吗？", "我们这边也凉，注意保暖。"];
 
   const fillFromAi = (text) => {
     setInputText(text);
@@ -700,6 +707,9 @@ function SceneRoomPage({ onEndScene, onGoRelation }) {
 
           {!hasUserSent && (
             <div className="zone3-ai-greeting-area">
+              <p className="zone3-ai-greeting-context" title="Mock：接大模型时可传入城市+天气+本地活动">
+                今日 · {MOCK_LLM_CONTEXT.city} · {MOCK_LLM_CONTEXT.summary}
+              </p>
               <p className="zone3-ai-greeting-hint">灵感回复可提升回复率哦</p>
               <div className="zone3-ai-style-tabs">
                 {AI_STYLES.map((s) => (
@@ -744,6 +754,9 @@ function SceneRoomPage({ onEndScene, onGoRelation }) {
             <div className="zone3-lightbulb-overlay" onClick={() => setLightbulbOpen(false)}>
               <div className="zone3-lightbulb-panel" onClick={(e) => e.stopPropagation()}>
                 <p className="zone3-lightbulb-title">灵感回复</p>
+                <p className="zone3-lightbulb-context" title="Mock：接大模型时可传入城市+天气+本地活动">
+                  今日 · {MOCK_LLM_CONTEXT.city} · {MOCK_LLM_CONTEXT.summary}
+                </p>
                 <div className="zone3-ai-style-tabs zone3-lightbulb-styles">
                   {AI_STYLES.map((s) => (
                     <button

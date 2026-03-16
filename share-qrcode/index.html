@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>玛薯 App 下载二维码</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; margin: 0; padding: 24px; background: #f5f5f5; }
+    .wrap { max-width: 640px; margin: 0 auto; background: #fff; padding: 32px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    h1 { font-size: 1.25rem; color: #333; margin: 0 0 24px; text-align: center; }
+    .row { display: flex; flex-wrap: wrap; justify-content: center; gap: 32px; }
+    .cell { text-align: center; }
+    .cell .label { font-size: 0.95rem; font-weight: 600; color: #333; margin-top: 12px; }
+    .cell .qrcode { margin: 0 auto; }
+    .cell .qrcode img { display: block; }
+    .note { font-size: 0.8rem; color: #666; margin-top: 24px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>玛薯 App 下载</h1>
+    <div class="row">
+      <div class="cell">
+        <div id="qrcode-ios" class="qrcode"></div>
+        <div class="label">iOS 下载</div>
+      </div>
+      <div class="cell">
+        <div id="qrcode-android" class="qrcode"></div>
+        <div class="label">Android 下载</div>
+      </div>
+    </div>
+    <p class="note">微信扫码跳转对应应用商店 · 链接可在本文件顶部 CONFIG 中替换</p>
+  </div>
+
+  <script>
+    // 玛薯 App 正式下载链接
+    const CONFIG = {
+      iosUrl: "https://apps.apple.com/cn/app/%E7%8E%9B%E8%96%AF-maxu/id6751791887",
+      androidUrl: "https://app.mi.com/details?id=com.maxuworld.app&ref=search"
+    };
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    (function () {
+      if (typeof QRCode === "undefined") {
+        document.querySelector(".wrap").innerHTML += "<p style='color:#c00;text-align:center;'>未能加载二维码库，请检查网络或使用本地 qrcode.min.js。</p>";
+        return;
+      }
+      new QRCode(document.getElementById("qrcode-ios"), {
+        text: CONFIG.iosUrl,
+        width: 200,
+        height: 200
+      });
+      new QRCode(document.getElementById("qrcode-android"), {
+        text: CONFIG.androidUrl,
+        width: 200,
+        height: 200
+      });
+    })();
+  </script>
+</body>
+</html>
